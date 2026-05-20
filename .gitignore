@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Build
+web/dist/
+design-tokens/dist/
+
+# Generated tokens (regenerate: npm run build:tokens)
+web/src/styles/tokens.css
+
+# Logs & env
+*.log
+.env
+.env.*
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Local
+*.local

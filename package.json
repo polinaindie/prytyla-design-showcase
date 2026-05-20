@@ -1,0 +1,10 @@
+{
+  "name": "prytula",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:tokens": "node design-tokens/scripts/build.mjs",
+    "dev": "npm run dev --prefix web",
+    "build:web": "npm run build --prefix web"
+  }
+}
