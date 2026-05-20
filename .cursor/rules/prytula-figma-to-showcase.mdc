@@ -1,0 +1,106 @@
+---
+description: Prytula end-to-end pipeline — Figma component → React component in src/design-system/ → showcase page in src/showcase/ → navigation entry in routes.ts. Use this skill ALWAYS when the user asks to (a) bring a component from Figma into code, (b) add a new component to the design system, (c) create or update a showcase page, (d) add a tokens page (Colors, Typography, Spacing, Radius). Trigger on phrases like "перенеси з Figma", "додай у showcase", "додай компонент", "створи сторінку токенів", "додай у дизайн-систему", "перенеси Button/Card/etc". Always run all three phases (component + showcase + routes registration) unless user explicitly asks for only one. Works in tandem with prytula-design-system skill — defer to it for any token decisions.
+globs:
+  - "web/src/design-system/**"
+  - "web/src/showcase/**"
+  - "web/src/styles/**"
+  - "design-tokens/dist/**"
+alwaysApply: false
+---
+
+# Prytula Figma → Component → Showcase
+
+End-to-end workflow: Figma node → React component in `web/src/design-system/` → showcase page in `web/src/showcase/` → register in `routes.ts`. **Run all three phases** unless the user asks for one phase only.
+
+## When this rule triggers
+
+- «Перенеси Button з Figma», «Додай ProjectCard у дизайн-систему», «Створи showcase для Hero»
+- Figma URL + component name
+- «Додай у дизайн-систему» / «додай у showcase»
+
+## Prerequisites
+
+1. **`web/src/styles/tokens.css`** exists and is imported in `web/src/main.tsx` (`npm run build:tokens`).
+2. **`web/src/design-system/`** exists.
+3. **`web/src/showcase/`** bootstrapped (see below) if adding showcase pages.
+4. Follow **`prytula-design-system`** rule: Mapped (`--surface-*`, `--text-*`), Alias (`--space-*`, `--action-*`), app `--font-display`; never raw hex/px for colors, spacing, radii, type. `--pryt-brand-*` only inside DS if unavoidable.
+
+## Code layout (monorepo)
+
+| Path | Purpose |
+|------|---------|
+| `web/src/components/` | Product UI (pages, marketing) |
+| `web/src/design-system/` | Reusable DS components |
+| `web/src/showcase/` | DS documentation app |
+| `web/src/styles/tokens.css` | Generated CSS variables |
+
+Showcase may import design-system; design-system must **not** import showcase or product components.
+
+---
+
+## Bootstrap showcase (once)
+
+Skip if `web/src/showcase/ShowcasePage.tsx` exists.
+
+1. **`ShowcasePage.tsx`** — sidebar from `showcaseRoutes`, main pane renders active `Component`.
+2. **`routes.ts`** — source of truth for nav (`Foundations` → token pages; `Components` → component showcases).
+3. **`primitives/`** — `ShowcasePageLayout`, `ShowcaseSection`, `ShowcaseGrid` (token CSS vars only).
+4. **`tokens/`** — `ColorsPage`, `TypographyPage`, `SpacingPage`, `RadiusPage` (introspective: read CSS vars at runtime).
+5. Wire `/showcase` route in the Vite app when ready.
+
+Canonical showcase sections per component: **Variants** → **Sizes** (if any) → **States** → **Composition** (if needed) → **Responsive** (if needed) → **Tokens used** → **Guidelines** (if real rules exist).
+
+Sample copy: **Ukrainian**, realistic («Підтримати», «Скасувати»).
+
+---
+
+## Phase 1: Figma → Component
+
+1. **Read node** via Figma MCP (`get_design_context` or metadata + screenshot): structure, text styles, fills, variants.
+2. **Map to tokens** from `prytula-design-system` rule — e.g. orange CTA → `var(--surface-action)` / `var(--action-donate)`; spacing → `var(--space-medium)`. If no match → **stop and ask**; do not invent tokens.
+3. **Create** `web/src/design-system/[Name]/`:
+   - `[Name].types.ts` — props / variants
+   - `[Name].tsx` — component
+   - `[Name].module.css` — **only** semantic CSS vars (Mapped/Alias/`--font-display`)
+   - `index.ts` — barrel export
+4. **Verify**: no raw hex in CSS; variants match Figma; TypeScript compiles.
+
+---
+
+## Phase 2: Component → Showcase
+
+Create `web/src/showcase/components/[Name]Showcase.tsx` using primitives; import component from `../../design-system/[Name]`.
+
+Include **Tokens used** listing Figma paths / CSS vars the component consumes.
+
+---
+
+## Phase 3: Navigation
+
+Register in `web/src/showcase/routes.ts` under the right group:
+
+- **Building blocks** — Button, Input, Tag, Chip, IconButton, Divider, Avatar
+- **Cards** — ProjectCard, NewsCard, PartnerCard, ProgressCard
+- **Composite** — Hero, banners, headers
+- **Forms** / **Navigation** — as needed
+
+Tell the user: `npm run dev` → open `/showcase` → pick the new entry.
+
+---
+
+## Token showcase pages
+
+`web/src/showcase/tokens/*` — group `--pryt-brand-*`, Alias (`--space-*`, `--bg-*`, …), Mapped (`--surface-*`, `--text-*`, …). Keep lists in sync when `figma-variables.tsv` changes (after `npm run build:tokens`).
+
+---
+
+## Pitfalls
+
+- Component without showcase or without `routes.ts` entry
+- Raw hex/px «just once»
+- Cross-import from design-system into showcase/product
+- English placeholder copy on UA product
+
+## Maintenance
+
+After Figma export + `npm run build:tokens`, update token showcase groups if new variables appear. Component CSS picks up token changes via cascade — no component edits unless bindings change.

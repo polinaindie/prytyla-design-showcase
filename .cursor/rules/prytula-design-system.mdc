@@ -1,0 +1,263 @@
+---
+description: Prytula Foundation Design System token rules. Apply for ANY UI styling work in this repo — components, pages, .css, .module.css, and the design-tokens pipeline. Defines Figma Prytula-Responsive collections (Brand → Alias → Mapped), CSS naming (--pryt-brand-*, --{slug}, --{category}-{name}), deduped alias/mapped collisions, and forbids raw hex/px and direct --pryt-brand-* in components. Trigger on "стилізуй", "додай колір", "які токени використати", "що замість hex", "перенеси з Figma", "synchronize tokens", "build:tokens".
+globs:
+  - "web/**/*.{tsx,jsx,ts,js,css}"
+  - "design-tokens/**/*"
+alwaysApply: true
+---
+
+# Prytula design system
+
+## Figma source
+
+- **File:** [Prytula-Responsive](https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive) — `fileKey`: `hiAQiy4aRZQiwD1S4jekxY`
+- **Modes:** Mode 1 only (no light/dark / breakpoint modes in variables)
+
+## Three collections
+
+| Collection | Figma paths | CSS output | Use in components |
+|------------|-------------|------------|-------------------|
+| **Brand** | `neutral/500`, `orange/500`, `Scale/300`, `font-size/400`, … | `--pryt-brand-{slug}` | **Never directly** — internal primitives |
+| **Alias** | `bg/page`, `space/medium`, `action/donate`, … | `--{slug}` | **Yes** — public API when no Mapped slot exists |
+| **Mapped** | `Surface/surface-page`, `Text/text-default`, … | `--{category}-{slot}` | **Yes — preferred** for UI roles |
+
+**Chain:** `Mapped → Alias → Brand` (literal). Brand has no incoming aliases.
+
+**Alias literals (not Brand refs):** `radius/round` (9999px), `size/4xlarge` (44px).
+
+---
+
+## Token-to-CSS mapping
+
+| Figma | CSS function | Example |
+|-------|--------------|---------|
+| Brand `orange/500` | `brandVar()` | `--pryt-brand-orange-500` |
+| Alias `space/medium` | `aliasVar()` | `--space-medium` |
+| Alias `bg/page` | `aliasVar()` | `--bg-page` |
+| Mapped `Text/text-default` | `mappedVar()` | `--text-default` (strips duplicate `text-` prefix) |
+| Mapped `Surface/surface-page` | `mappedVar()` | `--surface-page` |
+| Mapped `Border/on-inverse` | `mappedVar()` | `--border-on-inverse` |
+| App-only stack | manual in `index.css` | `--font-display` |
+
+**Convention:** slashes in Figma → hyphens in CSS. Mapped category is lowercased (`Surface` → `surface-`).
+
+---
+
+## Token pipeline (generated CSS)
+
+1. **Source:** `design-tokens/data/figma-variables.tsv` (export from Figma)
+2. **Build:** `npm run build:tokens` → runs `design-tokens/scripts/build.mjs`
+3. **Outputs (identical content):**
+   - `design-tokens/dist/tokens.css` + `tokens.ts`
+   - `web/src/styles/tokens.css` (imported in `web/src/main.tsx`)
+4. **Git:** both CSS paths are **gitignored** — regenerate after clone or TSV update
+
+Do **not** hand-edit generated `tokens.css`. Change TSV or `build.mjs`, then rebuild.
+
+---
+
+## Token aliasing / dedupe
+
+Five Mapped tokens share the **same CSS variable name** as their Alias target. `build.mjs` emits **one** `:root` line (from Alias); Mapped rows are omitted from CSS but remain in `tokens.ts`.
+
+| CSS variable | Alias Figma path | Mapped Figma path | Value chain |
+|--------------|------------------|-------------------|-------------|
+| `--border-default` | `border/default` | `Border/default` | → neutral/200 |
+| `--border-strong` | `border/strong` | `Border/strong` | → neutral/950 |
+| `--border-focus` | `border/focus` | `Border/focus` | → blue/700 |
+| `--text-disabled` | `text/disabled` | `Text/text-disabled` | → neutral/300 |
+| `--text-link` | `text/link` | `Text/text-link` | → blue/950 |
+
+**Not a bug:** Figma has two paths, CSS has one variable. Use `--border-default` (etc.) freely in components. Do not invent a second name or duplicate `:root` entry.
+
+**Non-colliding example:** `Border/on-inverse` → `--border-on-inverse` (Alias is `border/inverse` → `--border-inverse`).
+
+---
+
+## Component token rules (forbidden patterns)
+
+1. **Never** hardcode colors, spacing, radii, or font-sizes (no raw `#hex`, `rgb()`, `12px` for tokens that exist in the system).
+2. **Never** use `--pryt-brand-*` directly in product or design-system components — only through Alias or Mapped.
+3. **Preference order:**
+   - **First:** Mapped (`--text-default`, `--surface-page`, `--surface-action`, …)
+   - **Then:** Alias (`--space-medium`, `--radius-round`, `--action-donate`, …) when no Mapped exists
+   - **Last resort:** Brand only with an inline comment explaining why
+4. **App font:** `var(--font-display)` — defined in `web/src/index.css`, not from Figma export
+
+---
+
+## Mapped tokens (32) — prefer in UI
+
+### Text (9)
+- `Text/text-default` → `--text-default` (→ `--text-primary`)
+- `Text/text-muted` → `--text-muted` (→ `--text-secondary`)
+- `Text/text-subtle` → `--text-subtle` (→ `--text-tertiary`)
+- `Text/text-disabled` → `--text-disabled` **(deduped)**
+- `Text/text-link` → `--text-link` **(deduped)**
+- `Text/text-on-action` → `--text-on-action`
+- `Text/text-on-primary` → `--text-on-primary`
+- `Text/text-on-inverse` → `--text-on-inverse`
+- `Text/text-on-inverse-muted` → `--text-on-inverse-muted`
+
+### Surface (14)
+- `Surface/surface-page` → `--surface-page`
+- `Surface/surface-default` → `--surface-default`
+- `Surface/surface-subtle-info` → `--surface-subtle-info`
+- `Surface/surface-subtle-accent` → `--surface-subtle-accent`
+- `Surface/surface-subtle-neutral` → `--surface-subtle-neutral`
+- `Surface/surface-inverse` → `--surface-inverse`
+- `Surface/surface-badge` → `--surface-badge`
+- `Surface/surface-action` → `--surface-action` (donate CTA fill)
+- `Surface/surface-action-hover` → `--surface-action-hover`
+- `Surface/surface-primary` → `--surface-primary`
+- `Surface/surface-primary-hover` → `--surface-primary-hover`
+- `Surface/surface-inverse-action` → `--surface-inverse-action`
+- `Surface/surface-disabled` → `--surface-disabled`
+- `Surface/surface-info` → `--surface-info`
+
+### Icon (5)
+- `Icon/icon-default` → `--icon-default`
+- `Icon/icon-muted` → `--icon-muted`
+- `Icon/icon-on-action` → `--icon-on-action`
+- `Icon/icon-on-primary` → `--icon-on-primary`
+- `Icon/icon-brand` → `--icon-brand`
+
+### Border (4)
+- `Border/default` → `--border-default` **(deduped)**
+- `Border/strong` → `--border-strong` **(deduped)**
+- `Border/focus` → `--border-focus` **(deduped)**
+- `Border/on-inverse` → `--border-on-inverse`
+
+---
+
+## Alias tokens (76) — public API
+
+### bg (10)
+`bg/page` → `--bg-page` · `bg/surface` → `--bg-surface` · `bg/subtle-info` → `--bg-subtle-info` · `bg/subtle-accent` → `--bg-subtle-accent` · `bg/subtle-neutral` → `--bg-subtle-neutral` · `bg/inverse` → `--bg-inverse` · `bg/inverse-strong` → `--bg-inverse-strong` · `bg/badge` → `--bg-badge` · `bg/accent` → `--bg-accent` · `bg/info` → `--bg-info`
+
+### text (8)
+`text/primary` → `--text-primary` · `text/secondary` → `--text-secondary` · `text/tertiary` → `--text-tertiary` · `text/disabled` → `--text-disabled` · `text/inverse` → `--text-inverse` · `text/inverse-muted` → `--text-inverse-muted` · `text/link` → `--text-link` · `text/on-accent` → `--text-on-accent`
+
+### action (8)
+`action/donate` → `--action-donate` · `action/donate-hover` → `--action-donate-hover` · `action/primary` → `--action-primary` · `action/primary-hover` → `--action-primary-hover` · `action/secondary-border` → `--action-secondary-border` · `action/inverse` → `--action-inverse` · `action/disabled` → `--action-disabled` · `action/disabled-text` → `--action-disabled-text`
+
+### accent (3)
+`accent/primary` → `--accent-primary` (blue-950) · `accent/secondary` → `--accent-secondary` (orange-500) · `accent/highlight` → `--accent-highlight`
+
+### border (4)
+`border/default` → `--border-default` · `border/strong` → `--border-strong` · `border/focus` → `--border-focus` · `border/inverse` → `--border-inverse`
+
+### feedback (8)
+`feedback/success` → `--feedback-success` · `feedback/success-bg` → `--feedback-success-bg` · `feedback/error` → `--feedback-error` · `feedback/error-bg` → `--feedback-error-bg` · `feedback/warning` → `--feedback-warning` · `feedback/warning-bg` → `--feedback-warning-bg` · `feedback/info` → `--feedback-info` · `feedback/info-bg` → `--feedback-info-bg`
+
+### space (15)
+`space/none` → `--space-none` · `space/3xsmall` → `--space-3xsmall` · `space/2xsmall` → `--space-2xsmall` · `space/xsmall` → `--space-xsmall` · `space/small` → `--space-small` · `space/medium` → `--space-medium` · `space/large` → `--space-large` · `space/xlarge` → `--space-xlarge` · `space/2xlarge` → `--space-2xlarge` · `space/3xlarge` → `--space-3xlarge` · `space/4xlarge` → `--space-4xlarge` · `space/5xlarge` → `--space-5xlarge` · `space/6xlarge` → `--space-6xlarge` · `space/7xlarge` → `--space-7xlarge` · `space/8xlarge` → `--space-8xlarge`
+
+### radius (7)
+`radius/none` → `--radius-none` · `radius/small` → `--radius-small` · `radius/medium` → `--radius-medium` · `radius/large` → `--radius-large` · `radius/xlarge` → `--radius-xlarge` · `radius/2xlarge` → `--radius-2xlarge` · `radius/round` → `--radius-round`
+
+### border-width (3)
+`border-width/none` → `--border-width-none` · `border-width/small` → `--border-width-small` · `border-width/medium` → `--border-width-medium`
+
+### size (10)
+`size/xsmall` → `--size-xsmall` · `size/small` → `--size-small` · `size/medium` → `--size-medium` · `size/large` → `--size-large` · `size/xlarge` → `--size-xlarge` · `size/2xlarge` → `--size-2xlarge` · `size/3xlarge` → `--size-3xlarge` · `size/4xlarge` → `--size-4xlarge` · `size/5xlarge` → `--size-5xlarge` · `size/6xlarge` → `--size-6xlarge`
+
+---
+
+## Brand primitives (103)
+
+Low-level palette and scale — **do not reference in components.**
+
+- **Palettes:** `neutral/*`, `blue/*`, `orange/*`, `green/*`, `red/*`, `chart/brown-*`, `chart/blue-*`
+- **Scale:** `Scale/0` … `Scale/3200` (spacing primitives, px)
+- **Typography:** `font-family/*`, `font-weight/*`, `font-size/*`
+
+CSS pattern: `--pryt-brand-{category}-{step}` e.g. `--pryt-brand-orange-500`, `--pryt-brand-scale-300`, `--pryt-brand-font-size-400`.
+
+Product pages may use `--pryt-brand-font-size-*` for typography until Mapped text styles exist — prefer Mapped/Alias for colors and layout.
+
+---
+
+## Component examples (real tokens)
+
+```css
+/* Page shell */
+.page {
+  background: var(--surface-page);
+  color: var(--text-default);
+}
+
+/* Spacing + radius from Alias (no Mapped spacing) */
+.card {
+  padding: var(--space-medium);
+  border-radius: var(--radius-large);
+  border: var(--border-width-small) solid var(--border-default);
+}
+
+/* Primary CTA */
+.btnDonate {
+  background: var(--surface-action);
+  color: var(--text-on-action);
+}
+.btnDonate:hover {
+  background: var(--surface-action-hover);
+}
+
+/* Display heading */
+.title {
+  font-family: var(--font-display);
+  font-size: var(--pryt-brand-font-size-900);
+  color: var(--pryt-brand-neutral-900);
+}
+```
+
+```tsx
+import { mapped, alias } from "../../../design-tokens/dist/tokens";
+// mapped["Surface/surface-page"]  → "var(--surface-page)"
+// alias["space/medium"]           → "var(--space-medium)"
+```
+
+---
+
+## Font loading
+
+`--font-display` resolves to `Mariupol Strong` with fallbacks (`Mariupol`, Inter, system-ui).
+
+**Body text (Inter)** — loaded via Google Fonts CDN in `web/src/index.css`:
+
+```css
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+```
+
+**Display (Mariupol Strong)** — named in the stack but **not loaded yet** (no `@font-face`, no font CDN link in `index.html`). Headings using `var(--font-display)` currently render with the next available face (typically Inter). Wire local `@font-face` files or a licensed webfont URL when brand fonts are ready.
+
+---
+
+## Semantic notes (Figma → meaning)
+
+| Token | Typical use |
+|-------|-------------|
+| `--surface-page` | Page background (warm off-white) |
+| `--surface-action` / `--action-donate` | Orange donate CTA |
+| `--accent-primary` | Brand blue (dark) |
+| `--accent-secondary` | Brand orange |
+| `--text-default` | Body text on light surfaces |
+
+There is **no** `--brand-primary` in this file — do not invent legacy names from old docs.
+
+---
+
+## Figma MCP / Plugin API
+
+Resolve variables with `getLocalVariableCollections()`, `getLocalVariables()`, follow `VARIABLE_ALIAS` by id. Map Figma path → CSS using tables above.
+
+---
+
+## How to add or change tokens
+
+1. Edit variables in Figma `Prytula-Responsive` (Mode 1 only).
+2. Export variables → save as `design-tokens/data/figma-variables.tsv`.
+3. Run `npm run build:tokens` from repo root — regenerates `tokens.css` + `tokens.ts` in both `design-tokens/dist/` and `web/src/styles/`.
+4. Verify dev: `cd web && npm run dev` — visual check that nothing broke.
+5. Commit `figma-variables.tsv` and any component changes. Do **not** commit generated `tokens.css` (gitignored).
+6. Migrating an existing token name? Plan find-replace across `web/src/**/*.module.css` + `web/src/index.css` before bumping.
