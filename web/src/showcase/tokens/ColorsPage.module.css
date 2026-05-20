@@ -1,0 +1,16 @@
+/* 80×80 swatch — layout chrome, not a spacing token */
+.swatch {
+  width: 5rem;
+  height: 5rem;
+  border-radius: var(--radius-medium);
+}
+
+.swatchLight {
+  border: var(--border-width-small) solid var(--border-default);
+}
+
+.swatchCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xsmall);
+}

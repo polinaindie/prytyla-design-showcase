@@ -1,0 +1,68 @@
+.familyBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-large);
+}
+
+.familySample {
+  margin: 0;
+  line-height: 1.2;
+  color: var(--text-default);
+}
+
+.familyDisplay {
+  font-family: var(--font-display);
+  font-size: var(--pryt-brand-font-size-900);
+}
+
+.familyMariupol {
+  font-family: "Mariupol", var(--font-display), Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-500);
+}
+
+.familyInter {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-400);
+}
+
+.familyMeta {
+  margin: var(--space-xsmall) 0 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--pryt-brand-font-size-250);
+  color: var(--text-muted);
+}
+
+.sizeList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-large);
+}
+
+.sizeRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xsmall);
+  padding-bottom: var(--space-medium);
+  border-bottom: var(--border-width-small) solid var(--border-default);
+}
+
+.sizeMeta {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--pryt-brand-font-size-250);
+  color: var(--text-muted);
+}
+
+.sizeSample {
+  margin: 0;
+  line-height: 1.25;
+  color: var(--text-default);
+}
+
+.sizeSampleDisplay {
+  font-family: var(--font-display);
+}
+
+.sizeSampleBody {
+  font-family: "Mariupol", var(--font-display), Inter, system-ui, sans-serif;
+}

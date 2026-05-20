@@ -1,0 +1,33 @@
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-large);
+}
+
+.heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xsmall);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--pryt-brand-font-size-600);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text-default);
+}
+
+.description {
+  margin: 0;
+  font-size: var(--pryt-brand-font-size-300);
+  line-height: 1.45;
+  color: var(--text-muted);
+  max-width: 40rem;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
+}

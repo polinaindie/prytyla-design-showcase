@@ -1,0 +1,24 @@
+.barList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
+}
+
+.barRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xsmall);
+}
+
+.barTrack {
+  display: flex;
+  align-items: center;
+  min-height: var(--space-large);
+}
+
+.bar {
+  height: var(--space-large);
+  min-width: var(--border-width-small);
+  border-radius: var(--radius-small);
+  background: var(--surface-action);
+}

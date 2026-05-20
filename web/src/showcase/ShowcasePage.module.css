@@ -1,0 +1,113 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--surface-page);
+  color: var(--text-default);
+}
+
+.aside {
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  /* ~256px — no single --size-* alias near 260px in token set */
+  width: 16rem;
+  max-height: 100vh;
+  overflow-y: auto;
+  flex-shrink: 0;
+  padding: var(--space-large) var(--space-medium);
+  background: var(--surface-default);
+  border-right: var(--border-width-small) solid var(--border-default);
+}
+
+.brand {
+  margin: 0 0 var(--space-large);
+  padding-bottom: var(--space-medium);
+  border-bottom: var(--border-width-small) solid var(--border-default);
+  font-family: var(--font-display);
+  font-size: var(--pryt-brand-font-size-600);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--text-default);
+}
+
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-large);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xsmall);
+}
+
+.groupLabel {
+  margin: 0;
+  padding: var(--space-xsmall) var(--space-small);
+  font-size: var(--pryt-brand-font-size-200);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-subtle);
+}
+
+.subgroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xsmall);
+  padding-left: var(--space-small);
+}
+
+.subgroupLabel {
+  margin: 0;
+  padding: var(--space-2xsmall) var(--space-small);
+  font-size: var(--pryt-brand-font-size-250);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.navList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xsmall);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.navLink {
+  display: block;
+  padding: var(--space-xsmall) var(--space-small);
+  border-radius: var(--radius-medium);
+  font-size: var(--pryt-brand-font-size-300);
+  line-height: 1.35;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.navLink:hover {
+  background: var(--bg-subtle-neutral);
+  color: var(--text-primary);
+}
+
+.navLinkActive {
+  background: var(--bg-subtle-accent);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.comingSoon {
+  margin: 0;
+  padding: var(--space-xsmall) var(--space-small);
+  font-size: var(--pryt-brand-font-size-300);
+  font-style: italic;
+  color: var(--text-subtle);
+}
+
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: var(--space-2xlarge) var(--space-3xlarge);
+}

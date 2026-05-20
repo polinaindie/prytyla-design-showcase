@@ -1,0 +1,38 @@
+.radiusGrid {
+  display: grid;
+  gap: var(--space-medium);
+  grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+}
+
+.radiusCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xsmall);
+}
+
+/* 80×80 preview tile — layout chrome */
+.radiusTile {
+  width: 5rem;
+  height: 5rem;
+  background: var(--surface-action);
+  border: var(--border-width-small) solid var(--border-default);
+}
+
+.borderWidthList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-large);
+}
+
+.borderWidthRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xsmall);
+}
+
+/* 200px reference width — layout chrome, no width token at this size */
+.borderWidthLine {
+  width: 12.5rem;
+  background: var(--border-default);
+  border-radius: var(--radius-small);
+}
