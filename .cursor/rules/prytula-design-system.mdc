@@ -221,15 +221,19 @@ import { mapped, alias } from "../../../design-tokens/dist/tokens";
 
 ## Font loading
 
-`--font-display` resolves to `Mariupol Strong` with fallbacks (`Mariupol`, Inter, system-ui).
+Three font families are loaded in `web/src/index.css`:
 
-**Body text (Inter)** — loaded via Google Fonts CDN in `web/src/index.css`:
+- **Inter** — via Google Fonts CDN (`@import` at top). Used for body text fallback.
+- **Mariupol** — locally hosted in `web/public/fonts/`:
+  - Regular (400): `Mariupol-Regular.woff2`
+  - Medium (500): `Mariupol-Medium.woff2`
+  - Bold (700): `Mariupol-Bold.woff2`
+- **Mariupol Strong** — locally hosted in `web/public/fonts/`:
+  - Regular (400): `mariupol_strong_w.woff2`
 
-```css
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
-```
+All locally-hosted fonts use `font-display: swap` to avoid invisible text during load. Headings using `var(--font-display)` resolve to "Mariupol Strong" first, falling back to "Mariupol", then Inter, then system-ui.
 
-**Display (Mariupol Strong)** — named in the stack but **not loaded yet** (no `@font-face`, no font CDN link in `index.html`). Headings using `var(--font-display)` currently render with the next available face (typically Inter). Wire local `@font-face` files or a licensed webfont URL when brand fonts are ready.
+When adding new font files: place in `web/public/fonts/` and add a matching `@font-face` block in `web/src/index.css` BEFORE the `:root` block.
 
 ---
 

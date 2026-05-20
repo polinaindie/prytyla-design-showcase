@@ -1,6 +1,38 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
 @import "./styles/tokens.css";
 
+@font-face {
+  font-family: "Mariupol";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/Mariupol-Regular.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Mariupol";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/Mariupol-Medium.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Mariupol";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/Mariupol-Bold.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Mariupol Strong";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/mariupol_strong_w.woff2") format("woff2");
+}
+
 :root {
   --font-display: "Mariupol Strong", "Mariupol", Inter, system-ui, sans-serif;
 }
