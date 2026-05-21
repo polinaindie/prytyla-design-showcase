@@ -45,6 +45,8 @@ type MenuFooterProps = {
   emailHref: string;
   /** Mobile drawer — 20px icons in 36px chips (Figma 1149:24173). */
   socialIconSize?: number;
+  /** Tablet drawer — contacts in one row (Figma 1150:24977). */
+  layout?: "stacked" | "tablet";
 };
 
 export function MenuFooter({
@@ -55,10 +57,22 @@ export function MenuFooter({
   email,
   emailHref,
   socialIconSize = 24,
+  layout = "stacked",
 }: MenuFooterProps) {
+  const footerClass = [
+    styles.footer,
+    layout === "tablet" ? styles.footerTablet : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <div className={styles.footer}>
-      <div className={styles.socialRow}>
+    <div className={footerClass}>
+      <div
+        className={
+          layout === "tablet" ? styles.socialRowTablet : styles.socialRow
+        }
+      >
         {socialLinks.map((link) => (
           <a
             key={link.network}
@@ -70,7 +84,11 @@ export function MenuFooter({
           </a>
         ))}
       </div>
-      <div className={styles.contactRow}>
+      <div
+        className={
+          layout === "tablet" ? styles.contactRowTablet : styles.contactRow
+        }
+      >
         <Button
           variant="contact"
           theme="dark"

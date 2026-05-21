@@ -46,6 +46,17 @@ export const DEFAULT_DRAWER_NAV_LINKS: { label: string; href: string }[] = [
   { label: "Партнерства", href: "/partnerships" },
 ];
 
+/** Figma 1150:25186 — row-major 2-col grid (Проєкти|Вакансії, …). */
+export const TABLET_DRAWER_NAV_LINKS: { label: string; href: string }[] = [
+  { label: "Проєкти", href: "/projects" },
+  { label: "Вакансії", href: "/careers" },
+  { label: "Звітність", href: "/reports" },
+  { label: "Новини", href: "/news" },
+  { label: "Інформація про фонд", href: "/about" },
+  { label: "Партнерства", href: "/partnerships" },
+  { label: "Річні звіти", href: "/reports/annual" },
+];
+
 export const DEFAULT_SOCIAL_LINKS: MenuSocialLink[] = [
   { network: "facebook", href: "https://www.facebook.com/", label: "Facebook" },
   { network: "instagram", href: "https://www.instagram.com/", label: "Instagram" },

@@ -7,6 +7,7 @@ import {
   DEFAULT_ABOUT_PANEL_LINKS,
   DEFAULT_DIRECTION_PANEL_LINKS,
   DEFAULT_DRAWER_NAV_LINKS,
+  TABLET_DRAWER_NAV_LINKS,
   DEFAULT_EMAIL,
   DEFAULT_HOTLINE,
   DEFAULT_SOCIAL_LINKS,
@@ -76,9 +77,14 @@ export function Menu({
   const isDesktop = size === "desktop";
   const isCompact = isMobile || isTablet;
   const showNav = isDesktop;
-  const showLangInBar = isDesktop || (isTablet && !mobileMenuOpen);
-  const showDonateInBar = isDesktop || (isTablet && !mobileMenuOpen);
-  const logoHeight = isMobile ? 28 : 32;
+  const showLangInBar = isDesktop || isTablet;
+  const showDonateInBar = isDesktop || isTablet;
+  const logoHeight = isCompact ? 28 : 32;
+  const drawerNavLinksResolved = isTablet
+    ? drawerNavLinks === DEFAULT_DRAWER_NAV_LINKS
+      ? TABLET_DRAWER_NAV_LINKS
+      : drawerNavLinks
+    : drawerNavLinks;
   const aboutOpen = navItems.some(
     (item) => item.type === "dropdown" && Boolean(item.open),
   );
@@ -109,6 +115,7 @@ export function Menu({
   const shellClass = [
     styles.shell,
     showDrawer ? styles.shellCompactOpen : "",
+    showDrawer && isTablet ? styles.shellCompactOpenTablet : "",
     isOpenDesktop ? styles.shellOpenDesktop : "",
   ]
     .filter(Boolean)
@@ -292,53 +299,62 @@ export function Menu({
             aria-label="Меню сайту"
           >
             <div className={styles.drawerMain}>
-              <div className={styles.compactTopRow}>
-                <div
-                  className={styles.langSelector}
-                  role="group"
-                  aria-label="Мова сайту"
-                >
-                  <IconGlobe20 size={20} aria-hidden />
-                  <div className={styles.langOptions}>
-                    <button
-                      type="button"
-                      className={`${styles.langOption} ${logoLanguage === "en" ? styles.langOptionActive : ""}`}
-                      onClick={() => handleDrawerLanguageSelect("en")}
-                      aria-current={logoLanguage === "en" ? "true" : undefined}
-                    >
-                      Eng
-                    </button>
-                    <span className={styles.langSep} aria-hidden>
-                      |
-                    </span>
-                    <button
-                      type="button"
-                      className={`${styles.langOption} ${logoLanguage === "uk" ? styles.langOptionActive : ""}`}
-                      onClick={() => handleDrawerLanguageSelect("uk")}
-                      aria-current={logoLanguage === "uk" ? "true" : undefined}
-                    >
-                      Ukr
-                    </button>
+              {isMobile ? (
+                <div className={styles.compactTopRow}>
+                  <div
+                    className={styles.langSelector}
+                    role="group"
+                    aria-label="Мова сайту"
+                  >
+                    <IconGlobe20 size={20} aria-hidden />
+                    <div className={styles.langOptions}>
+                      <button
+                        type="button"
+                        className={`${styles.langOption} ${logoLanguage === "en" ? styles.langOptionActive : ""}`}
+                        onClick={() => handleDrawerLanguageSelect("en")}
+                        aria-current={logoLanguage === "en" ? "true" : undefined}
+                      >
+                        Eng
+                      </button>
+                      <span className={styles.langSep} aria-hidden>
+                        |
+                      </span>
+                      <button
+                        type="button"
+                        className={`${styles.langOption} ${logoLanguage === "uk" ? styles.langOptionActive : ""}`}
+                        onClick={() => handleDrawerLanguageSelect("uk")}
+                        aria-current={logoLanguage === "uk" ? "true" : undefined}
+                      >
+                        Ukr
+                      </button>
+                    </div>
                   </div>
+                  <Button
+                    variant="primary"
+                    theme="dark"
+                    className={styles.compactDonate}
+                    showLeftIcon={false}
+                    showRightIcon={false}
+                    onClick={handleDonate}
+                  >
+                    {resolvedDonateLabel}
+                  </Button>
                 </div>
-                <Button
-                  variant="primary"
-                  theme="dark"
-                  className={styles.compactDonate}
-                  showLeftIcon={false}
-                  showRightIcon={false}
-                  onClick={handleDonate}
-                >
-                  {resolvedDonateLabel}
-                </Button>
-              </div>
+              ) : null}
 
-              <nav className={styles.drawerNav} aria-label="Навігація">
-                {drawerNavLinks.map((link) => (
+              <nav
+                className={
+                  isTablet ? styles.drawerNavTablet : styles.drawerNav
+                }
+                aria-label="Навігація"
+              >
+                {drawerNavLinksResolved.map((link) => (
                   <a
                     key={link.href}
                     href={link.href}
-                    className={styles.drawerNavLink}
+                    className={
+                      isTablet ? styles.drawerNavLinkTablet : styles.drawerNavLink
+                    }
                   >
                     {link.label}
                   </a>
@@ -357,14 +373,18 @@ export function Menu({
                     title={link.title}
                     illustration={link.illustration}
                     size="desktop"
-                    titleSize="mobile"
+                    titleSize={isMobile ? "mobile" : "desktop"}
                     className={styles.drawerLinkCard}
                   />
                 ))}
               </div>
             </div>
 
-            <div className={styles.drawerFooter}>
+            <div
+              className={
+                isTablet ? styles.drawerFooterTablet : styles.drawerFooter
+              }
+            >
               <MenuFooter
                 socialLinks={[...socialLinks]}
                 hotlineLabel={hotlineLabel}
@@ -373,6 +393,7 @@ export function Menu({
                 email={email}
                 emailHref={emailHref}
                 socialIconSize={isMobile ? 20 : 24}
+                layout={isTablet ? "tablet" : "stacked"}
               />
             </div>
           </div>
