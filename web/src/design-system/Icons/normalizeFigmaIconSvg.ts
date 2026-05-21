@@ -5,6 +5,7 @@ export function normalizeFigmaIconSvg(svg: string, idPrefix: string): string {
   out = out.replace(/fill="#1F1F1F"/gi, 'fill="currentColor"');
   out = out.replace(/fill="#001E61"/gi, 'fill="currentColor"');
   out = out.replace(/stroke="#1F1F1F"/gi, 'stroke="currentColor"');
+  out = out.replace(/stroke="#001E61"/gi, 'stroke="currentColor"');
   out = out.replace(/fill="white"/gi, 'fill="currentColor"');
 
   out = out.replace(/clip0_[\w-]+/g, (match) => `${idPrefix}-${match}`);

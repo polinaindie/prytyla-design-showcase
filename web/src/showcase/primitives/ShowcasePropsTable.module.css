@@ -1,0 +1,41 @@
+.tableWrap {
+  overflow-x: auto;
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--pryt-brand-font-size-300);
+}
+
+.th {
+  padding: var(--space-small) var(--space-medium);
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: var(--pryt-brand-font-size-400);
+  font-weight: 600;
+  color: var(--text-default);
+  background: var(--surface-subtle-neutral);
+  border-bottom: var(--border-width-small) solid var(--border-default);
+}
+
+.td {
+  padding: var(--space-small) var(--space-medium);
+  vertical-align: top;
+  color: var(--text-default);
+  border-bottom: var(--border-width-small) solid var(--border-muted);
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--pryt-brand-font-size-300);
+  color: var(--text-secondary);
+}
+
+.required {
+  margin-left: var(--space-xsmall);
+  color: var(--text-muted);
+  font-size: var(--pryt-brand-font-size-200);
+}

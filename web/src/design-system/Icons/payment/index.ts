@@ -1,0 +1,10 @@
+export { IconPaymentCard } from "./IconPaymentCard";
+export { IconPaymentPaypal } from "./IconPaymentPaypal";
+export { IconPaymentCrypto } from "./IconPaymentCrypto";
+export { IconPaymentSwift } from "./IconPaymentSwift";
+export { IconPaymentBank } from "./IconPaymentBank";
+export { IconPaymentHeartEmpty } from "./IconPaymentHeartEmpty";
+export { IconPaymentHeartFilled } from "./IconPaymentHeartFilled";
+export { IconPaymentReceipt } from "./IconPaymentReceipt";
+export { IconPaymentGlobe } from "./IconPaymentGlobe";
+export { IconPaymentRepeat } from "./IconPaymentRepeat";

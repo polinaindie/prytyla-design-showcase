@@ -1,0 +1,73 @@
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-medium);
+  padding: var(--space-medium) var(--space-large);
+  background: var(--surface-default);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  margin-bottom: var(--space-large);
+}
+
+.group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-small);
+}
+
+.label {
+  font-size: var(--pryt-brand-font-size-300);
+  color: var(--text-secondary);
+}
+
+.themeToggle {
+  display: inline-flex;
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-round);
+  overflow: hidden;
+}
+
+.themeButton {
+  padding: var(--space-xsmall) var(--space-medium);
+  border: none;
+  background: transparent;
+  font-size: var(--pryt-brand-font-size-300);
+  color: var(--text-default);
+  cursor: pointer;
+}
+
+.themeButton:hover {
+  background: var(--surface-subtle-neutral);
+}
+
+.themeButtonActive {
+  background: var(--surface-subtle-accent);
+  font-weight: 600;
+}
+
+.search {
+  flex: 1 1 12rem;
+  min-width: 10rem;
+  max-width: 24rem;
+  margin-left: auto;
+  padding: var(--space-xsmall) var(--space-medium);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-round);
+  font-size: var(--pryt-brand-font-size-300);
+  color: var(--text-default);
+  background: var(--surface-default);
+}
+
+.search::placeholder {
+  color: var(--text-muted);
+}
+
+.search:focus {
+  outline: var(--border-width-medium) solid var(--border-strong);
+  outline-offset: var(--space-xsmall);
+}

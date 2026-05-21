@@ -1,3 +1,23 @@
+.jumpNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-small);
+  margin-bottom: var(--space-large);
+}
+
+.jumpNav a {
+  padding: var(--space-xsmall) var(--space-medium);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-round);
+  font-size: var(--pryt-brand-font-size-300);
+  color: var(--text-default);
+  text-decoration: none;
+}
+
+.jumpNav a:hover {
+  background: var(--surface-subtle-neutral);
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -63,6 +83,34 @@
 .cellIconTinyScaled > span {
   transform: scale(2.4);
   transform-origin: center;
+}
+
+.gridIllustration {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-large);
+}
+
+.cellIconIllustration {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+}
+
+.gridBrand {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: var(--space-large);
+}
+
+.cellIconBrand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--size-4xlarge);
+  padding: var(--space-medium);
 }
 
 .name {

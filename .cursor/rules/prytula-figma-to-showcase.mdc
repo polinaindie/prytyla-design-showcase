@@ -145,8 +145,8 @@ Verify: `npm run build` in `web/` (or `tsc -b`); no raw hex in CSS.
 
 ## Phase 3: Showcase page + routes
 
-1. Create `web/src/showcase/components/[Name]Showcase.tsx` using `ShowcasePageLayout`, `ShowcaseSection`, `ShowcaseGrid`.
-2. Sections (when applicable): **Variants** → **Sizes** → **States** → **Composition** → **Responsive** → **Tokens used** → **Guidelines**.
+1. Create `web/src/showcase/components/[Name]Showcase.tsx` using primitives from `web/src/showcase/primitives/` (див. **Showcase Page Standards**).
+2. Sections: дотримуйся порядку з **Showcase Page Standards** (не legacy «Variants → Sizes → …» якщо суперечить стандарту).
 3. **Tokens used** — list Figma paths + CSS vars (e.g. `action/donate` → `--action-donate`).
 4. Copy: **Ukrainian**, realistic («Підтримати», «Скасувати»).
 5. Register in **`web/src/showcase/routes.tsx`** (see below).
@@ -224,6 +224,116 @@ Existing: `web/src/showcase/tokens/` — Colors, Typography, Spacing, Radius. Wh
 - `comingSoon: true` left on Components after first component ships
 - Cross-import: design-system → showcase/product
 - Auto-commit after Phase 3
+
+---
+
+## Showcase Page Standards
+
+Єдиний стандарт для всіх showcase-сторінок (`Colors`, `Typography`, `Spacing`, `Radius`, `Button`, `Icons` та майбутніх).  
+**Інфраструктура:** `web/src/showcase/primitives/` — див. barrel `index.ts` і типи `showcase.types.ts`.
+
+### 1. Обов'язковий порядок секцій (component pages)
+
+Секції йдуть **у цьому порядку**. Нерелевантну — **пропусти**, не заповнюй «для галочки».
+
+| # | Секція | Зміст |
+|---|--------|--------|
+| 1 | **Page header** | Title + одне речення опису + Figma link (якщо є) — `ShowcasePageLayout` |
+| 2 | **Quick example** | 3–5 рядків коду use case — `ShowcaseCodeBlock` |
+| 3 | **Live preview** | Головний варіант «як виглядає» — `ShowcaseThemedSurface` або preview у `ShowcaseSection` |
+| 4 | **Variants** | Повна сітка візуальних варіантів — `ShowcaseGrid` |
+| 5 | **States** | default / hover / disabled / focus (де релевантно) |
+| 6 | **With icons / Composition** | Іконки, слоти, складні комбінації |
+| 7 | **Theming** | light/dark — `ShowcaseToolbar` + `ShowcaseThemedSurface` |
+| 8 | **Tokens used** | — `ShowcaseTokensList` |
+| 9 | **Guidelines** | Do/Don't — `ShowcaseDoDont` |
+| 10 | **Props API** | — `ShowcasePropsTable` + `PropsConfig[]` |
+| 11 | **Accessibility** | aria, keyboard, focus |
+| 12 | **Related** | Посилання на пов'язані компоненти / token pages |
+
+Token-only pages (Colors, Spacing, …) можуть скоротити список, але **порядок збережи** там, де секція є.
+
+### 2. Візуальні правила
+
+- **Заголовки секцій:** `--pryt-brand-font-size-500` + `--font-display` (у `ShowcaseSection` поступово вирівняємо; нові блоки — одразу за стандартом).
+- **Підписи елементів / captions:** `--pryt-brand-font-size-300` + `--text-secondary`.
+- **Preview контейнер:** padding `--space-large`, border `var(--border-width-small) solid var(--border-default)`, radius `--radius-medium` — `ShowcaseThemedSurface` / preview class.
+- **Gap у сітках:** `--space-medium` (`ShowcaseGrid`).
+- **Темний preview:** background `--surface-inverse`, текст `--text-inverse` — `ShowcaseThemedSurface` dark panel.
+- **Copy:** українською в описах, guidelines, Do/Don't.
+- **Заборона:** raw hex/px у showcase `.tsx` / `.module.css` — лише токени (винятки лише з `prytula-design-system` Approved exceptions, з коментарем).
+
+### 3. Інтерактивні правила
+
+- **Theme toggle** (Light/Dark) на сторінках з кольоровими елементами — `ShowcaseThemeProvider` + `ShowcaseToolbar`.
+- **Search** там, де елементів **>10** (icons grid, token lists) — `ShowcaseToolbar` з `showSearch` + `useState` фільтр.
+- **Click-to-copy** для імпортів і токенів — `ShowcaseCodeBlock`, `ShowcaseTokensList`.
+- **Стан UI:** лише `useState` / React state — **не** URL query, **не** `localStorage` для showcase UI.
+
+### 4. Примітиви (короткі приклади)
+
+Обгорни сторінку в `ShowcaseThemeProvider`, якщо потрібен toolbar або `ShowcaseThemedSurface mode="single"`.
+
+```tsx
+import {
+  ShowcaseThemeProvider,
+  ShowcaseToolbar,
+  ShowcasePageLayout,
+  ShowcaseSection,
+  ShowcaseCodeBlock,
+  ShowcaseThemedSurface,
+  ShowcaseGrid,
+  ShowcaseTokensList,
+  ShowcaseDoDont,
+  ShowcasePropsTable,
+  type PropsConfig,
+  type TokenUsage,
+} from "../primitives";
+
+export function ExampleShowcase() {
+  const [query, setQuery] = useState("");
+  return (
+    <ShowcaseThemeProvider>
+      <ShowcasePageLayout title="Button" description="Кнопка DS. Figma: …">
+        <ShowcaseToolbar showSearch={false} />
+        <ShowcaseSection title="Quick example">
+          <ShowcaseCodeBlock code={'<Button variant="primary">Підтримати</Button>'} />
+        </ShowcaseSection>
+        <ShowcaseSection title="Live preview">
+          <ShowcaseThemedSurface mode="split">
+            <Button variant="primary">Підтримати</Button>
+          </ShowcaseThemedSurface>
+        </ShowcaseSection>
+        <ShowcaseSection title="Tokens used">
+          <ShowcaseTokensList tokens={[{ name: "--surface-action", usedIn: "Primary fill" }]} />
+        </ShowcaseSection>
+        <ShowcaseSection title="Guidelines">
+          <ShowcaseDoDont do={["Один primary на екран"]} dont={["Два primary поруч"]} />
+        </ShowcaseSection>
+        <ShowcaseSection title="Props API">
+          <ShowcasePropsTable props={[{ name: "variant", type: "ButtonVariant", description: "…" }]} />
+        </ShowcaseSection>
+      </ShowcasePageLayout>
+    </ShowcaseThemeProvider>
+  );
+}
+```
+
+| Примітив | Призначення |
+|----------|-------------|
+| `ShowcaseThemeProvider` | Контекст light/dark для toolbar і single surface |
+| `ShowcaseToolbar` | Sticky: theme toggle + optional search |
+| `ShowcaseCodeBlock` | Quick example + Copy (без нових npm) |
+| `ShowcaseThemedSurface` | `split` = light+dark; `single` = за toolbar |
+| `ShowcaseTokensList` | Tokens used, click → clipboard |
+| `ShowcaseDoDont` | Guidelines Do/Don't |
+| `ShowcasePropsTable` | Props API table |
+
+Типи: `PropsConfig`, `TokenUsage`, `Guideline` у `showcase.types.ts`.
+
+### 5. Міграція існуючих сторінок
+
+Рефактор **окремою задачею** — не змішувати з Phase 1–3 нового компонента. Порядок міграції: Button → Icons → token pages.
 
 ---
 

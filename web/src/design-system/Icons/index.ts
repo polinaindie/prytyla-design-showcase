@@ -36,3 +36,29 @@ export {
   IconArrowUpRight40,
   IconArrowUpRight64,
 } from "./large";
+
+export {
+  IconSocialFacebook,
+  IconSocialInstagram,
+  IconSocialTelegram,
+  IconSocialX,
+  IconSocialLinkedIn,
+  IconSocialYouTube,
+} from "./social";
+
+export {
+  IconPaymentCard,
+  IconPaymentPaypal,
+  IconPaymentCrypto,
+  IconPaymentSwift,
+  IconPaymentBank,
+  IconPaymentHeartEmpty,
+  IconPaymentHeartFilled,
+  IconPaymentReceipt,
+  IconPaymentGlobe,
+  IconPaymentRepeat,
+} from "./payment";
+
+export { IconIllustrationDataError, IconIllustrationNoData } from "./illustration";
+
+export { IconBrandVprytyl, IconBrandMono, type IconBrandVprytylProps, type IconBrandMonoProps } from "./brand";
