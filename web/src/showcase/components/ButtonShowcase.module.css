@@ -1,0 +1,26 @@
+.onDark {
+  display: inline-flex;
+  padding: var(--space-medium);
+  background: var(--surface-primary);
+  border-radius: var(--radius-medium);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-medium);
+  align-items: center;
+}
+
+.tokenList {
+  margin: 0;
+  padding-left: var(--space-large);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--pryt-brand-font-size-300);
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.tokenList li {
+  margin-bottom: var(--space-xsmall);
+}

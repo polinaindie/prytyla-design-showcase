@@ -1,0 +1,157 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-small);
+  box-sizing: border-box;
+  height: var(--size-4xlarge);
+  padding: 0 var(--space-2xlarge);
+  border-radius: var(--radius-round);
+  border: var(--border-width-none) solid transparent;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-300);
+  font-weight: 600;
+  line-height: 1.43;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.root:disabled {
+  background: var(--surface-disabled);
+  color: var(--text-disabled);
+  border-color: transparent;
+  cursor: not-allowed;
+}
+
+.label {
+  display: inline-block;
+}
+
+.icon {
+  flex-shrink: 0;
+  width: var(--size-large);
+  height: var(--size-large);
+  color: currentColor;
+}
+
+.gradientDefs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+/* Primary · Light */
+.primaryLight {
+  background: var(--surface-action);
+  color: var(--text-on-action);
+}
+
+.primaryLight:hover:not(:disabled) {
+  background: var(--surface-action-hover);
+  color: var(--text-on-action);
+}
+
+/* Primary · Dark */
+.primaryDark {
+  background: var(--surface-primary);
+  color: var(--text-on-primary);
+}
+
+.primaryDark:hover:not(:disabled) {
+  background: var(--surface-action-hover);
+  color: var(--text-on-action);
+}
+
+/* Secondary · Light (outline on dark surfaces) */
+.secondaryLight {
+  background: transparent;
+  border-width: var(--border-width-small);
+  border-color: var(--border-inverse);
+  color: var(--text-inverse);
+}
+
+.secondaryLight:hover:not(:disabled) {
+  background: var(--surface-action-hover);
+  border-color: transparent;
+  color: var(--text-on-action);
+}
+
+/* Secondary · Dark (outline on light surfaces) */
+.secondaryDark {
+  background: transparent;
+  border-width: var(--border-width-small);
+  border-color: var(--border-strong);
+  color: var(--text-default);
+}
+
+.secondaryDark:hover:not(:disabled) {
+  background: var(--surface-action-hover);
+  border-color: transparent;
+  color: var(--text-on-action);
+}
+
+/*
+ * Primary · Special (Donate) — Figma gradients (no gradient tokens in DS yet).
+ * Default linear: #FDD07F 0% → --accent-secondary (#FFA400) 100% on border, text, icons.
+ * Hover radial: rgba(255,255,255,0.68) center → --accent-secondary edge; text/icons black.
+ */
+.special {
+  --special-linear: linear-gradient(
+    90deg,
+    #fdd07f 0%,
+    var(--accent-secondary) 100%
+  );
+  border: var(--border-width-medium) solid transparent;
+  background-color: var(--surface-primary);
+  background-image:
+    linear-gradient(var(--surface-primary), var(--surface-primary)),
+    var(--special-linear);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+.specialLabel {
+  background: var(--special-linear);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.special:hover:not(:disabled) {
+  border-color: transparent;
+  background-color: transparent;
+  background-image: radial-gradient(
+    ellipse 85% 140% at 50% 50%,
+    rgba(255, 255, 255, 0.68) 0%,
+    var(--accent-secondary) 100%
+  );
+}
+
+.special:hover:not(:disabled) .specialLabel {
+  background: none;
+  background-clip: unset;
+  -webkit-background-clip: unset;
+  color: var(--text-default);
+}
+
+.special:hover:not(:disabled) .icon path {
+  stroke: var(--text-default);
+}
+
+.special:disabled {
+  background: var(--surface-disabled);
+  background-image: none;
+  border-color: transparent;
+}
+
+.special:disabled .specialLabel {
+  background: none;
+  background-clip: unset;
+  -webkit-background-clip: unset;
+  color: var(--text-disabled);
+}

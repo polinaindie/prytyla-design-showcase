@@ -257,6 +257,35 @@ Resolve variables with `getLocalVariableCollections()`, `getLocalVariables()`, f
 
 ---
 
+## Approved exceptions
+
+The design system uses CSS custom properties for all UI styling.
+The following raw values are documented exceptions where no token
+exists yet:
+
+### Gradient effects (Button Special variant)
+
+Located in `web/src/design-system/Button/Button.module.css`:
+
+- `#fdd07f` — light amber start of linear-gradient on Special border,
+  label, and icons. Pairs with `var(--accent-secondary)` (orange-500) end stop.
+- `rgba(255, 255, 255, 0.68)` — soft white center of radial-gradient
+  on Special hover state. Pairs with `var(--accent-secondary)` edge.
+- `#FDD07F` — same amber inside Button.tsx SVG `<linearGradient>`
+  (for icon fills that need gradient tinting).
+
+**Status:** TODO — add gradient tokens to design system (e.g.
+`--gradient-special-linear`, `--gradient-special-hover-radial`,
+`--brand-orange-200` if missing) when the next component needs gradient
+effects. At that point, replace these raw values in Button.module.css
+and Button.tsx.
+
+**Rule for new components:** do not add new raw hex/rgba values. If
+you find yourself wanting to add a gradient with raw values — STOP,
+add the gradient token to Figma + build.mjs FIRST, then implement.
+
+---
+
 ## How to add or change tokens
 
 1. Edit variables in Figma `Prytula-Responsive` (Mode 1 only).

@@ -1,4 +1,5 @@
 import type { ComponentType } from "react";
+import { ButtonShowcase } from "./components/ButtonShowcase";
 import { ColorsPage } from "./tokens/ColorsPage";
 import { RadiusPage } from "./tokens/RadiusPage";
 import { SpacingPage } from "./tokens/SpacingPage";
@@ -69,7 +70,20 @@ export const showcaseRoutes: ShowcaseGroup[] = [
   {
     id: "components",
     label: "Components",
-    comingSoon: true,
+    groups: [
+      {
+        id: "building-blocks",
+        label: "Building blocks",
+        pages: [
+          {
+            id: "button",
+            label: "Button",
+            path: "button",
+            Component: ButtonShowcase,
+          },
+        ],
+      },
+    ],
   },
 ];
 
