@@ -1,0 +1,21 @@
+.root {
+  box-sizing: border-box;
+  max-width: min(25rem, 90vw);
+  padding: var(--space-xsmall) var(--space-medium);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  background: var(--surface-default);
+  color: var(--text-default);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-300);
+  font-weight: 400;
+  line-height: 1.4;
+  white-space: nowrap;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+.text {
+  margin: 0;
+}
