@@ -155,6 +155,19 @@ function main() {
 
   cssBlocks.push(`}`);
   cssBlocks.push("");
+  cssBlocks.push(`/* Grid system (hardcoded, pending Figma sync) */`);
+  cssBlocks.push(`/* Grid system — hardcoded until Figma variables are added */`);
+  cssBlocks.push(`:root {`);
+  cssBlocks.push(`  --grid-gutter: 24px;`);
+  cssBlocks.push(`  --grid-columns-mobile: 4;`);
+  cssBlocks.push(`  --grid-columns-tablet: 8;`);
+  cssBlocks.push(`  --grid-columns-desktop: 12;`);
+  cssBlocks.push(`  --container-mobile: 343px;`);
+  cssBlocks.push(`  --container-tablet: 760px;`);
+  cssBlocks.push(`  --container-desktop: 1440px;`);
+  cssBlocks.push(`  --container-desktop-xl: 1920px;`);
+  cssBlocks.push(`}`);
+  cssBlocks.push("");
 
   const css = cssBlocks.join("\n");
   fs.mkdirSync(DIST, { recursive: true });

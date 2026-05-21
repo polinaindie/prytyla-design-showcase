@@ -1,0 +1,54 @@
+.pageRoot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xlarge);
+  color: var(--text-default);
+}
+
+.pageRoot[data-showcase-theme="dark"] {
+  color: var(--text-inverse);
+}
+
+.preview {
+  width: 100%;
+  max-width: 21.25rem;
+  padding: var(--space-large);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  background: var(--surface-page);
+}
+
+.pageRoot[data-showcase-theme="dark"] .preview {
+  background: var(--surface-inverse);
+  border-color: var(--border-on-inverse);
+}
+
+.variantRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xlarge);
+}
+
+.variantLabel {
+  margin: 0 0 var(--space-small);
+  font-size: var(--pryt-brand-font-size-200);
+  color: var(--text-muted);
+}
+
+.liveRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
+  max-width: 21.25rem;
+}
+
+.rangeInput {
+  width: 100%;
+  accent-color: var(--accent-primary);
+}
+
+.rangeMeta {
+  margin: 0;
+  font-size: var(--pryt-brand-font-size-300);
+  color: var(--text-secondary);
+}

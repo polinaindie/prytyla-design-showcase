@@ -1,0 +1,196 @@
+.pageRoot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xlarge);
+  color: var(--text-default);
+}
+
+.pageRoot[data-showcase-theme="dark"] {
+  color: var(--text-inverse);
+}
+
+.viewportBanner {
+  margin: 0;
+  padding: var(--space-medium) var(--space-large);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  background: var(--surface-subtle-info);
+  font-size: var(--pryt-brand-font-size-300);
+  line-height: 1.4;
+}
+
+.pageRoot[data-showcase-theme="dark"] .viewportBanner {
+  background: var(--surface-subtle-neutral);
+  border-color: var(--border-on-inverse);
+}
+
+.viewportBanner strong {
+  font-weight: 600;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--pryt-brand-font-size-300);
+}
+
+.table th,
+.table td {
+  padding: var(--space-small) var(--space-medium);
+  border: var(--border-width-small) solid var(--border-default);
+  text-align: left;
+  vertical-align: top;
+}
+
+.table th {
+  font-weight: 600;
+  background: var(--surface-subtle-neutral);
+}
+
+.pageRoot[data-showcase-theme="dark"] .table th {
+  background: var(--surface-subtle-neutral);
+}
+
+.pageRoot[data-showcase-theme="dark"] .table th,
+.pageRoot[data-showcase-theme="dark"] .table td {
+  border-color: var(--border-on-inverse);
+}
+
+.overlayPanel {
+  padding: var(--space-large);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  background: var(--surface-page);
+}
+
+.pageRoot[data-showcase-theme="dark"] .overlayPanel {
+  background: var(--surface-inverse);
+  border-color: var(--border-on-inverse);
+}
+
+.overlayMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-medium) var(--space-2xlarge);
+  margin: 0 0 var(--space-medium);
+  font-size: var(--pryt-brand-font-size-300);
+  color: var(--text-secondary);
+}
+
+.pageRoot[data-showcase-theme="dark"] .overlayMeta {
+  color: var(--text-on-inverse-muted);
+}
+
+.overlayViewport {
+  width: 100%;
+  min-width: 0;
+}
+
+.overlayGridInner {
+  display: grid;
+  gap: var(--grid-gutter);
+}
+
+.overlayCol {
+  min-height: 5rem;
+  border-radius: var(--radius-small);
+  background: color-mix(in srgb, var(--accent-secondary) 28%, transparent);
+  border: var(--border-width-small) dashed color-mix(in srgb, var(--accent-secondary) 55%, transparent);
+}
+
+.overlayColLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 5rem;
+  font-size: var(--pryt-brand-font-size-200);
+  font-weight: 500;
+  color: var(--accent-primary);
+}
+
+.exampleList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xlarge);
+}
+
+.exampleItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
+}
+
+.exampleTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--pryt-brand-font-size-500);
+  line-height: 1.2;
+}
+
+.exampleRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2xlarge);
+  align-items: flex-start;
+}
+
+.examplePreview {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+
+.exampleCode {
+  flex: 1 1 18rem;
+  min-width: 0;
+}
+
+.frame {
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--space-medium);
+  border: var(--border-width-small) dashed var(--border-default);
+  border-radius: var(--radius-medium);
+  background: var(--surface-default);
+}
+
+.pageRoot[data-showcase-theme="dark"] .frame {
+  background: var(--surface-subtle-neutral);
+  border-color: var(--border-on-inverse);
+}
+
+.frameMobile {
+  max-width: var(--container-mobile);
+}
+
+.frameTablet {
+  max-width: var(--container-tablet);
+}
+
+.frameLabel {
+  margin: 0 0 var(--space-small);
+  font-size: var(--pryt-brand-font-size-200);
+  color: var(--text-muted);
+}
+
+.exampleCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--size-3xlarge);
+  padding: var(--space-small);
+  border-radius: var(--radius-small);
+  background: var(--surface-subtle-info);
+  font-size: var(--pryt-brand-font-size-300);
+  font-weight: 500;
+  color: var(--accent-primary);
+  text-align: center;
+}
+
+.pageRoot[data-showcase-theme="dark"] .exampleCell {
+  background: color-mix(in srgb, var(--accent-primary) 12%, transparent);
+}

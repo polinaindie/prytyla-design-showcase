@@ -319,6 +319,22 @@ Located in `web/src/design-system/Button/Button.module.css`:
 effects. At that point, replace these raw values in Button.module.css
 and Button.tsx.
 
+### Glass effect (background)
+
+Three components use semi-transparent white backgrounds for a frosted
+glass look; no semantic token exists yet:
+
+- `rgba(255, 255, 255, 0.8)` — `web/src/design-system/Menu/Menu.module.css`
+  (`.bar`), `web/src/design-system/FilterChip/FilterChip.module.css`
+  (`.root`)
+- `rgba(255, 255, 255, 0.6)` — `web/src/design-system/LinkCard/LinkCard.module.css`
+  (`.root`)
+
+**Status:** TODO — add `--bg-glass-strong` (0.8) and `--bg-glass-soft` (0.6)
+to Figma variables and `design-tokens/data/figma-variables.tsv`, then run
+`npm run build:tokens`. Until then, these three places use raw `rgba` as
+documented exceptions.
+
 **Rule for new components:** do not add new raw hex/rgba values. If
 you find yourself wanting to add a gradient with raw values — STOP,
 add the gradient token to Figma + build.mjs FIRST, then implement.

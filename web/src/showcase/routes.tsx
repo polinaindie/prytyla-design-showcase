@@ -9,12 +9,14 @@ import { TabsShowcase } from "./components/TabsShowcase";
 import { LinkCardShowcase } from "./components/LinkCardShowcase";
 import { MenuShowcase } from "./components/MenuShowcase";
 import { BadgeShowcase } from "./components/BadgeShowcase";
+import { ProgressBarShowcase } from "./components/ProgressBarShowcase";
 import { FilterChipShowcase } from "./components/FilterChipShowcase";
 import { LogoShowcase } from "./components/LogoShowcase";
 import { ColorsPage } from "./tokens/ColorsPage";
 import { RadiusPage } from "./tokens/RadiusPage";
 import { SpacingPage } from "./tokens/SpacingPage";
 import { TypographyPage } from "./tokens/TypographyPage";
+import { GridPage } from "./foundations/GridPage";
 
 export type ShowcasePageConfig = {
   id: string;
@@ -76,6 +78,18 @@ export const showcaseRoutes: ShowcaseGroup[] = [
           },
         ],
       },
+      {
+        id: "layout",
+        label: "Layout",
+        pages: [
+          {
+            id: "grid",
+            label: "Grid",
+            path: "grid",
+            Component: GridPage,
+          },
+        ],
+      },
     ],
   },
   {
@@ -121,6 +135,12 @@ export const showcaseRoutes: ShowcaseGroup[] = [
             label: "Badge",
             path: "badge",
             Component: BadgeShowcase,
+          },
+          {
+            id: "progress-bar",
+            label: "Progress bar",
+            path: "progress-bar",
+            Component: ProgressBarShowcase,
           },
           {
             id: "dropdown-item",
