@@ -15,7 +15,7 @@ const TOKENS_USED = [
   "Contact light: --surface-contact-subtle, --surface-contact-subtle-hover, --text-inverse",
   "Contact dark: --border-contact, --text-link, hover --surface-default",
   "Contact layout: --space-medium/large/2xlarge, --radius-round, --size-medium (icon)",
-  "Nav: --size-2xlarge height, --size-2xsmall icons, --border-default, --text-default",
+  "Nav: --size-2xlarge height, Icon/10 Arrow-Left/Right (Figma export), --border-default, --text-default",
   "Nav outline hover: --surface-subtle-neutral; active: --border-strong, --border-width-medium",
   "Nav ghost hover: underline on label; disabled: --text-disabled",
   "Social light: --surface-contact-subtle/hover; Social dark: --border-contact, hover --surface-default",

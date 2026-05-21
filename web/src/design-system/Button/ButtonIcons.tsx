@@ -1,4 +1,9 @@
-import { IconArrowUpRight, IconMenu } from "../Icons";
+import {
+  IconArrowLeft10,
+  IconArrowRight10,
+  IconArrowUpRight,
+  IconMenu,
+} from "../Icons";
 import styles from "./Button.module.css";
 
 type IconProps = {
@@ -78,50 +83,14 @@ export function ButtonIconFacebook({ className, theme }: SocialIconProps) {
   );
 }
 
-/** Nav control — chevron left (Figma Icon/10/Arrow-Left). */
+/** Nav control — Figma Icon/10/Arrow-Left (`1319:35979`). */
 export function ButtonIconNavArrowLeft({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      width="10"
-      height="10"
-      viewBox="0 0 10 10"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden
-    >
-      <path
-        d="M6.25 2.5 3.75 5l2.5 2.5"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
+  return <IconArrowLeft10 className={className} size={10} />;
 }
 
-/** Nav control — chevron right (Figma Icon/10/Arrow-Right). */
+/** Nav control — Figma Icon/10/Arrow-Right (`1319:35980`). */
 export function ButtonIconNavArrowRight({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      width="10"
-      height="10"
-      viewBox="0 0 10 10"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden
-    >
-      <path
-        d="M3.75 2.5 6.25 5l-2.5 2.5"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
+  return <IconArrowRight10 className={className} size={10} />;
 }
 
 /** Contact chip — envelope (Figma Email Icon, 20px). */

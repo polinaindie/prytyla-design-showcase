@@ -24,6 +24,47 @@
   height: var(--size-4xlarge);
 }
 
+/* Large pack: native 32 / 40 / 64px — no downscale to 24 */
+.gridLarge {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--space-large);
+  align-items: start;
+}
+
+.cellIconNative {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Native 10×10 bounds — icon stays 10px, dashed frame shows artboard */
+.cellIconTiny {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-2xsmall);
+  height: var(--size-2xsmall);
+  box-sizing: content-box;
+  padding: var(--space-xlarge);
+  border: var(--border-width-small) dashed var(--border-muted);
+  border-radius: var(--radius-small);
+}
+
+.cellIconTinyScaled {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-4xlarge);
+  height: var(--size-4xlarge);
+}
+
+.cellIconTinyScaled > span {
+  transform: scale(2.4);
+  transform-origin: center;
+}
+
 .name {
   font-size: var(--pryt-brand-font-size-300);
   font-weight: 600;
