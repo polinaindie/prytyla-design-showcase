@@ -1,3 +1,112 @@
+.pageRoot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xlarge);
+  color: var(--text-default);
+}
+
+.pageRoot[data-showcase-theme="dark"] {
+  color: var(--text-inverse);
+}
+
+.toast {
+  position: fixed;
+  right: var(--space-large);
+  bottom: var(--space-large);
+  z-index: 20;
+  margin: 0;
+  padding: var(--space-small) var(--space-medium);
+  border-radius: var(--radius-medium);
+  background: var(--surface-inverse);
+  color: var(--text-inverse);
+  font-size: var(--pryt-brand-font-size-300);
+  border: var(--border-width-small) solid var(--border-default);
+}
+
+.searchCount {
+  margin: 0 0 var(--space-medium);
+  font-size: var(--pryt-brand-font-size-300);
+  color: var(--text-secondary);
+}
+
+.pageRoot[data-showcase-theme="dark"] .searchCount {
+  color: var(--text-on-inverse-muted);
+}
+
+.livePreview {
+  padding: var(--space-large);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  background: var(--surface-default);
+}
+
+.pageRoot[data-showcase-theme="dark"] .livePreview {
+  background: var(--surface-inverse);
+  border-color: var(--border-on-inverse);
+}
+
+.previewPage {
+  padding: var(--space-large);
+  border: var(--border-width-small) dashed var(--border-default);
+  border-radius: var(--radius-medium);
+  background: var(--surface-page);
+}
+
+.pageRoot[data-showcase-theme="dark"] .previewPage {
+  border-color: var(--border-on-inverse);
+  background: var(--surface-subtle-neutral);
+}
+
+.previewCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
+  padding: var(--space-large);
+  border-radius: var(--radius-medium);
+  background: var(--surface-default);
+  border: var(--border-width-small) solid var(--border-default);
+}
+
+.pageRoot[data-showcase-theme="dark"] .previewCard {
+  background: var(--surface-inverse);
+  border-color: var(--border-on-inverse);
+}
+
+.previewTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--pryt-brand-font-size-500);
+  line-height: 1.2;
+  color: inherit;
+}
+
+.previewText {
+  margin: 0;
+  font-size: var(--pryt-brand-font-size-300);
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.pageRoot[data-showcase-theme="dark"] .previewText {
+  color: var(--text-on-inverse-muted);
+}
+
+.lowLevelNote {
+  margin: 0 0 var(--space-medium);
+  padding: var(--space-small) var(--space-medium);
+  border-radius: var(--radius-medium);
+  border: var(--border-width-small) solid var(--border-default);
+  background: var(--bg-subtle-info);
+  font-size: var(--pryt-brand-font-size-300);
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.pageRoot[data-showcase-theme="dark"] .lowLevelNote {
+  border-color: var(--border-on-inverse);
+  color: var(--text-on-inverse-muted);
+}
+
 .barList {
   display: flex;
   flex-direction: column;
@@ -5,20 +114,76 @@
 }
 
 .barRow {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xsmall);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-medium);
+  width: 100%;
+  padding: var(--space-small) 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
+.barRow:hover .tokenName {
+  text-decoration: underline;
+}
+
+.barRow:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: var(--space-xsmall);
+  border-radius: var(--radius-small);
+}
+
+/* Bar track cap — layout chrome so --space-8xlarge не розтягує сітку */
 .barTrack {
   display: flex;
   align-items: center;
   min-height: var(--space-large);
+  max-width: 20rem;
+  width: 100%;
+  overflow: hidden;
 }
 
 .bar {
   height: var(--space-large);
   min-width: var(--border-width-small);
+  max-width: 100%;
   border-radius: var(--radius-small);
   background: var(--surface-action);
+  flex-shrink: 0;
+}
+
+.barMeta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-2xsmall);
+  flex-shrink: 0;
+  min-width: 11rem;
+}
+
+.tokenName {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--pryt-brand-font-size-200);
+  line-height: 1.3;
+  color: inherit;
+  word-break: break-all;
+  text-align: right;
+}
+
+.tokenValue {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--pryt-brand-font-size-200);
+  line-height: 1.3;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.pageRoot[data-showcase-theme="dark"] .tokenValue {
+  color: var(--text-on-inverse-muted);
 }
