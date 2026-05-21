@@ -155,3 +155,81 @@
   -webkit-background-clip: unset;
   color: var(--text-disabled);
 }
+
+/* Contact (Figma ContactLink) — fluid width, pill chip as link */
+.contact {
+  justify-content: space-between;
+  height: auto;
+  min-height: auto;
+  padding: var(--space-medium) var(--space-large);
+  border-radius: var(--radius-2xlarge);
+  border-width: var(--border-width-small);
+  border-style: solid;
+  text-decoration: none;
+}
+
+.contactContent {
+  display: flex;
+  align-items: center;
+  gap: var(--space-small);
+  min-width: 0;
+}
+
+.contactLabel {
+  font-weight: 300;
+  line-height: 1.4;
+}
+
+.contactValue {
+  font-weight: 600;
+  line-height: 1.43;
+}
+
+.contactIcon {
+  flex-shrink: 0;
+  width: var(--size-medium);
+  height: var(--size-medium);
+  color: currentColor;
+}
+
+/* Contact · Dark */
+.contactDark {
+  background: transparent;
+  border-color: var(--border-contact);
+  color: var(--text-link);
+}
+
+.contactDark:hover:not([aria-disabled="true"]) {
+  background: var(--surface-default);
+  border-color: var(--border-contact);
+  color: var(--text-link);
+}
+
+/* Contact · Light (on inverse / dark sections) */
+.contactLight {
+  background: var(--surface-contact-subtle);
+  border-color: transparent;
+  color: var(--text-inverse);
+}
+
+.contactLight:hover:not([aria-disabled="true"]) {
+  background: var(--surface-contact-subtle-hover);
+  border-color: transparent;
+  color: var(--text-inverse);
+}
+
+.contactLight .contactLabel {
+  color: var(--text-inverse);
+}
+
+.contactLight {
+  padding: var(--space-medium) var(--space-2xlarge);
+}
+
+.contact[aria-disabled="true"] {
+  background: var(--surface-disabled);
+  color: var(--text-disabled);
+  border-color: transparent;
+  cursor: not-allowed;
+  pointer-events: none;
+}

@@ -1,44 +1,60 @@
 import { useId } from "react";
-import type { ButtonProps } from "./Button.types";
-import { ButtonIconArrowRight, ButtonIconMenu } from "./ButtonIcons";
+import type { ButtonContactProps, ButtonProps } from "./Button.types";
+import {
+  ButtonIconArrowRight,
+  ButtonIconEnvelope,
+  ButtonIconMenu,
+  ButtonIconPhone,
+} from "./ButtonIcons";
 import styles from "./Button.module.css";
 
-function getThemeClass(
-  variant: ButtonProps["variant"],
-  theme: ButtonProps["theme"],
-): string {
-  if (theme === "special") {
+function getThemeClass(props: ButtonProps): string {
+  if (props.variant === "contact") {
+    return props.theme === "light" ? styles.contactLight : styles.contactDark;
+  }
+
+  if (props.theme === "special") {
     return styles.special;
   }
 
   const key =
-    variant === "primary"
-      ? theme === "light"
+    props.variant === "primary"
+      ? props.theme === "light"
         ? "primaryLight"
         : "primaryDark"
-      : theme === "light"
+      : props.theme === "light"
         ? "secondaryLight"
         : "secondaryDark";
 
   return styles[key];
 }
 
-export function Button({
-  children,
-  variant,
-  theme,
-  disabled = false,
-  leftIcon,
-  rightIcon,
-  showLeftIcon = true,
-  showRightIcon = true,
-  htmlType = "button",
-  className,
-  ...rest
-}: ButtonProps) {
+function isContactProps(props: ButtonProps): props is ButtonContactProps {
+  return props.variant === "contact";
+}
+
+export function Button(props: ButtonProps) {
+  if (isContactProps(props)) {
+    return <ButtonContact {...props} />;
+  }
+
+  const {
+    children,
+    variant,
+    theme,
+    disabled = false,
+    leftIcon,
+    rightIcon,
+    showLeftIcon = true,
+    showRightIcon = true,
+    htmlType = "button",
+    className,
+    ...rest
+  } = props;
+
   const isSpecial = theme === "special";
   const gradientId = useId().replace(/:/g, "");
-  const themeClass = getThemeClass(variant, theme);
+  const themeClass = getThemeClass(props);
   const rootClass = [styles.root, themeClass, className].filter(Boolean).join(" ");
   const labelClass = isSpecial
     ? `${styles.label} ${styles.specialLabel}`
@@ -86,5 +102,51 @@ export function Button({
       <span className={labelClass}>{children}</span>
       {renderRight}
     </button>
+  );
+}
+
+function ButtonContact({
+  children,
+  theme,
+  contactType,
+  contactLabel,
+  href,
+  disabled = false,
+  className,
+  ...rest
+}: ButtonContactProps) {
+  const themeClass = getThemeClass({
+    variant: "contact",
+    theme,
+    contactType,
+    href,
+    children,
+  });
+  const rootClass = [styles.root, styles.contact, themeClass, className]
+    .filter(Boolean)
+    .join(" ");
+
+  const icon =
+    contactType === "email" ? (
+      <ButtonIconEnvelope className={styles.contactIcon} />
+    ) : (
+      <ButtonIconPhone className={styles.contactIcon} />
+    );
+
+  return (
+    <a
+      href={disabled ? undefined : href}
+      className={rootClass}
+      aria-disabled={disabled || undefined}
+      {...rest}
+    >
+      <span className={styles.contactContent}>
+        {contactType === "phone" && contactLabel ? (
+          <span className={styles.contactLabel}>{contactLabel}</span>
+        ) : null}
+        <span className={styles.contactValue}>{children}</span>
+      </span>
+      {icon}
+    </a>
   );
 }

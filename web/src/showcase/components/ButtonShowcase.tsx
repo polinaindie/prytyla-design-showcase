@@ -12,6 +12,9 @@ const TOKENS_USED = [
   "Disabled: --surface-disabled, --text-disabled",
   "Special default: --surface-primary + linear gradient #FDD07F → --accent-secondary (border, text, icons)",
   "Special hover: radial gradient rgba(255,255,255,0.68) → --accent-secondary; --text-default",
+  "Contact light: --surface-contact-subtle, --surface-contact-subtle-hover, --text-inverse",
+  "Contact dark: --border-contact, --text-link, hover --surface-default",
+  "Contact layout: --space-medium/large/2xlarge, --radius-2xlarge, --size-medium (icon)",
   "Typography: --pryt-brand-font-size-300, Inter",
 ];
 
@@ -58,6 +61,52 @@ export function ButtonShowcase() {
           <Button variant="primary" theme="special" showLeftIcon={false} disabled>
             Долучитись » ВПРИТУЛ «
           </Button>
+        </div>
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Contact"
+        description="variant=contact — email/phone chips (Figma ContactLink), fluid width, renders as &lt;a&gt;."
+      >
+        <div className={styles.row}>
+          <Button
+            variant="contact"
+            theme="dark"
+            contactType="email"
+            href="mailto:info@prytula.org"
+          >
+            info@prytula.org
+          </Button>
+          <Button
+            variant="contact"
+            theme="dark"
+            contactType="phone"
+            contactLabel="Гаряча лінія:"
+            href="tel:+380000000000"
+          >
+            0 800 000 000
+          </Button>
+        </div>
+        <div className={styles.onDark}>
+          <div className={styles.row}>
+            <Button
+              variant="contact"
+              theme="light"
+              contactType="email"
+              href="mailto:info@prytula.org"
+            >
+              info@prytula.org
+            </Button>
+            <Button
+              variant="contact"
+              theme="light"
+              contactType="phone"
+              contactLabel="Гаряча лінія:"
+              href="tel:+380000000000"
+            >
+              0 800 000 000
+            </Button>
+          </div>
         </div>
       </ShowcaseSection>
 
@@ -147,6 +196,10 @@ export function ButtonShowcase() {
                 Special — лише для головного donate CTA (унікальний візуальний
                 акцент)
               </li>
+              <li>
+                Contact — email/phone на футері та темних секціях (mailto: /
+                tel:)
+              </li>
             </ul>
           </div>
 
@@ -173,6 +226,10 @@ export function ButtonShowcase() {
               <li>
                 Не використовуй Special для будь-чого крім donate — це
                 особлива форма
+              </li>
+              <li>
+                Не використовуй Contact як звичайну action-кнопку — це лінк-чіп,
+                не primary CTA
               </li>
               <li>
                 Не змінюй padding/height — вони фіксовані за дизайн-системою

@@ -209,3 +209,11 @@ VariableID:230:3939	Brand	font-size/900	FLOAT	40
 VariableID:230:3940	Brand	font-size/1000	FLOAT	52
 VariableID:230:3941	Brand	font-size/1100	FLOAT	56
 VariableID:230:3942	Brand	font-size/1200	FLOAT	72
+VariableID:299:0001	Brand	neutral/inverse-10	COLOR	rgba(255,255,255,0.1)
+VariableID:299:0002	Brand	neutral/inverse-20	COLOR	rgba(255,255,255,0.2)
+VariableID:299:0003	Alias	bg/contact-subtle	COLOR	alias:VariableID:299:0001
+VariableID:299:0004	Alias	bg/contact-subtle-hover	COLOR	alias:VariableID:299:0002
+VariableID:299:0005	Alias	border/contact	COLOR	alias:VariableID:161:3692
+VariableID:299:0006	Mapped	Surface/surface-contact-subtle	COLOR	alias:VariableID:299:0003
+VariableID:299:0007	Mapped	Surface/surface-contact-subtle-hover	COLOR	alias:VariableID:299:0004
+VariableID:299:0008	Mapped	Border/border-contact	COLOR	alias:VariableID:299:0005
