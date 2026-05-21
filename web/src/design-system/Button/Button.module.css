@@ -162,7 +162,6 @@
   height: auto;
   min-height: auto;
   padding: var(--space-medium) var(--space-large);
-  border-radius: var(--radius-2xlarge);
   border-width: var(--border-width-small);
   border-style: solid;
   text-decoration: none;

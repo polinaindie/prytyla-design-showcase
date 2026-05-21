@@ -14,7 +14,7 @@ const TOKENS_USED = [
   "Special hover: radial gradient rgba(255,255,255,0.68) → --accent-secondary; --text-default",
   "Contact light: --surface-contact-subtle, --surface-contact-subtle-hover, --text-inverse",
   "Contact dark: --border-contact, --text-link, hover --surface-default",
-  "Contact layout: --space-medium/large/2xlarge, --radius-2xlarge, --size-medium (icon)",
+  "Contact layout: --space-medium/large/2xlarge, --radius-round, --size-medium (icon)",
   "Typography: --pryt-brand-font-size-300, Inter",
 ];
 
