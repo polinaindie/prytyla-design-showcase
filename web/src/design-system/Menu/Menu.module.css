@@ -1,0 +1,457 @@
+/* Figma Menu (3:7160) — Prytula-Responsive § Menu */
+
+.root {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 97.5rem;
+  padding-block-start: var(--space-2xlarge);
+  padding-inline: var(--space-2xlarge);
+}
+
+.shell {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Default — glass bar only */
+.bar {
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 4rem;
+  height: 4rem;
+  padding-block: var(--space-small);
+  padding-inline: var(--space-medium);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.row {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-medium);
+  min-width: 0;
+}
+
+.logoLink {
+  display: inline-flex;
+  flex-shrink: 0;
+  min-width: 0;
+  line-height: 0;
+  text-decoration: none;
+}
+
+.logoLink:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-small);
+}
+
+.nav {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2xlarge);
+  min-width: 0;
+}
+
+.actions {
+  display: flex;
+  flex-shrink: 1;
+  align-items: center;
+  gap: var(--space-2xlarge);
+  min-width: 0;
+}
+
+.lang {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xsmall);
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-300);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.lang:hover:not(:disabled) {
+  color: var(--text-default);
+}
+
+.lang:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-small);
+}
+
+.ctas {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--space-medium);
+  min-width: 0;
+}
+
+.menuToggle {
+  flex-shrink: 0;
+  padding-inline: var(--space-large);
+}
+
+.compactDonate {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Mobile / tablet root padding — Figma card-standard 16px */
+.mobile.root {
+  max-width: 23.4375rem;
+  padding-block-start: var(--space-large);
+  padding-inline: var(--space-large);
+}
+
+/* Tablet — Figma 127:9886: card-medium 24px, width 662 */
+.tablet.root {
+  max-width: 41.375rem;
+  padding-block-start: var(--space-2xlarge);
+  padding-inline: var(--space-2xlarge);
+}
+
+/* Figma 125:7779 — logo ~195×28; лишаємо місце під кнопку «Меню» */
+.mobile .logoLink {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: min(12.1875rem, calc(100% - 6.75rem));
+  overflow: hidden;
+}
+
+.mobile .logoLink > span {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.mobile .logoLink img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: 1.75rem;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.mobile .row,
+.tablet .row {
+  gap: var(--space-medium);
+}
+
+.mobile .actions,
+.tablet .actions {
+  flex-shrink: 0;
+}
+
+.mobile .actions {
+  gap: 0;
+}
+
+/* Desktop About / Other directions — один shell (3:7188, 3:7270) */
+.shellOpenDesktop {
+  gap: var(--space-small);
+  padding-block: var(--space-small);
+  padding-inline: var(--space-medium);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  background: var(--surface-subtle-info);
+}
+
+.barEmbedded {
+  height: auto;
+  min-height: 4rem;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.panelDivider {
+  flex-shrink: 0;
+  width: 100%;
+  height: 1px;
+  background: color-mix(in srgb, var(--accent-primary) 10%, transparent);
+}
+
+.openPanelBody {
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--space-2xlarge);
+}
+
+.aboutPanelLayout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-3xlarge);
+}
+
+.cardsRow {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  gap: var(--space-2xlarge);
+  min-width: 0;
+}
+
+.cardsRow > * {
+  flex: 1 1 12.5rem;
+  min-width: 12.5rem;
+}
+
+.panelAside {
+  flex: 0 0 auto;
+  width: 19.125rem;
+  max-width: 100%;
+}
+
+.directionsPanel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3xlarge);
+  width: 100%;
+}
+
+.directionsPanel > * {
+  flex: 1 1 12.5rem;
+  min-width: 12.5rem;
+  min-height: 9.25rem;
+}
+
+/* Mobile/tablet open — Figma 1149:24142 / 1150:24953 */
+.shellCompactOpen {
+  gap: var(--space-2xlarge);
+  padding-block: var(--space-small) var(--space-large);
+  padding-inline: var(--space-medium);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  background: var(--surface-subtle-info);
+}
+
+.barCompact {
+  height: auto;
+  min-height: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.drawer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xlarge);
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+}
+
+.drawerMain {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xlarge);
+  min-width: 0;
+}
+
+.compactTopRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xlarge);
+  min-width: 0;
+  min-height: 2.75rem;
+}
+
+/* Figma 1149:24151 — globe + Eng | Ukr (active underlined) */
+.langSelector {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--space-xsmall);
+}
+
+.langOptions {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-small);
+}
+
+.langOption {
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-300);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.langOption:hover:not(:disabled) {
+  color: var(--text-default);
+}
+
+.langOption:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-small);
+}
+
+.langOptionActive {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.langSep {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-300);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--text-muted);
+  user-select: none;
+}
+
+.drawerNav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xlarge);
+}
+
+.drawerNavLink {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-400);
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+
+.drawerNavLink:hover {
+  text-decoration: underline;
+}
+
+.drawerSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-small);
+  min-width: 0;
+}
+
+.drawerSectionTitle {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-300);
+  font-weight: 600;
+  line-height: 1.43;
+  color: var(--text-default);
+}
+
+.drawerCards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-small);
+  min-width: 0;
+}
+
+/* Figma 1149:24169 — desktop Link card layout, 14px title, ~96px tall */
+.drawerLinkCard {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: 6rem;
+}
+
+.drawerFooter {
+  min-width: 0;
+}
+
+.drawerFooter .contactChip {
+  max-width: 100%;
+}
+
+/* Mobile drawer — Figma 1163:26278 divider; 6 social icons в один ряд */
+.mobile .drawerFooter .socialRow {
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  gap: var(--space-xsmall);
+  width: 100%;
+}
+
+.mobile .drawerFooter .socialLink {
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+}
+
+.mobile .drawerFooter .socialIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-small);
+  min-width: 0;
+}
+
+.socialRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-medium);
+}
+
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--size-4xlarge);
+  height: var(--size-4xlarge);
+  border: var(--border-width-small) solid var(--border-contact);
+  border-radius: var(--radius-round);
+  color: var(--text-link);
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.socialLink:hover {
+  background: var(--surface-default);
+}
+
+.socialIcon {
+  flex-shrink: 0;
+}
+
+.contactRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
+  min-width: 0;
+}
+
+.contactChip {
+  width: 100%;
+  max-width: 19rem;
+}

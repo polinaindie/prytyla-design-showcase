@@ -1,0 +1,65 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xsmall);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-300);
+  font-weight: 600;
+  line-height: 1.43;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--text-default);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.root:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.root:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-small);
+}
+
+.label {
+  display: inline-block;
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: currentColor;
+  transition: transform 0.2s ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.typeLink:hover:not(.active):not(:disabled) {
+  text-decoration: underline;
+}
+
+.typeLink.active {
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+
+.typeDropdown:hover:not(.active):not(.open):not(:disabled) {
+  color: var(--accent-primary);
+  text-decoration: none;
+}
+
+.typeDropdown.active,
+.typeDropdown.open {
+  text-decoration: underline;
+  color: var(--text-default);
+}

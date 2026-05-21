@@ -1,0 +1,38 @@
+.root {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Figma artboard 116×116 — layout chrome, no exact --size-* token */
+.sizeSmall {
+  width: 7.25rem;
+  height: 7.25rem;
+}
+
+/* Figma artboard 156×156 */
+.sizeLarge {
+  width: 9.75rem;
+  height: 9.75rem;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+.imageCover {
+  object-fit: cover;
+  object-position: center;
+}
+
+.imageBottom {
+  object-position: center bottom;
+}

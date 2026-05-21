@@ -1,0 +1,17 @@
+.root {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  line-height: 0;
+}
+
+.image {
+  display: block;
+  width: auto;
+  height: var(--logo-height, 2.875rem);
+  max-width: 100%;
+  object-fit: contain;
+  object-position: left center;
+  pointer-events: none;
+  user-select: none;
+}

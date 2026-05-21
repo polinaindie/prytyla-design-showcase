@@ -1,6 +1,16 @@
 import type { ComponentType } from "react";
 import { ButtonShowcase } from "./components/ButtonShowcase";
 import { IconsShowcase } from "./components/IconsShowcase";
+import { Illustration3DShowcase } from "./components/Illustration3DShowcase";
+import { DropdownItemShowcase } from "./components/DropdownItemShowcase";
+import { CurrencySelectShowcase } from "./components/CurrencySelectShowcase";
+import { SortControlShowcase } from "./components/SortControlShowcase";
+import { TabsShowcase } from "./components/TabsShowcase";
+import { LinkCardShowcase } from "./components/LinkCardShowcase";
+import { MenuShowcase } from "./components/MenuShowcase";
+import { BadgeShowcase } from "./components/BadgeShowcase";
+import { FilterChipShowcase } from "./components/FilterChipShowcase";
+import { LogoShowcase } from "./components/LogoShowcase";
 import { ColorsPage } from "./tokens/ColorsPage";
 import { RadiusPage } from "./tokens/RadiusPage";
 import { SpacingPage } from "./tokens/SpacingPage";
@@ -87,6 +97,66 @@ export const showcaseRoutes: ShowcaseGroup[] = [
             label: "Icons",
             path: "icons",
             Component: IconsShowcase,
+          },
+          {
+            id: "illustration-3d",
+            label: "3D Illustrations",
+            path: "illustration-3d",
+            Component: Illustration3DShowcase,
+          },
+          {
+            id: "logo",
+            label: "Logo",
+            path: "logo",
+            Component: LogoShowcase,
+          },
+          {
+            id: "filter-chip",
+            label: "Filter Chip",
+            path: "filter-chip",
+            Component: FilterChipShowcase,
+          },
+          {
+            id: "badge",
+            label: "Badge",
+            path: "badge",
+            Component: BadgeShowcase,
+          },
+          {
+            id: "dropdown-item",
+            label: "Dropdown Item",
+            path: "dropdown-item",
+            Component: DropdownItemShowcase,
+          },
+          {
+            id: "sort-control",
+            label: "Sort Control",
+            path: "sort-control",
+            Component: SortControlShowcase,
+          },
+          {
+            id: "currency-select",
+            label: "Currency Select",
+            path: "currency-select",
+            Component: CurrencySelectShowcase,
+          },
+          {
+            id: "tabs",
+            label: "Tabs",
+            path: "tabs",
+            Component: TabsShowcase,
+          },
+          {
+            id: "link-card",
+            label: "Link Card",
+            path: "link-card",
+            Component: LinkCardShowcase,
+          },
+          {
+            id: "menu",
+            label: "Menu",
+            path: "menu",
+            Component: MenuShowcase,
           },
         ],
       },
