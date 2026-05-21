@@ -1,0 +1,23 @@
+/* Figma Tag 3:7429 — Default + Hover, Body/Small 14px, padding 4×8 */
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: var(--space-xsmall) var(--space-small);
+  border-radius: var(--radius-round);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-300);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--text-muted);
+  white-space: nowrap;
+  background: var(--surface-badge);
+  transition: background 0.15s ease;
+}
+
+/* Figma Property 1=Hover — surface/tag-info */
+.root:hover {
+  background: var(--surface-subtle-info);
+}

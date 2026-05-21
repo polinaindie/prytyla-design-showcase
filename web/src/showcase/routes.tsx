@@ -6,10 +6,13 @@ import { DropdownItemShowcase } from "./components/DropdownItemShowcase";
 import { CurrencySelectShowcase } from "./components/CurrencySelectShowcase";
 import { SortControlShowcase } from "./components/SortControlShowcase";
 import { TabsShowcase } from "./components/TabsShowcase";
+import { AccordionShowcase } from "./components/AccordionShowcase";
+import { DirectionsExternalLinksShowcase } from "./components/DirectionsExternalLinksShowcase";
 import { LinkCardShowcase } from "./components/LinkCardShowcase";
 import { MenuShowcase } from "./components/MenuShowcase";
 import { BadgeShowcase } from "./components/BadgeShowcase";
 import { ProgressBarShowcase } from "./components/ProgressBarShowcase";
+import { TagShowcase } from "./components/TagShowcase";
 import { FilterChipShowcase } from "./components/FilterChipShowcase";
 import { LogoShowcase } from "./components/LogoShowcase";
 import { ColorsPage } from "./tokens/ColorsPage";
@@ -143,6 +146,12 @@ export const showcaseRoutes: ShowcaseGroup[] = [
             Component: ProgressBarShowcase,
           },
           {
+            id: "tag",
+            label: "Tag",
+            path: "tag",
+            Component: TagShowcase,
+          },
+          {
             id: "dropdown-item",
             label: "Dropdown Item",
             path: "dropdown-item",
@@ -171,6 +180,18 @@ export const showcaseRoutes: ShowcaseGroup[] = [
             label: "Link Card",
             path: "link-card",
             Component: LinkCardShowcase,
+          },
+          {
+            id: "directions-external-links",
+            label: "Directions External Links",
+            path: "directions-external-links",
+            Component: DirectionsExternalLinksShowcase,
+          },
+          {
+            id: "accordion",
+            label: "Accordion",
+            path: "accordion",
+            Component: AccordionShowcase,
           },
           {
             id: "menu",

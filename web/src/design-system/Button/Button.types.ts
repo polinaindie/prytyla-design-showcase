@@ -13,7 +13,7 @@ export type ButtonVariant = "primary" | "secondary" | "contact" | "nav" | "socia
 /** Social network (Figma SocialLink `network`). */
 export type ButtonSocialNetwork = "facebook";
 
-/** Surface context (Figma `theme`). `special` is donate CTA only. */
+/** Surface context (Figma `theme`). `special` is donate gradient CTA only. */
 export type ButtonTheme = "light" | "dark" | "special";
 
 /** Contact chip content (Figma ContactLink `type`). */

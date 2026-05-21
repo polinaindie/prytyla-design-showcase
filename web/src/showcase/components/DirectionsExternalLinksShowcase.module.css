@@ -1,0 +1,27 @@
+.pageRoot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xlarge);
+  color: var(--text-default);
+}
+
+.pageRoot[data-showcase-theme="dark"] {
+  color: var(--text-inverse);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 42.75rem;
+}
+
+.listMobile {
+  max-width: 21.4375rem;
+}
+
+.hint {
+  margin: var(--space-small) 0 0;
+  font-size: var(--pryt-brand-font-size-200);
+  color: var(--text-muted);
+}

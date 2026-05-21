@@ -1,0 +1,87 @@
+/* Figma DirectionsExternalLinks 3:7303 — list row link (не LinkCard) */
+
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  border: none;
+  border-top: var(--border-width-small) solid var(--border-strong);
+  border-bottom: var(--border-width-small) solid var(--border-strong);
+  padding: var(--space-large);
+  text-decoration: none;
+  color: var(--text-default);
+  background: transparent;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+/* Figma state/hover-list-row #ffeb85 → brand orange/200 (немає Alias) */
+.root:hover {
+  background: var(--pryt-brand-orange-200);
+}
+
+.root:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.content {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: var(--space-large);
+  min-width: 0;
+}
+
+.index {
+  flex-shrink: 0;
+  font-family: var(--pryt-brand-font-family-heading), var(--font-display);
+  font-weight: 400;
+  line-height: 1;
+  color: inherit;
+}
+
+.title {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 900;
+  line-height: 1;
+  color: inherit;
+  word-break: break-word;
+}
+
+.icon {
+  flex-shrink: 0;
+  color: inherit;
+}
+
+/* Figma Size=Desktop — 684×96 */
+.desktop {
+  min-height: 6rem;
+}
+
+.desktop .index {
+  font-size: var(--pryt-brand-font-size-1000);
+}
+
+.desktop .title {
+  font-size: var(--pryt-brand-font-size-800);
+}
+
+/* Figma Size=Mobile — 343×64 */
+.mobile {
+  min-height: 4rem;
+}
+
+.mobile .index {
+  font-size: var(--pryt-brand-font-size-800);
+}
+
+.mobile .title {
+  font-size: var(--pryt-brand-font-size-450);
+  line-height: 1.2;
+}

@@ -1,0 +1,10 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Сусідні пункти — один спільний бордер між рядками */
+.root > * + * {
+  border-top: none;
+}
