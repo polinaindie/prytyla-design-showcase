@@ -1,5 +1,5 @@
 ---
-description: Prytula end-to-end pipeline — Figma component → React component in src/design-system/ → showcase page in src/showcase/ → navigation entry in routes.ts. Use this skill ALWAYS when the user asks to (a) bring a component from Figma into code, (b) add a new component to the design system, (c) create or update a showcase page, (d) add a tokens page (Colors, Typography, Spacing, Radius). Trigger on phrases like "перенеси з Figma", "додай у showcase", "додай компонент", "створи сторінку токенів", "додай у дизайн-систему", "перенеси Button/Card/etc". Always run all three phases (component + showcase + routes registration) unless user explicitly asks for only one. Works in tandem with prytula-design-system skill — defer to it for any token decisions.
+description: Prytula Figma→code pipeline with mandatory halt points. Figma URL + component name → mapping table (STOP) → design-system component (STOP) → showcase page + routes.tsx (STOP, no auto-commit). Trigger on "додай компонент", "перенеси з Figma", "додай у showcase", "додай у дизайн-систему", or short prompt "Додай [Name]. Figma: [URL]". Always defer tokens to prytula-design-system — never invent CSS vars or raw hex/px.
 globs:
   - "web/src/design-system/**"
   - "web/src/showcase/**"
@@ -10,97 +10,248 @@ alwaysApply: false
 
 # Prytula Figma → Component → Showcase
 
-End-to-end workflow: Figma node → React component in `web/src/design-system/` → showcase page in `web/src/showcase/` → register in `routes.ts`. **Run all three phases** unless the user asks for one phase only.
+End-to-end workflow: Figma node → token mapping (review) → React component in `web/src/design-system/` → showcase page in `web/src/showcase/` → entry in `web/src/showcase/routes.tsx`.
+
+**Always follow `prytula-design-system`** for token names, dedupe rules, and forbidden patterns.
+
+---
+
+## Workflow rule (mandatory)
+
+**Stop after EACH phase and wait for user OK before proceeding.**
+
+| Phase | What happens | STOP — show user |
+|-------|----------------|------------------|
+| **1** | Read Figma + build token mapping table | Node structure + mapping table. **No code yet.** |
+| **2** | Create `design-system/[Name]/` | File list + main `.tsx` (full or clearly labeled excerpt). Suggest `npm run dev` to spot-check in product if wired. |
+| **3** | Showcase page + `routes.tsx` | Updated file list + proposed commit message. **Do not commit or push** unless user asks. |
+
+Run one phase only if the user explicitly requests it (e.g. «тільки мапінг», «тільки компонент»).
+
+---
 
 ## When this rule triggers
 
-- «Перенеси Button з Figma», «Додай ProjectCard у дизайн-систему», «Створи showcase для Hero»
-- Figma URL + component name
-- «Додай у дизайн-систему» / «додай у showcase»
+- «Додай компонент Button. Figma: https://figma.com/design/…?node-id=…»
+- «Перенеси з Figma», «додай у showcase», «додай у дизайн-систему»
+- Figma URL + component name (minimum — see **How to invoke**)
+
+---
 
 ## Prerequisites
 
-1. **`web/src/styles/tokens.css`** exists and is imported in `web/src/main.tsx` (`npm run build:tokens`).
-2. **`web/src/design-system/`** exists.
-3. **`web/src/showcase/`** bootstrapped (see below) if adding showcase pages.
-4. Follow **`prytula-design-system`** rule: Mapped (`--surface-*`, `--text-*`), Alias (`--space-*`, `--action-*`), app `--font-display`; never raw hex/px for colors, spacing, radii, type. `--pryt-brand-*` only inside DS if unavoidable.
+1. **`web/src/styles/tokens.css`** exists (`npm run build:tokens` from repo root).
+2. **`web/src/showcase/`** bootstrapped (`ShowcasePage.tsx`, `routes.tsx`, primitives, token pages).
+3. Figma MCP available for `get_design_context` / screenshot on the given URL (`node-id` with `-` → `:` if needed).
 
-## Code layout (monorepo)
+## Code layout
 
 | Path | Purpose |
 |------|---------|
-| `web/src/components/` | Product UI (pages, marketing) |
+| `web/src/components/` | Product pages (not DS) |
 | `web/src/design-system/` | Reusable DS components |
-| `web/src/showcase/` | DS documentation app |
+| `web/src/showcase/` | DS docs app at `/showcase/*` |
+| `web/src/showcase/routes.tsx` | Nav source of truth |
 | `web/src/styles/tokens.css` | Generated CSS variables |
 
-Showcase may import design-system; design-system must **not** import showcase or product components.
+Showcase may import design-system; design-system must **not** import showcase or product.
+
+**Sidebar links:** use absolute paths `to={\`/showcase/${page.path}\`}` — never relative `to={page.path}` (nested routes stack URLs).
 
 ---
 
-## Bootstrap showcase (once)
+## Hard-fail: closed token system
 
-Skip if `web/src/showcase/ShowcasePage.tsx` exists.
-
-1. **`ShowcasePage.tsx`** — sidebar from `showcaseRoutes`, main pane renders active `Component`.
-2. **`routes.ts`** — source of truth for nav (`Foundations` → token pages; `Components` → component showcases).
-3. **`primitives/`** — `ShowcasePageLayout`, `ShowcaseSection`, `ShowcaseGrid` (token CSS vars only).
-4. **`tokens/`** — `ColorsPage`, `TypographyPage`, `SpacingPage`, `RadiusPage` (introspective: read CSS vars at runtime).
-5. Wire `/showcase` route in the Vite app when ready.
-
-Canonical showcase sections per component: **Variants** → **Sizes** (if any) → **States** → **Composition** (if needed) → **Responsive** (if needed) → **Tokens used** → **Guidelines** (if real rules exist).
-
-Sample copy: **Ukrainian**, realistic («Підтримати», «Скасувати»).
+- **NEVER** invent new CSS variables (`--my-color`, `--brand-primary`, etc.).
+- **NEVER** use raw hex/px in component or showcase `.module.css` (swatch/layout chrome sizes may use rem with a comment — see design-system skill).
+- If you want to write `background: #FFA400` or `padding: 24px` → **STOP and ask**. Map to an existing token or get user approval to extend `figma-variables.tsv` + rebuild tokens.
+- If no token matches → **STOP and ask**; do not guess.
 
 ---
 
-## Phase 1: Figma → Component
+## Phase 1: Read Figma + token mapping (no code)
 
-1. **Read node** via Figma MCP (`get_design_context` or metadata + screenshot): structure, text styles, fills, variants.
-2. **Map to tokens** from `prytula-design-system` rule — e.g. orange CTA → `var(--surface-action)` / `var(--action-donate)`; spacing → `var(--space-medium)`. If no match → **stop and ask**; do not invent tokens.
-3. **Create** `web/src/design-system/[Name]/`:
-   - `[Name].types.ts` — props / variants
-   - `[Name].tsx` — component
-   - `[Name].module.css` — **only** semantic CSS vars (Mapped/Alias/`--font-display`)
-   - `index.ts` — barrel export
-4. **Verify**: no raw hex in CSS; variants match Figma; TypeScript compiles.
+1. **Read node** via Figma MCP: structure, variants, text, fills, spacing, radii, borders.
+2. Summarize **Figma node structure** (layers, variant props, key measurements).
+3. **BEFORE generating any code**, present a mapping table:
 
----
+| Figma value | Mapped token | Confidence |
+|-------------|--------------|------------|
+| `#FFA400` fill | `--action-donate` or `--surface-action` | high |
+| `24px` padding | `--space-medium` (20px) | medium — Figma 24 vs token 20 |
+| `9999px` radius | `--radius-round` | high |
+| `Inter 16px` body | `--pryt-brand-font-size-400` + Inter stack | high |
 
-## Phase 2: Component → Showcase
+**Confidence rules:**
 
-Create `web/src/showcase/components/[Name]Showcase.tsx` using primitives; import component from `../../design-system/[Name]`.
+- **high** — exact or canonical match (palette step, named alias, mapped role).
+- **medium** — closest token; note Figma vs computed px delta.
+- **low** — ambiguous or missing; **flag and ASK** whether to use closest token or pause for design clarification.
 
-Include **Tokens used** listing Figma paths / CSS vars the component consumes.
+**Preference order** (from design-system skill): Mapped → Alias → Brand (Brand only with justification).
 
----
+### STOP — Phase 1 deliverables
 
-## Phase 3: Navigation
-
-Register in `web/src/showcase/routes.ts` under the right group:
-
-- **Building blocks** — Button, Input, Tag, Chip, IconButton, Divider, Avatar
-- **Cards** — ProjectCard, NewsCard, PartnerCard, ProgressCard
-- **Composite** — Hero, banners, headers
-- **Forms** / **Navigation** — as needed
-
-Tell the user: `npm run dev` → open `/showcase` → pick the new entry.
+- Short **structure** of the Figma node (tree / variants).
+- Full **mapping table** above.
+- Explicit list of **open questions** (medium/low rows, missing tokens).
+- **Wait for user OK** before Phase 2.
 
 ---
 
-## Token showcase pages
+## Phase 2: Design-system component
 
-`web/src/showcase/tokens/*` — group `--pryt-brand-*`, Alias (`--space-*`, `--bg-*`, …), Mapped (`--surface-*`, `--text-*`, …). Keep lists in sync when `figma-variables.tsv` changes (after `npm run build:tokens`).
+Create `web/src/design-system/[Name]/`:
+
+```
+[Name]/
+  [Name].types.ts    # props / variants
+  [Name].tsx
+  [Name].module.css  # var(--surface-*), var(--space-*), etc. only
+  index.ts
+```
+
+**Example mapping (real tokens — not legacy names):**
+
+```css
+/* Primary donate button — reference only */
+.root {
+  background: var(--surface-action);
+  color: var(--text-on-action);
+  border-radius: var(--radius-round);
+  padding: var(--space-small) var(--space-medium);
+  border: var(--border-width-none) solid transparent;
+  font-size: var(--pryt-brand-font-size-400);
+}
+.root:hover {
+  background: var(--surface-action-hover);
+}
+.root:disabled {
+  background: var(--surface-disabled);
+  color: var(--text-disabled);
+}
+```
+
+Verify: `npm run build` in `web/` (or `tsc -b`); no raw hex in CSS.
+
+### STOP — Phase 2 deliverables
+
+- List of **created files** under `design-system/[Name]/`.
+- **`[Name].tsx`** in full (or main export + note «CSS in module»).
+- Remind user: optional local check if component is used on a product page; showcase comes in Phase 3.
+- **Wait for user OK** before Phase 3.
+
+---
+
+## Phase 3: Showcase page + routes
+
+1. Create `web/src/showcase/components/[Name]Showcase.tsx` using `ShowcasePageLayout`, `ShowcaseSection`, `ShowcaseGrid`.
+2. Sections (when applicable): **Variants** → **Sizes** → **States** → **Composition** → **Responsive** → **Tokens used** → **Guidelines**.
+3. **Tokens used** — list Figma paths + CSS vars (e.g. `action/donate` → `--action-donate`).
+4. Copy: **Ukrainian**, realistic («Підтримати», «Скасувати»).
+5. Register in **`web/src/showcase/routes.tsx`** (see below).
+
+Tell user: `npm run dev` → `http://localhost:5173/showcase/[path]`.
+
+### STOP — Phase 3 deliverables
+
+- List of **new/updated files** (showcase + `routes.tsx`).
+- **Proposed commit message** (do not run `git commit` / `git push` unless asked).
+- **Wait for user OK** (and visual check) before commit.
+
+---
+
+## `routes.tsx` structure (current)
+
+Navigation is **three levels**:
+
+```ts
+ShowcaseGroup[]           // e.g. "Foundations", "Components"
+  └─ ShowcaseSubgroup[]?  // e.g. "Tokens", "Building blocks"
+       └─ ShowcasePageConfig[]  // { id, label, path, Component }
+```
+
+- **`path`** — segment only (`"colors"` → URL `/showcase/colors`).
+- **`getShowcasePages()`** — flattens groups for `<Routes>` in `ShowcasePage.tsx`.
+
+### Adding a **component** showcase
+
+Target: `ShowcaseGroup` with `id: "components"`.
+
+1. If **first component** in the library:
+   - Remove `comingSoon: true` from the Components group.
+   - Add `groups: [{ id: "building-blocks", label: "Building blocks", pages: [...] }]`.
+2. Else append to the right **subgroup** (create subgroup if needed):
+
+| Subgroup id | Label | Examples |
+|-------------|-------|----------|
+| `building-blocks` | Building blocks | Button, Input, Tag, Chip, IconButton, Divider, Avatar |
+| `cards` | Cards | ProjectCard, NewsCard, PartnerCard, ProgressCard |
+| `composite` | Composite | Hero, banners, headers |
+| `forms` | Forms | fields, groups |
+| `navigation` | Navigation | tabs, breadcrumbs |
+
+Example entry:
+
+```ts
+{
+  id: "button",
+  label: "Button",
+  path: "button",
+  Component: ButtonShowcase,
+}
+```
+
+Import: `import { ButtonShowcase } from "./components/ButtonShowcase";`
+
+### Adding a **token** page
+
+Append to **Foundations → Tokens** subgroup (`id: "tokens"`), same `ShowcasePageConfig` shape. Do not put token pages under Components.
+
+---
+
+## Token reference pages (maintenance)
+
+Existing: `web/src/showcase/tokens/` — Colors, Typography, Spacing, Radius. When `figma-variables.tsv` changes, update lists after `npm run build:tokens`. Component CSS usually needs no edit unless bindings change.
 
 ---
 
 ## Pitfalls
 
-- Component without showcase or without `routes.ts` entry
-- Raw hex/px «just once»
-- Cross-import from design-system into showcase/product
-- English placeholder copy on UA product
+- Skipping mapping table and coding from hex by eye
+- Relative `NavLink` paths in showcase sidebar
+- Component without showcase or without `routes.tsx` entry
+- `comingSoon: true` left on Components after first component ships
+- Cross-import: design-system → showcase/product
+- Auto-commit after Phase 3
 
-## Maintenance
+---
 
-After Figma export + `npm run build:tokens`, update token showcase groups if new variables appear. Component CSS picks up token changes via cascade — no component edits unless bindings change.
+## How to invoke this skill
+
+**Minimum prompt** (user can write only this):
+
+```
+Додай компонент [Name] за нашими скілами.
+Figma: [https://figma.com/design/...?node-id=...]
+```
+
+**Optional additions:**
+
+- «Тільки Фаза 1» / «тільки мапінг» — stop after mapping table
+- «Без showcase» — Phases 1–2 only
+- Variant names or UA copy preferences
+- «Комітни після ОК» — only then run git commit/push
+
+**Agent must:** load this rule + `prytula-design-system`, run phases in order, **halt at each STOP** until user replies **ОК** (or equivalent).
+
+**Example (user):**
+
+```
+Додай компонент DonateButton за нашими скілами.
+Figma: https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=123-456
+```
+
+**Example (agent after Phase 1):** structure + mapping table → wait.  
+**After Phase 2:** files + `DonateButton.tsx` → wait.  
+**After Phase 3:** `DonateButtonShowcase.tsx`, `routes.tsx` diff + commit message → wait.
