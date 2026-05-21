@@ -1,0 +1,29 @@
+.pageRoot {
+  position: relative;
+}
+
+.toast {
+  position: fixed;
+  top: var(--space-large);
+  right: var(--space-large);
+  z-index: 100;
+  margin: 0;
+  padding: var(--space-small) var(--space-medium);
+  border-radius: var(--radius-medium);
+  background: var(--surface-inverse);
+  color: var(--text-on-inverse);
+  font-size: var(--pryt-brand-font-size-300);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-small);
+}
+
+.hint {
+  margin: var(--space-small) 0 0;
+  font-size: var(--pryt-brand-font-size-200);
+  color: var(--text-muted);
+}

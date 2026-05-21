@@ -1,0 +1,56 @@
+.pageRoot {
+  position: relative;
+}
+
+.toast {
+  position: fixed;
+  top: var(--space-large);
+  right: var(--space-large);
+  z-index: 100;
+  margin: 0;
+  padding: var(--space-small) var(--space-medium);
+  border-radius: var(--radius-medium);
+  background: var(--surface-inverse);
+  color: var(--text-on-inverse);
+  font-size: var(--pryt-brand-font-size-300);
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-xlarge);
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
+  padding: var(--space-large);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-large);
+  background: var(--surface-default);
+}
+
+.rowLabel {
+  margin: 0;
+  font-size: var(--pryt-brand-font-size-300);
+  font-weight: 600;
+  color: var(--text-default);
+}
+
+.rowMeta {
+  margin: 0;
+  font-size: var(--pryt-brand-font-size-200);
+  color: var(--text-muted);
+}
+
+.preview {
+  overflow-x: auto;
+  padding: var(--space-medium) 0;
+}
+
+.liveRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xlarge);
+}

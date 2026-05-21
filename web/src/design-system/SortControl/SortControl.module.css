@@ -1,0 +1,76 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-small);
+  position: relative;
+}
+
+.label {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-400);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.control {
+  position: relative;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xsmall);
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.trigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.trigger:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-small);
+}
+
+.value {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-400);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text-default);
+  white-space: nowrap;
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: var(--text-default);
+  transition: transform 0.2s ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.menu {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + var(--space-xsmall));
+  left: 0;
+  min-width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  overflow: hidden;
+  background: var(--surface-default);
+}

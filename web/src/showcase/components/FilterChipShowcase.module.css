@@ -1,0 +1,48 @@
+.pageRoot {
+  position: relative;
+}
+
+.toast {
+  position: fixed;
+  top: var(--space-large);
+  right: var(--space-large);
+  z-index: 100;
+  margin: 0;
+  padding: var(--space-small) var(--space-medium);
+  border-radius: var(--radius-medium);
+  background: var(--surface-inverse);
+  color: var(--text-on-inverse);
+  font-size: var(--pryt-brand-font-size-300);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-small);
+}
+
+.grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-medium);
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-small);
+}
+
+.cellLabel {
+  margin: 0;
+  font-size: var(--pryt-brand-font-size-200);
+  color: var(--text-muted);
+}
+
+.filterDemo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}

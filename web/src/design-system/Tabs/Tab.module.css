@@ -1,0 +1,90 @@
+.tab {
+  --tab-heading-family: Mariupol, Inter, system-ui, sans-serif;
+  --tab-label-min-height: calc(var(--pryt-brand-font-size-700) * 1.29);
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-medium);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  transition: color 0.15s ease;
+}
+
+.tab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tab:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: 4px;
+  border-radius: var(--radius-small);
+}
+
+/*
+ * Figma active tab (1411:39436): Mariupol Strong 28px / lh 1.29; gap to indicator 12px.
+ * Dual layers + align end: stable switch, text sits on the indicator side of the box.
+ */
+.labelShell {
+  display: inline-grid;
+  grid-template-columns: max-content;
+  grid-template-rows: minmax(var(--tab-label-min-height), max-content);
+  align-items: end;
+}
+
+.labelActive,
+.labelInactive {
+  grid-area: 1 / 1;
+  align-self: end;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: var(--pryt-brand-font-size-700);
+  line-height: 1.29;
+  white-space: nowrap;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+}
+
+.labelActive {
+  font-family: var(--font-display);
+  font-weight: 400;
+  color: var(--text-default);
+}
+
+.labelInactive {
+  font-family: var(--tab-heading-family);
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.tab:not(.selected) .labelActive {
+  visibility: hidden;
+}
+
+.tab.selected .labelInactive {
+  visibility: hidden;
+}
+
+.tab:not(.selected):hover:not(:disabled) .labelInactive {
+  color: var(--text-default);
+}
+
+.indicator {
+  display: block;
+  flex-shrink: 0;
+  height: var(--size-xsmall);
+  border-radius: var(--radius-round);
+  background: transparent;
+}
+
+.selected .indicator {
+  background: var(--surface-action);
+}
