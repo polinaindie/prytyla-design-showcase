@@ -1,20 +1,76 @@
 import { useId } from "react";
+import {
+  IconArrowLeft10,
+  IconArrowRight10,
+  IconArrowUpRight,
+  IconEmail20,
+  IconMenu,
+  IconPhone20,
+  IconSocialFacebook,
+} from "../Icons";
 import type {
   ButtonContactProps,
   ButtonNavProps,
   ButtonProps,
   ButtonSocialProps,
 } from "./Button.types";
-import {
-  ButtonIconArrowRight,
-  ButtonIconFacebook,
-  ButtonIconMenu,
-  ButtonIconNavArrowLeft,
-  ButtonIconNavArrowRight,
-  ButtonIconEnvelope,
-  ButtonIconPhone,
-} from "./ButtonIcons";
 import styles from "./Button.module.css";
+
+/** Special theme: stroke icons with linear gradient (DS 24px icons use fill). */
+function ButtonSpecialGradientMenu({
+  className,
+  gradientId,
+}: {
+  className?: string;
+  gradientId: string;
+}) {
+  return (
+    <svg
+      className={className ?? styles.icon}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden
+    >
+      <path
+        d="M5 9h14M5 15h14"
+        stroke={`url(#${gradientId})`}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function ButtonSpecialGradientArrow({
+  className,
+  gradientId,
+}: {
+  className?: string;
+  gradientId: string;
+}) {
+  return (
+    <svg
+      className={className ?? styles.icon}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden
+    >
+      <path
+        d="M5 12h12m0 0-4-4m4 4-4 4"
+        stroke={`url(#${gradientId})`}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 function getThemeClass(props: ButtonProps): string {
   if (props.variant === "contact") {
@@ -96,15 +152,27 @@ export function Button(props: ButtonProps) {
 
   const renderLeft =
     showLeftIcon &&
-    (leftIcon ?? (
-      <ButtonIconMenu className={iconClass} gradientId={iconGradient} />
-    ));
+    (leftIcon ??
+      (iconGradient ? (
+        <ButtonSpecialGradientMenu
+          className={iconClass}
+          gradientId={iconGradient}
+        />
+      ) : (
+        <IconMenu className={iconClass} size={24} />
+      )));
 
   const renderRight =
     showRightIcon &&
-    (rightIcon ?? (
-      <ButtonIconArrowRight className={iconClass} gradientId={iconGradient} />
-    ));
+    (rightIcon ??
+      (iconGradient ? (
+        <ButtonSpecialGradientArrow
+          className={iconClass}
+          gradientId={iconGradient}
+        />
+      ) : (
+        <IconArrowUpRight className={iconClass} size={24} />
+      )));
 
   return (
     <button
@@ -160,11 +228,11 @@ function ButtonNav({
 
   const renderLeft =
     showLeftIcon &&
-    (leftIcon ?? <ButtonIconNavArrowLeft className={styles.navIcon} />);
+    (leftIcon ?? <IconArrowLeft10 className={styles.navIcon} size={10} />);
 
   const renderRight =
     showRightIcon &&
-    (rightIcon ?? <ButtonIconNavArrowRight className={styles.navIcon} />);
+    (rightIcon ?? <IconArrowRight10 className={styles.navIcon} size={10} />);
 
   return (
     <button
@@ -205,9 +273,9 @@ function ButtonContact({
 
   const icon =
     contactType === "email" ? (
-      <ButtonIconEnvelope className={styles.contactIcon} />
+      <IconEmail20 className={styles.contactIcon} size={20} />
     ) : (
-      <ButtonIconPhone className={styles.contactIcon} />
+      <IconPhone20 className={styles.contactIcon} size={20} />
     );
 
   return (
@@ -248,7 +316,7 @@ function ButtonSocial({
 
   const icon =
     socialNetwork === "facebook" ? (
-      <ButtonIconFacebook className={styles.socialIcon} theme={theme} />
+      <IconSocialFacebook className={styles.socialIcon} size={24} />
     ) : null;
 
   return (

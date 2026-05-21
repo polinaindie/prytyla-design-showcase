@@ -1,13 +1,23 @@
+import type { ReactNode } from "react";
 import { useShowcaseTheme } from "./ShowcaseThemeContext";
 import type { ShowcaseThemeMode } from "./showcase.types";
 import styles from "./ShowcaseToolbar.module.css";
+
+export type ShowcaseToolbarFilter = {
+  id: string;
+  label: string;
+};
 
 type ShowcaseToolbarProps = {
   showSearch?: boolean;
   searchPlaceholder?: string;
   searchValue?: string;
   onSearch?: (query: string) => void;
+  searchIcon?: ReactNode;
   showThemeToggle?: boolean;
+  filters?: ShowcaseToolbarFilter[];
+  activeFilterIds?: string[];
+  onToggleFilter?: (id: string) => void;
 };
 
 export function ShowcaseToolbar({
@@ -15,7 +25,11 @@ export function ShowcaseToolbar({
   searchPlaceholder = "Пошук…",
   searchValue = "",
   onSearch,
+  searchIcon,
   showThemeToggle = true,
+  filters,
+  activeFilterIds = [],
+  onToggleFilter,
 }: ShowcaseToolbarProps) {
   const { theme, setTheme } = useShowcaseTheme();
 
@@ -41,14 +55,36 @@ export function ShowcaseToolbar({
       ) : null}
 
       {showSearch && onSearch ? (
-        <input
-          type="search"
-          className={styles.search}
-          placeholder={searchPlaceholder}
-          value={searchValue}
-          onChange={(event) => onSearch(event.target.value)}
-          aria-label={searchPlaceholder}
-        />
+        <div className={styles.searchWrap}>
+          {searchIcon ? <span className={styles.searchIcon}>{searchIcon}</span> : null}
+          <input
+            type="search"
+            className={styles.search}
+            placeholder={searchPlaceholder}
+            value={searchValue}
+            onChange={(event) => onSearch(event.target.value)}
+            aria-label={searchPlaceholder}
+          />
+        </div>
+      ) : null}
+
+      {filters && filters.length > 0 && onToggleFilter ? (
+        <div className={styles.filters} role="group" aria-label="Категорії іконок">
+          {filters.map((filter) => {
+            const active = activeFilterIds.includes(filter.id);
+            return (
+              <button
+                key={filter.id}
+                type="button"
+                className={`${styles.chip} ${active ? styles.chipActive : ""}`}
+                aria-pressed={active}
+                onClick={() => onToggleFilter(filter.id)}
+              >
+                {filter.label}
+              </button>
+            );
+          })}
+        </div>
       ) : null}
     </div>
   );

@@ -1,4 +1,4 @@
-import type { ComponentType } from "react";
+import { useEffect, useMemo, useState, type ComponentType, type ReactNode } from "react";
 import {
   IconArrowDown20,
   IconArrowLeft,
@@ -12,27 +12,23 @@ import {
   IconArrowUpRight32,
   IconArrowUpRight40,
   IconArrowUpRight64,
+  IconBrandMono,
+  IconBrandVprytyl,
   IconCalendar,
   IconChevronDown,
   IconChevronDown10,
   IconClose,
   IconClose20,
-  IconEmail20,
-  IconGlobe20,
-  IconPhone20,
   IconDocumentView,
   IconDropdown,
+  IconEmail20,
   IconError,
   IconFilter,
+  IconGlobe20,
+  IconIllustrationDataError,
+  IconIllustrationNoData,
   IconMenu,
   IconMoreHorizontal,
-  IconSearch,
-  IconSocialFacebook,
-  IconSocialInstagram,
-  IconSocialLinkedIn,
-  IconSocialTelegram,
-  IconSocialX,
-  IconSocialYouTube,
   IconPaymentBank,
   IconPaymentCard,
   IconPaymentCrypto,
@@ -43,506 +39,368 @@ import {
   IconPaymentReceipt,
   IconPaymentRepeat,
   IconPaymentSwift,
-  IconIllustrationDataError,
-  IconIllustrationNoData,
-  IconBrandVprytyl,
-  IconBrandMono,
-  type IconProps,
-  type IconBrandVprytylProps,
+  IconPhone20,
+  IconSearch,
+  IconSocialFacebook,
+  IconSocialInstagram,
+  IconSocialLinkedIn,
+  IconSocialTelegram,
+  IconSocialX,
+  IconSocialYouTube,
   type IconBrandMonoProps,
+  type IconBrandVprytylProps,
+  type IconProps,
 } from "../../design-system/Icons";
-import { ShowcasePageLayout } from "../primitives/ShowcasePageLayout";
-import { ShowcaseSection } from "../primitives/ShowcaseSection";
+import {
+  ShowcaseCodeBlock,
+  ShowcaseDoDont,
+  ShowcasePageLayout,
+  ShowcaseSection,
+  ShowcaseThemeProvider,
+  ShowcaseTokensList,
+  ShowcaseToolbar,
+  type ShowcaseToolbarFilter,
+  type TokenUsage,
+  useShowcaseTheme,
+} from "../primitives";
 import styles from "./IconsShowcase.module.css";
 
-type IconEntry = {
+type IconCategory =
+  | "ui"
+  | "small"
+  | "tiny"
+  | "large"
+  | "social"
+  | "payment"
+  | "illustration"
+  | "brand";
+
+type IconCatalogEntry = {
   name: string;
+  exportName: string;
   figmaPath: string;
   nodeId: string;
-  Component: ComponentType<IconProps>;
-};
-
-type LargeIconEntry = IconEntry & {
-  /** Native render size in showcase (matches Figma artboard). */
+  category: IconCategory;
   nativeSize: number;
+  nativeWidth?: number;
+  nativeHeight?: number;
+  Component: ComponentType<IconProps | IconBrandVprytylProps | IconBrandMonoProps>;
+  /** Illustration uses fixed black fill — light patch on dark theme */
+  illustration?: boolean;
 };
 
-const ICONS_MVP: IconEntry[] = [
-  { name: "Menu", figmaPath: "Icon/24/Menu", nodeId: "1115:23555", Component: IconMenu },
-  { name: "Search", figmaPath: "Icon/24/Search", nodeId: "1185:31237", Component: IconSearch },
-  { name: "Filter", figmaPath: "Icon/24/Filter", nodeId: "1305:32931", Component: IconFilter },
-  { name: "Close", figmaPath: "Icon/24/Close", nodeId: "3:8004", Component: IconClose },
-  {
-    name: "Calendar",
-    figmaPath: "Icon/24/Calendar",
-    nodeId: "1185:31219",
-    Component: IconCalendar,
-  },
-  {
-    name: "Dropdown",
-    figmaPath: "Icon/24/Dropdown",
-    nodeId: "1185:31193",
-    Component: IconDropdown,
-  },
-  {
-    name: "More-Horizontal",
-    figmaPath: "Icon/24/More-Horizontal",
-    nodeId: "3:7776",
-    Component: IconMoreHorizontal,
-  },
-  {
-    name: "Chevron-Down",
-    figmaPath: "Icon/24/Chevron-Down",
-    nodeId: "1026:24646",
-    Component: IconChevronDown,
-  },
-  {
-    name: "Arrow-Left",
-    figmaPath: "Icon/24/Arrow-Left",
-    nodeId: "5:8884",
-    Component: IconArrowLeft,
-  },
-  {
-    name: "Arrow-Up-Right",
-    figmaPath: "Icon/24/Arrow-Up-Right",
-    nodeId: "5:8891",
-    Component: IconArrowUpRight,
-  },
-  { name: "Error", figmaPath: "Icon/24/Error", nodeId: "1256:29906", Component: IconError },
-  {
-    name: "Document_view",
-    figmaPath: "Icon/24/Document_view",
-    nodeId: "1261:29096",
-    Component: IconDocumentView,
-  },
+const CATEGORY_FILTERS: ShowcaseToolbarFilter[] = [
+  { id: "ui", label: "UI" },
+  { id: "small", label: "Small" },
+  { id: "tiny", label: "Tiny" },
+  { id: "large", label: "Large" },
+  { id: "social", label: "Social" },
+  { id: "payment", label: "Payment" },
+  { id: "illustration", label: "Illustration" },
+  { id: "brand", label: "Brand" },
 ];
 
-const ICONS_TINY: IconEntry[] = [
-  {
-    name: "Chevron-Down",
-    figmaPath: "Icon/10/Chevron-Down",
-    nodeId: "3:7824",
-    Component: IconChevronDown10,
-  },
-  {
-    name: "Arrow-Left",
-    figmaPath: "Icon/10/Arrow-Left",
-    nodeId: "1319:35979",
-    Component: IconArrowLeft10,
-  },
-  {
-    name: "Arrow-Right",
-    figmaPath: "Icon/10/Arrow-Right",
-    nodeId: "1319:35980",
-    Component: IconArrowRight10,
-  },
-  {
-    name: "Arrow-Left-Double",
-    figmaPath: "Icon/10/Arrow-Left-Double",
-    nodeId: "1319:36158",
-    Component: IconArrowLeftDouble10,
-  },
-  {
-    name: "Arrow-Right-Double",
-    figmaPath: "Icon/10/Arrow-Right-Double",
-    nodeId: "1319:36159",
-    Component: IconArrowRightDouble10,
-  },
-  {
-    name: "Arrow-Up-Right",
-    figmaPath: "Icon/10/Arrow-Up-Right",
-    nodeId: "817:15808",
-    Component: IconArrowUpRight10,
-  },
+const CATEGORY_ORDER: IconCategory[] = [
+  "ui",
+  "small",
+  "tiny",
+  "large",
+  "social",
+  "payment",
+  "illustration",
+  "brand",
 ];
 
-const ICONS_LARGE: LargeIconEntry[] = [
-  {
-    name: "Arrow-Up-Right 32",
-    figmaPath: "Icon/32/Arrow-Up-Right",
-    nodeId: "1163:26966",
-    Component: IconArrowUpRight32,
-    nativeSize: 32,
-  },
-  {
-    name: "Arrow-Left 40",
-    figmaPath: "Icon/40/Arrow-Left",
-    nodeId: "307:3917",
-    Component: IconArrowLeft40,
-    nativeSize: 40,
-  },
-  {
-    name: "Arrow-Up-Right 40",
-    figmaPath: "Icon/40/Arrow-Up-Right",
-    nodeId: "307:3959",
-    Component: IconArrowUpRight40,
-    nativeSize: 40,
-  },
-  {
-    name: "Arrow-Up-Right 64",
-    figmaPath: "Icon/64/Arrow-Up-Right",
-    nodeId: "103:6345",
-    Component: IconArrowUpRight64,
-    nativeSize: 64,
-  },
-];
-
-const ICONS_PAYMENT: LargeIconEntry[] = [
-  { name: "Card", figmaPath: "Icons/Card", nodeId: "1411:38047", Component: IconPaymentCard, nativeSize: 36 },
-  { name: "Paypal", figmaPath: "Icons/Paypal", nodeId: "1411:38051", Component: IconPaymentPaypal, nativeSize: 36 },
-  { name: "Crypto", figmaPath: "Icons/Crypto", nodeId: "1411:38054", Component: IconPaymentCrypto, nativeSize: 36 },
-  { name: "Swift", figmaPath: "Icons/Swift", nodeId: "1411:38057", Component: IconPaymentSwift, nativeSize: 36 },
-  { name: "Bank", figmaPath: "Icons/Bank", nodeId: "1411:38062", Component: IconPaymentBank, nativeSize: 36 },
-  {
-    name: "HeartEmpty",
-    figmaPath: "Icons/HeartEmpty",
-    nodeId: "1411:38067",
-    Component: IconPaymentHeartEmpty,
-    nativeSize: 36,
-  },
-  {
-    name: "HeartFilled",
-    figmaPath: "Icons/HeartFilled",
-    nodeId: "1411:38070",
-    Component: IconPaymentHeartFilled,
-    nativeSize: 36,
-  },
-  { name: "Receipt", figmaPath: "Icons/Receipt", nodeId: "1411:38073", Component: IconPaymentReceipt, nativeSize: 36 },
-  { name: "Globe", figmaPath: "Icons/Globe", nodeId: "1411:38091", Component: IconPaymentGlobe, nativeSize: 36 },
-  { name: "Repeat", figmaPath: "Icons/Repeat", nodeId: "1411:38080", Component: IconPaymentRepeat, nativeSize: 36 },
-];
-
-const ICONS_SOCIAL: IconEntry[] = [
-  {
-    name: "Facebook",
-    figmaPath: "Icon/Social/Facebook",
-    nodeId: "3:8051",
-    Component: IconSocialFacebook,
-  },
-  {
-    name: "Instagram",
-    figmaPath: "Icon/Social/Instagram",
-    nodeId: "3:8052",
-    Component: IconSocialInstagram,
-  },
-  {
-    name: "Telegram",
-    figmaPath: "Icon/Social/Telegram",
-    nodeId: "3:8053",
-    Component: IconSocialTelegram,
-  },
-  { name: "X", figmaPath: "Icon/Social/X", nodeId: "3:8054", Component: IconSocialX },
-  {
-    name: "LinkedIn",
-    figmaPath: "Icon/Social/LinkedIn",
-    nodeId: "3:8055",
-    Component: IconSocialLinkedIn,
-  },
-  {
-    name: "YouTube",
-    figmaPath: "Icon/Social/YouTube",
-    nodeId: "3:8056",
-    Component: IconSocialYouTube,
-  },
-];
-
-const ICONS_SMALL: IconEntry[] = [
-  { name: "Globe", figmaPath: "Icon/20/Globe", nodeId: "3:7945", Component: IconGlobe20 },
-  { name: "Phone", figmaPath: "Icon/20/Phone", nodeId: "5:8742", Component: IconPhone20 },
-  { name: "Email", figmaPath: "Icon/20/Email", nodeId: "5:8743", Component: IconEmail20 },
-  {
-    name: "Arrow Down",
-    figmaPath: "Icon/20/Arrow Down",
-    nodeId: "1261:29064",
-    Component: IconArrowDown20,
-  },
-  { name: "Close", figmaPath: "Icon/20/Close", nodeId: "1318:53976", Component: IconClose20 },
-];
-
-const ICONS_ILLUSTRATION: IconEntry[] = [
-  {
-    name: "DataError",
-    figmaPath: "Icon/100×100/DataError",
-    nodeId: "1317:38911",
-    Component: IconIllustrationDataError,
-  },
-  {
-    name: "NoData",
-    figmaPath: "Icon/100×100/NoData",
-    nodeId: "1318:53781",
-    Component: IconIllustrationNoData,
-  },
-];
-
-type BrandIconEntry = {
-  name: string;
-  figmaPath: string;
-  nodeId: string;
-  Component: ComponentType<IconBrandVprytylProps | IconBrandMonoProps>;
-  width: number;
-  height: number;
+const CATEGORY_GRID_CLASS: Record<IconCategory, string> = {
+  ui: styles.gridUi,
+  small: styles.gridSmall,
+  tiny: styles.gridTiny,
+  large: styles.gridLarge,
+  social: styles.gridSocial,
+  payment: styles.gridPayment,
+  illustration: styles.gridIllustration,
+  brand: styles.gridBrand,
 };
 
-const ICONS_BRAND: BrandIconEntry[] = [
+const CATEGORY_SECTION_TITLE: Record<IconCategory, string> = {
+  ui: "UI (24px)",
+  small: "Small (20px)",
+  tiny: "Tiny (10px)",
+  large: "Large (32–64px)",
+  social: "Social (24px)",
+  payment: "Payment (36px)",
+  illustration: "Illustration (100px)",
+  brand: "Brand",
+};
+
+const ICON_CATALOG: IconCatalogEntry[] = [
+  { name: "Menu", exportName: "IconMenu", figmaPath: "Icon/24/Menu", nodeId: "1115:23555", category: "ui", nativeSize: 24, Component: IconMenu },
+  { name: "Search", exportName: "IconSearch", figmaPath: "Icon/24/Search", nodeId: "1185:31237", category: "ui", nativeSize: 24, Component: IconSearch },
+  { name: "Filter", exportName: "IconFilter", figmaPath: "Icon/24/Filter", nodeId: "1305:32931", category: "ui", nativeSize: 24, Component: IconFilter },
+  { name: "Close", exportName: "IconClose", figmaPath: "Icon/24/Close", nodeId: "3:8004", category: "ui", nativeSize: 24, Component: IconClose },
+  { name: "Calendar", exportName: "IconCalendar", figmaPath: "Icon/24/Calendar", nodeId: "1185:31219", category: "ui", nativeSize: 24, Component: IconCalendar },
+  { name: "Dropdown", exportName: "IconDropdown", figmaPath: "Icon/24/Dropdown", nodeId: "1185:31193", category: "ui", nativeSize: 24, Component: IconDropdown },
+  { name: "More-Horizontal", exportName: "IconMoreHorizontal", figmaPath: "Icon/24/More-Horizontal", nodeId: "3:7776", category: "ui", nativeSize: 24, Component: IconMoreHorizontal },
+  { name: "Chevron-Down", exportName: "IconChevronDown", figmaPath: "Icon/24/Chevron-Down", nodeId: "1026:24646", category: "ui", nativeSize: 24, Component: IconChevronDown },
+  { name: "Arrow-Left", exportName: "IconArrowLeft", figmaPath: "Icon/24/Arrow-Left", nodeId: "5:8884", category: "ui", nativeSize: 24, Component: IconArrowLeft },
+  { name: "Arrow-Up-Right", exportName: "IconArrowUpRight", figmaPath: "Icon/24/Arrow-Up-Right", nodeId: "5:8891", category: "ui", nativeSize: 24, Component: IconArrowUpRight },
+  { name: "Error", exportName: "IconError", figmaPath: "Icon/24/Error", nodeId: "1256:29906", category: "ui", nativeSize: 24, Component: IconError },
+  { name: "Document_view", exportName: "IconDocumentView", figmaPath: "Icon/24/Document_view", nodeId: "1261:29096", category: "ui", nativeSize: 24, Component: IconDocumentView },
+
+  { name: "Globe", exportName: "IconGlobe20", figmaPath: "Icon/20/Globe", nodeId: "3:7945", category: "small", nativeSize: 20, Component: IconGlobe20 },
+  { name: "Phone", exportName: "IconPhone20", figmaPath: "Icon/20/Phone", nodeId: "5:8742", category: "small", nativeSize: 20, Component: IconPhone20 },
+  { name: "Email", exportName: "IconEmail20", figmaPath: "Icon/20/Email", nodeId: "5:8743", category: "small", nativeSize: 20, Component: IconEmail20 },
+  { name: "Arrow Down", exportName: "IconArrowDown20", figmaPath: "Icon/20/Arrow Down", nodeId: "1261:29064", category: "small", nativeSize: 20, Component: IconArrowDown20 },
+  { name: "Close", exportName: "IconClose20", figmaPath: "Icon/20/Close", nodeId: "1318:53976", category: "small", nativeSize: 20, Component: IconClose20 },
+
+  { name: "Chevron-Down", exportName: "IconChevronDown10", figmaPath: "Icon/10/Chevron-Down", nodeId: "3:7824", category: "tiny", nativeSize: 10, Component: IconChevronDown10 },
+  { name: "Arrow-Left", exportName: "IconArrowLeft10", figmaPath: "Icon/10/Arrow-Left", nodeId: "1319:35979", category: "tiny", nativeSize: 10, Component: IconArrowLeft10 },
+  { name: "Arrow-Right", exportName: "IconArrowRight10", figmaPath: "Icon/10/Arrow-Right", nodeId: "1319:35980", category: "tiny", nativeSize: 10, Component: IconArrowRight10 },
+  { name: "Arrow-Left-Double", exportName: "IconArrowLeftDouble10", figmaPath: "Icon/10/Arrow-Left-Double", nodeId: "1319:36158", category: "tiny", nativeSize: 10, Component: IconArrowLeftDouble10 },
+  { name: "Arrow-Right-Double", exportName: "IconArrowRightDouble10", figmaPath: "Icon/10/Arrow-Right-Double", nodeId: "1319:36159", category: "tiny", nativeSize: 10, Component: IconArrowRightDouble10 },
+  { name: "Arrow-Up-Right", exportName: "IconArrowUpRight10", figmaPath: "Icon/10/Arrow-Up-Right", nodeId: "817:15808", category: "tiny", nativeSize: 10, Component: IconArrowUpRight10 },
+
+  { name: "Arrow-Up-Right 32", exportName: "IconArrowUpRight32", figmaPath: "Icon/32/Arrow-Up-Right", nodeId: "1163:26966", category: "large", nativeSize: 32, Component: IconArrowUpRight32 },
+  { name: "Arrow-Left 40", exportName: "IconArrowLeft40", figmaPath: "Icon/40/Arrow-Left", nodeId: "307:3917", category: "large", nativeSize: 40, Component: IconArrowLeft40 },
+  { name: "Arrow-Up-Right 40", exportName: "IconArrowUpRight40", figmaPath: "Icon/40/Arrow-Up-Right", nodeId: "307:3959", category: "large", nativeSize: 40, Component: IconArrowUpRight40 },
+  { name: "Arrow-Up-Right 64", exportName: "IconArrowUpRight64", figmaPath: "Icon/64/Arrow-Up-Right", nodeId: "103:6345", category: "large", nativeSize: 64, Component: IconArrowUpRight64 },
+
+  { name: "Facebook", exportName: "IconSocialFacebook", figmaPath: "Icon/Social/Facebook", nodeId: "3:8051", category: "social", nativeSize: 24, Component: IconSocialFacebook },
+  { name: "Instagram", exportName: "IconSocialInstagram", figmaPath: "Icon/Social/Instagram", nodeId: "3:8052", category: "social", nativeSize: 24, Component: IconSocialInstagram },
+  { name: "Telegram", exportName: "IconSocialTelegram", figmaPath: "Icon/Social/Telegram", nodeId: "3:8053", category: "social", nativeSize: 24, Component: IconSocialTelegram },
+  { name: "X", exportName: "IconSocialX", figmaPath: "Icon/Social/X", nodeId: "3:8054", category: "social", nativeSize: 24, Component: IconSocialX },
+  { name: "LinkedIn", exportName: "IconSocialLinkedIn", figmaPath: "Icon/Social/LinkedIn", nodeId: "3:8055", category: "social", nativeSize: 24, Component: IconSocialLinkedIn },
+  { name: "YouTube", exportName: "IconSocialYouTube", figmaPath: "Icon/Social/YouTube", nodeId: "3:8056", category: "social", nativeSize: 24, Component: IconSocialYouTube },
+
+  { name: "Card", exportName: "IconPaymentCard", figmaPath: "Icons/Card", nodeId: "1411:38047", category: "payment", nativeSize: 36, Component: IconPaymentCard },
+  { name: "Paypal", exportName: "IconPaymentPaypal", figmaPath: "Icons/Paypal", nodeId: "1411:38051", category: "payment", nativeSize: 36, Component: IconPaymentPaypal },
+  { name: "Crypto", exportName: "IconPaymentCrypto", figmaPath: "Icons/Crypto", nodeId: "1411:38054", category: "payment", nativeSize: 36, Component: IconPaymentCrypto },
+  { name: "Swift", exportName: "IconPaymentSwift", figmaPath: "Icons/Swift", nodeId: "1411:38057", category: "payment", nativeSize: 36, Component: IconPaymentSwift },
+  { name: "Bank", exportName: "IconPaymentBank", figmaPath: "Icons/Bank", nodeId: "1411:38062", category: "payment", nativeSize: 36, Component: IconPaymentBank },
+  { name: "HeartEmpty", exportName: "IconPaymentHeartEmpty", figmaPath: "Icons/HeartEmpty", nodeId: "1411:38067", category: "payment", nativeSize: 36, Component: IconPaymentHeartEmpty },
+  { name: "HeartFilled", exportName: "IconPaymentHeartFilled", figmaPath: "Icons/HeartFilled", nodeId: "1411:38070", category: "payment", nativeSize: 36, Component: IconPaymentHeartFilled },
+  { name: "Receipt", exportName: "IconPaymentReceipt", figmaPath: "Icons/Receipt", nodeId: "1411:38073", category: "payment", nativeSize: 36, Component: IconPaymentReceipt },
+  { name: "Globe", exportName: "IconPaymentGlobe", figmaPath: "Icons/Globe", nodeId: "1411:38091", category: "payment", nativeSize: 36, Component: IconPaymentGlobe },
+  { name: "Repeat", exportName: "IconPaymentRepeat", figmaPath: "Icons/Repeat", nodeId: "1411:38080", category: "payment", nativeSize: 36, Component: IconPaymentRepeat },
+
+  { name: "DataError", exportName: "IconIllustrationDataError", figmaPath: "Icon/100×100/DataError", nodeId: "1317:38911", category: "illustration", nativeSize: 100, illustration: true, Component: IconIllustrationDataError },
+  { name: "NoData", exportName: "IconIllustrationNoData", figmaPath: "Icon/100×100/NoData", nodeId: "1318:53781", category: "illustration", nativeSize: 100, illustration: true, Component: IconIllustrationNoData },
+
+  { name: "Vprytyl", exportName: "IconBrandVprytyl", figmaPath: "Icon/Vprytyl", nodeId: "1363:36149", category: "brand", nativeSize: 13, nativeWidth: 99, nativeHeight: 13, Component: IconBrandVprytyl },
+  { name: "Mono", exportName: "IconBrandMono", figmaPath: "Icon/24/Mono", nodeId: "760:2510", category: "brand", nativeSize: 24, nativeWidth: 58, nativeHeight: 24, Component: IconBrandMono },
+];
+
+const ICON_TOKENS: TokenUsage[] = [
   {
-    name: "Vprytyl",
-    figmaPath: "Icon/Vprytyl",
-    nodeId: "1363:36149",
-    Component: IconBrandVprytyl,
-    width: 99,
-    height: 13,
+    category: "Color",
+    name: "--text-default",
+    usedIn: "Колір монохромних іконок через currentColor на світлому фоні",
   },
   {
-    name: "Mono",
-    figmaPath: "Icon/24/Mono",
-    nodeId: "760:2510",
-    Component: IconBrandMono,
-    width: 58,
-    height: 24,
+    category: "Color",
+    name: "--text-inverse",
+    usedIn: "Колір іконок на темному фоні (theme Dark)",
   },
 ];
 
-function IconGridIllustration({ icons }: { icons: IconEntry[] }) {
-  return (
-    <div className={styles.gridIllustration}>
-      {icons.map(({ name, figmaPath, nodeId, Component }) => (
-        <div key={name} className={styles.cell}>
-          <div className={styles.cellIconIllustration}>
-            <Component size={100} />
-          </div>
-          <span className={styles.meta}>100×100px</span>
-          <span className={styles.name}>{name}</span>
-          <span className={styles.meta}>{figmaPath}</span>
-          <span className={styles.meta}>{nodeId}</span>
-        </div>
-      ))}
-    </div>
-  );
+const ALL_FILTER_IDS = CATEGORY_FILTERS.map((f) => f.id);
+
+function formatNativeSize(entry: IconCatalogEntry): string {
+  if (entry.nativeWidth && entry.nativeHeight) {
+    return `${entry.nativeWidth}×${entry.nativeHeight}px`;
+  }
+  return `${entry.nativeSize}×${entry.nativeSize}px`;
 }
 
-function IconGridBrand({ icons }: { icons: BrandIconEntry[] }) {
-  return (
-    <div className={styles.gridBrand}>
-      {icons.map(({ name, figmaPath, nodeId, Component, width, height }) => (
-        <div key={name} className={styles.cell}>
-          <div className={styles.cellIconBrand}>
-            <Component width={width} height={height} />
-          </div>
-          <span className={styles.meta}>{`${width}×${height}px`}</span>
-          <span className={styles.name}>{name}</span>
-          <span className={styles.meta}>{figmaPath}</span>
-          <span className={styles.meta}>{nodeId}</span>
-        </div>
-      ))}
-    </div>
-  );
+function renderIcon(entry: IconCatalogEntry): ReactNode {
+  const { Component, nativeSize, nativeWidth, nativeHeight } = entry;
+  if (nativeWidth !== undefined && nativeHeight !== undefined) {
+    const Brand = Component as ComponentType<IconBrandVprytylProps | IconBrandMonoProps>;
+    return <Brand width={nativeWidth} height={nativeHeight} />;
+  }
+  const Icon = Component as ComponentType<IconProps>;
+  return <Icon size={nativeSize} />;
 }
 
-function IconGridLarge({ icons }: { icons: LargeIconEntry[] }) {
-  return (
-    <div className={styles.gridLarge}>
-      {icons.map(({ name, figmaPath, nodeId, Component, nativeSize }) => (
-        <div key={`${nodeId}-${name}`} className={styles.cell}>
-          <div
-            className={styles.cellIconNative}
-            style={{ width: nativeSize, height: nativeSize }}
-          >
-            <Component size={nativeSize} />
-          </div>
-          <span className={styles.meta}>{`${nativeSize}×${nativeSize}px`}</span>
-          <span className={styles.name}>{name}</span>
-          <span className={styles.meta}>{figmaPath}</span>
-          <span className={styles.meta}>{nodeId}</span>
-        </div>
-      ))}
-    </div>
-  );
+async function copyImportLine(exportName: string): Promise<boolean> {
+  try {
+    await navigator.clipboard.writeText(
+      `import { ${exportName} } from '@/design-system/Icons';`,
+    );
+    return true;
+  } catch {
+    return false;
+  }
 }
 
-function IconGrid({
-  icons,
-  iconSize = 24,
-  tiny = false,
-}: {
-  icons: IconEntry[];
-  iconSize?: number;
-  tiny?: boolean;
-}) {
+function IconsShowcasePage() {
+  const { theme } = useShowcaseTheme();
+  const [query, setQuery] = useState("");
+  const [activeFilterIds, setActiveFilterIds] = useState<string[]>(ALL_FILTER_IDS);
+  const [copiedExport, setCopiedExport] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!copiedExport) return undefined;
+    const timer = window.setTimeout(() => setCopiedExport(null), 2000);
+    return () => window.clearTimeout(timer);
+  }, [copiedExport]);
+
+  const filteredIcons = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return ICON_CATALOG.filter((entry) => {
+      if (!activeFilterIds.includes(entry.category)) return false;
+      if (!q) return true;
+      return (
+        entry.name.toLowerCase().includes(q) ||
+        entry.exportName.toLowerCase().includes(q) ||
+        entry.figmaPath.toLowerCase().includes(q) ||
+        entry.nodeId.toLowerCase().includes(q)
+      );
+    });
+  }, [query, activeFilterIds]);
+
+  const iconsByCategory = useMemo(() => {
+    const map = new Map<IconCategory, IconCatalogEntry[]>();
+    for (const category of CATEGORY_ORDER) {
+      map.set(category, []);
+    }
+    for (const entry of filteredIcons) {
+      map.get(entry.category)?.push(entry);
+    }
+    return map;
+  }, [filteredIcons]);
+
+  const handleToggleFilter = (id: string) => {
+    setActiveFilterIds((current) => {
+      if (current.includes(id)) {
+        if (current.length === 1) return current;
+        return current.filter((item) => item !== id);
+      }
+      return [...current, id];
+    });
+  };
+
+  const handleCopyIcon = async (exportName: string) => {
+    const ok = await copyImportLine(exportName);
+    if (ok) setCopiedExport(exportName);
+  };
+
+  const searchActive = query.trim().length > 0;
+
   return (
-    <div className={styles.grid}>
-      {icons.map(({ name, figmaPath, nodeId, Component }) => (
-        <div key={name} className={styles.cell}>
-          {tiny ? (
-            <>
-              <div className={styles.cellIconTiny}>
-                <Component size={iconSize} />
+    <div className={styles.pageRoot} data-showcase-theme={theme}>
+      {copiedExport ? (
+        <p className={styles.toast} aria-live="polite">
+          Copied!
+        </p>
+      ) : null}
+
+      <ShowcasePageLayout
+        title="Icons"
+        description="Повний набір іконок Prytula DS з Figma SVG export. Prytula-Responsive → Icons frame."
+      >
+        <ShowcaseToolbar
+          showSearch
+          searchPlaceholder="Пошук іконки…"
+          searchValue={query}
+          onSearch={setQuery}
+          searchIcon={<IconSearch size={24} aria-hidden />}
+          filters={CATEGORY_FILTERS}
+          activeFilterIds={activeFilterIds}
+          onToggleFilter={handleToggleFilter}
+        />
+
+        <ShowcaseSection title="Quick example">
+          <ShowcaseCodeBlock
+            code={`import { IconArrowUpRight } from '@/design-system/Icons';
+
+<IconArrowUpRight aria-label="Open in new tab" />`}
+          />
+        </ShowcaseSection>
+
+        <ShowcaseSection
+          title="Live preview"
+          description="Типовий UI-іконка; тема сторінки керує кольором currentColor."
+        >
+          <div className={styles.livePreview}>
+            <IconArrowUpRight size={24} aria-label="Open in new tab" />
+          </div>
+        </ShowcaseSection>
+
+        {searchActive ? (
+          <p className={styles.searchCount} aria-live="polite">
+            Знайдено {filteredIcons.length} іконок
+          </p>
+        ) : null}
+
+        {CATEGORY_ORDER.map((category) => {
+          const icons = iconsByCategory.get(category) ?? [];
+          if (icons.length === 0) return null;
+
+          return (
+            <ShowcaseSection
+              key={category}
+              id={`icons-${category}`}
+              title={CATEGORY_SECTION_TITLE[category]}
+              description={`${icons.length} іконок · клік по клітинці — копіює import`}
+            >
+              <div className={`${styles.gridBase} ${CATEGORY_GRID_CLASS[category]}`}>
+                {icons.map((entry) => (
+                  <button
+                    key={`${entry.category}-${entry.exportName}`}
+                    type="button"
+                    className={styles.cell}
+                    onClick={() => handleCopyIcon(entry.exportName)}
+                    title={`Figma: ${entry.figmaPath} • node ${entry.nodeId} • Click to copy`}
+                  >
+                    <div className={styles.cellInner}>
+                      <div
+                        className={`${styles.previewBox} ${entry.illustration ? styles.previewBoxIllustration : ""}`}
+                      >
+                        {renderIcon(entry)}
+                      </div>
+                      <div className={styles.cellLabels}>
+                        {category === "large" ? (
+                          <span className={styles.meta}>{formatNativeSize(entry)}</span>
+                        ) : null}
+                        <span className={styles.name}>{entry.name}</span>
+                        <span className={styles.exportName} title={entry.exportName}>
+                          {entry.exportName}
+                        </span>
+                      </div>
+                    </div>
+                  </button>
+                ))}
               </div>
-              <span className={styles.meta}>native 10px</span>
-              <div className={styles.cellIconTinyScaled}>
-                <Component size={iconSize} />
-              </div>
-              <span className={styles.meta}>preview ×2.4</span>
-            </>
-          ) : (
-            <div className={styles.cellIcon}>
-              <Component size={iconSize} />
-            </div>
-          )}
-          <span className={styles.name}>{name}</span>
-          <span className={styles.meta}>{figmaPath}</span>
-          <span className={styles.meta}>{nodeId}</span>
-        </div>
-      ))}
+            </ShowcaseSection>
+          );
+        })}
+
+        <ShowcaseSection title="Tokens used">
+          <ShowcaseTokensList tokens={ICON_TOKENS} />
+        </ShowcaseSection>
+
+        <ShowcaseSection title="Guidelines" description="Коли і як використовувати іконки">
+          <ShowcaseDoDont
+            do={[
+              "Використовуй aria-label для інтерактивних іконок",
+              "Бери розмір що відповідає контексту (10px у тексті, 24px у toolbar)",
+            ]}
+            dont={[
+              "Не змінюй розмір через CSS scale — бери правильний компонент",
+              "Не хардкодуй кольори у style — використовуй CSS color / currentColor",
+            ]}
+          />
+        </ShowcaseSection>
+      </ShowcasePageLayout>
     </div>
   );
 }
 
 export function IconsShowcase() {
   return (
-    <ShowcasePageLayout
-      title="Icons"
-      description="Brand + Illustration + Payment + Social + UI + Large + Small + Tiny з Figma SVG export."
-    >
-      <nav className={styles.jumpNav} aria-label="Icon size sections">
-        <a href="#icons-brand">Brand</a>
-        <a href="#icons-illustration">Illustration (100)</a>
-        <a href="#icons-payment">Payment (36)</a>
-        <a href="#icons-social">Social (24)</a>
-        <a href="#icons-large">Large (32–64)</a>
-        <a href="#icons-small">Small (20)</a>
-        <a href="#icons-tiny">Tiny (10)</a>
-        <a href="#icons-ui-24">UI (24)</a>
-      </nav>
-
-      <ShowcaseSection
-        id="icons-brand"
-        title="Brand"
-        description="Icon/Vprytyl (1363:36149) — radial gradient #FDD07F → #FEB93B → #FFA400 (Button Special exception). Icon/24/Mono (760:2510) — white fill, для темного фону."
-      >
-        <IconGridBrand icons={ICONS_BRAND} />
-      </ShowcaseSection>
-
-      <ShowcaseSection
-        title="Brand on dark surface"
-        description="Mono на --surface-primary; Vprytyl gradient без змін."
-      >
-        <div className={styles.onDark}>
-          <IconGridBrand icons={ICONS_BRAND} />
-        </div>
-      </ShowcaseSection>
-
-      <ShowcaseSection
-        id="icons-illustration"
-        title="Illustration (100px)"
-        description="Icon/100×100 (1317:38911, 1318:53781). Figma export: fill black (monochrome silhouette, не multi-color)."
-      >
-        <IconGridIllustration icons={ICONS_ILLUSTRATION} />
-      </ShowcaseSection>
-
-      <ShowcaseSection
-        id="icons-payment"
-        title="Payment (36px)"
-        description="Icons frame (1411:38046). Нативний 36×36. Сіра плитка #F5F5F5 → none; гліф (#1F1F1F / black / #FFA400) → currentColor."
-      >
-        <IconGridLarge icons={ICONS_PAYMENT} />
-      </ShowcaseSection>
-
-      <ShowcaseSection
-        id="icons-social"
-        title="Social (24px)"
-        description="Icon/Social (96:4664). Figma export: одноколірні силуети #001E61 → currentColor (не multi-color brand)."
-      >
-        <IconGrid icons={ICONS_SOCIAL} iconSize={24} />
-      </ShowcaseSection>
-
-      <ShowcaseSection
-        id="icons-large"
-        title="Large (32, 40, 64px)"
-        description="Icon/32–64 з Figma. Сітка показує нативний розмір (не зменшено до 24px)."
-      >
-        <IconGridLarge icons={ICONS_LARGE} />
-      </ShowcaseSection>
-
-      <ShowcaseSection
-        id="icons-small"
-        title="Small (20px)"
-        description="Icon/20 з Figma (3:7945 …). viewBox 0 0 20 20, default size 20."
-      >
-        <IconGrid icons={ICONS_SMALL} iconSize={20} />
-      </ShowcaseSection>
-
-      <ShowcaseSection
-        id="icons-tiny"
-        title="Tiny (10px)"
-        description="Icon/10 з Figma (3:7824 …). viewBox 0 0 10 10, default size 10 (--size-2xsmall)."
-      >
-        <IconGrid icons={ICONS_TINY} iconSize={10} tiny />
-      </ShowcaseSection>
-
-      <ShowcaseSection
-        id="icons-ui-24"
-        title="UI icons (24px)"
-        description="Експорт з Prytula-Responsive → iconFigmaSources.ts. Порівняй з Figma Icons frame (3:7823)."
-      >
-        <IconGrid icons={ICONS_MVP} />
-      </ShowcaseSection>
-
-      <ShowcaseSection
-        title="Social on dark surface"
-        description="Social на --surface-primary — currentColor = --text-inverse."
-      >
-        <div className={styles.onDark}>
-          <IconGrid icons={ICONS_SOCIAL} iconSize={24} />
-        </div>
-      </ShowcaseSection>
-
-      <ShowcaseSection
-        title="On dark surface"
-        description="Той самий набір на --surface-primary — перевір контраст inverse."
-      >
-        <div className={styles.onDark}>
-          <IconGrid icons={ICONS_MVP} />
-        </div>
-      </ShowcaseSection>
-
-      <ShowcaseSection
-        title="Small on dark surface"
-        description="Icon/20 на --surface-primary."
-      >
-        <div className={styles.onDark}>
-          <IconGrid icons={ICONS_SMALL} iconSize={20} />
-        </div>
-      </ShowcaseSection>
-
-      <ShowcaseSection
-        title="Tiny on dark surface"
-        description="Icon/10 на --surface-primary."
-      >
-        <div className={styles.onDark}>
-          <IconGrid icons={ICONS_TINY} iconSize={10} tiny />
-        </div>
-      </ShowcaseSection>
-
-      <ShowcaseSection title="Source">
-        <ul className={styles.tokenList}>
-          <li>
-            {`Export 24px: node.exportAsync({ format: 'SVG_STRING' })`}
-          </li>
-          <li>
-            {`Export 10px / 20px: node.exportAsync({ format: 'SVG' })`}
-          </li>
-          <li>Package: Icons/ + brand/ + illustration/ + payment/ + social/ + large/ + small/ + tiny/</li>
-          <li>UI/Tiny/Small/Large/Social: currentColor where noted</li>
-          <li>Payment: tile #F5F5F5 → none; glyph → currentColor</li>
-          <li>Illustration: black fill as exported</li>
-          <li>Brand Vprytyl: radial gradient #FDD07F / #FEB93B / #FFA400 (approved exception)</li>
-          <li>Brand Mono: white fill — use on dark surface</li>
-          <li>
-            Size default: 36 (Payment) / 24 (UI, Social) / 32–64 (Large) / 20 (Small) / 10
-            (Tiny)
-          </li>
-        </ul>
-      </ShowcaseSection>
-    </ShowcasePageLayout>
+    <ShowcaseThemeProvider>
+      <IconsShowcasePage />
+    </ShowcaseThemeProvider>
   );
 }

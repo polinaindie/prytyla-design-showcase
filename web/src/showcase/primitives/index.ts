@@ -3,7 +3,7 @@ export { ShowcasePageLayout } from "./ShowcasePageLayout";
 export { ShowcaseSection } from "./ShowcaseSection";
 
 export { ShowcaseThemeProvider, useShowcaseTheme, useShowcaseThemeOptional } from "./ShowcaseThemeContext";
-export { ShowcaseToolbar } from "./ShowcaseToolbar";
+export { ShowcaseToolbar, type ShowcaseToolbarFilter } from "./ShowcaseToolbar";
 export { ShowcaseCodeBlock } from "./ShowcaseCodeBlock";
 export { ShowcasePropsTable } from "./ShowcasePropsTable";
 export { ShowcaseTokensList } from "./ShowcaseTokensList";
