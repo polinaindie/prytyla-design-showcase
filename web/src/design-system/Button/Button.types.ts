@@ -8,13 +8,16 @@ import type {
  * Visual variant (Figma `type`). Named `variant` to avoid clashing with
  * the native `<button type="...">` attribute — use `htmlType` for that.
  */
-export type ButtonVariant = "primary" | "secondary" | "contact";
+export type ButtonVariant = "primary" | "secondary" | "contact" | "nav";
 
 /** Surface context (Figma `theme`). `special` is donate CTA only. */
 export type ButtonTheme = "light" | "dark" | "special";
 
 /** Contact chip content (Figma ContactLink `type`). */
 export type ButtonContactType = "email" | "phone";
+
+/** Nav control appearance (Figma NavBatton `outline`). */
+export type ButtonNavAppearance = "outline" | "ghost";
 
 /** Native `<button type>` — not the visual variant. */
 export type ButtonHtmlType = "button" | "submit" | "reset";
@@ -74,7 +77,19 @@ export type ButtonContactProps = ButtonPropsBase & {
   "href" | "children" | "type"
 >;
 
+/**
+ * Pagination / carousel nav (Figma NavBatton) — «попередня», «наступна».
+ */
+export type ButtonNavProps = ButtonPropsBase & {
+  variant: "nav";
+  /** @default "outline" */
+  navAppearance?: ButtonNavAppearance;
+  /** Figma Active — bold label + stronger outline border. */
+  active?: boolean;
+} & ButtonElementProps;
+
 export type ButtonProps =
   | ButtonStandardProps
   | ButtonSpecialProps
-  | ButtonContactProps;
+  | ButtonContactProps
+  | ButtonNavProps;

@@ -12,6 +12,31 @@
   align-items: center;
 }
 
+.navMatrix {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-large);
+}
+
+.navRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-large);
+  align-items: flex-end;
+}
+
+.navCell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xsmall);
+  align-items: flex-start;
+}
+
+.navCaption {
+  font-size: var(--pryt-brand-font-size-200);
+  color: var(--text-muted);
+}
+
 .tokenList {
   margin: 0;
   padding-left: var(--space-large);

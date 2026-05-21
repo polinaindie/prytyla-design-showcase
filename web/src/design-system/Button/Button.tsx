@@ -1,9 +1,15 @@
 import { useId } from "react";
-import type { ButtonContactProps, ButtonProps } from "./Button.types";
+import type {
+  ButtonContactProps,
+  ButtonNavProps,
+  ButtonProps,
+} from "./Button.types";
 import {
   ButtonIconArrowRight,
-  ButtonIconEnvelope,
   ButtonIconMenu,
+  ButtonIconNavArrowLeft,
+  ButtonIconNavArrowRight,
+  ButtonIconEnvelope,
   ButtonIconPhone,
 } from "./ButtonIcons";
 import styles from "./Button.module.css";
@@ -11,6 +17,10 @@ import styles from "./Button.module.css";
 function getThemeClass(props: ButtonProps): string {
   if (props.variant === "contact") {
     return props.theme === "light" ? styles.contactLight : styles.contactDark;
+  }
+
+  if (props.variant === "nav") {
+    return props.navAppearance === "ghost" ? styles.navGhost : styles.navOutline;
   }
 
   if (props.theme === "special") {
@@ -33,14 +43,21 @@ function isContactProps(props: ButtonProps): props is ButtonContactProps {
   return props.variant === "contact";
 }
 
+function isNavProps(props: ButtonProps): props is ButtonNavProps {
+  return props.variant === "nav";
+}
+
 export function Button(props: ButtonProps) {
   if (isContactProps(props)) {
     return <ButtonContact {...props} />;
   }
 
+  if (isNavProps(props)) {
+    return <ButtonNav {...props} />;
+  }
+
   const {
     children,
-    variant,
     theme,
     disabled = false,
     leftIcon,
@@ -100,6 +117,52 @@ export function Button(props: ButtonProps) {
       ) : null}
       {renderLeft}
       <span className={labelClass}>{children}</span>
+      {renderRight}
+    </button>
+  );
+}
+
+function ButtonNav({
+  children,
+  navAppearance = "outline",
+  active = false,
+  disabled = false,
+  leftIcon,
+  rightIcon,
+  showLeftIcon = true,
+  showRightIcon = true,
+  htmlType = "button",
+  className,
+  ...rest
+}: ButtonNavProps) {
+  const themeClass = getThemeClass({
+    variant: "nav",
+    navAppearance,
+    children,
+  });
+  const rootClass = [styles.root, styles.nav, themeClass, className]
+    .filter(Boolean)
+    .join(" ");
+
+  const renderLeft =
+    showLeftIcon &&
+    (leftIcon ?? <ButtonIconNavArrowLeft className={styles.navIcon} />);
+
+  const renderRight =
+    showRightIcon &&
+    (rightIcon ?? <ButtonIconNavArrowRight className={styles.navIcon} />);
+
+  return (
+    <button
+      type={htmlType}
+      className={rootClass}
+      disabled={disabled}
+      data-active={active || undefined}
+      aria-current={active ? "true" : undefined}
+      {...rest}
+    >
+      {renderLeft}
+      <span className={styles.navLabel}>{children}</span>
       {renderRight}
     </button>
   );

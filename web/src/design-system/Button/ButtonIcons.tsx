@@ -30,6 +30,52 @@ export function ButtonIconMenu({ className, gradientId }: IconProps) {
   );
 }
 
+/** Nav control — chevron left (Figma Icon/10/Arrow-Left). */
+export function ButtonIconNavArrowLeft({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      width="10"
+      height="10"
+      viewBox="0 0 10 10"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden
+    >
+      <path
+        d="M6.25 2.5 3.75 5l2.5 2.5"
+        stroke="currentColor"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/** Nav control — chevron right (Figma Icon/10/Arrow-Right). */
+export function ButtonIconNavArrowRight({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      width="10"
+      height="10"
+      viewBox="0 0 10 10"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden
+    >
+      <path
+        d="M3.75 2.5 6.25 5l-2.5 2.5"
+        stroke="currentColor"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 /** Contact chip — envelope (Figma Email Icon, 20px). */
 export function ButtonIconEnvelope({ className }: { className?: string }) {
   return (

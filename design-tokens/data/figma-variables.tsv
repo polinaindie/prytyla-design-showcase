@@ -153,6 +153,7 @@ VariableID:219:3827	Alias	space/6xlarge	FLOAT	alias:VariableID:219:3771
 VariableID:219:3828	Alias	space/7xlarge	FLOAT	alias:VariableID:219:3772
 VariableID:219:3829	Alias	space/8xlarge	FLOAT	alias:VariableID:219:3773
 VariableID:219:3831	Alias	size/xsmall	FLOAT	alias:VariableID:208:3757
+VariableID:299:0010	Alias	size/2xsmall	FLOAT	10
 VariableID:219:3832	Alias	size/small	FLOAT	alias:VariableID:208:3760
 VariableID:219:3833	Alias	size/medium	FLOAT	alias:VariableID:208:3761
 VariableID:219:3834	Alias	size/large	FLOAT	alias:VariableID:208:3762

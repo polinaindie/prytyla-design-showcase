@@ -20,7 +20,7 @@
     border-color 0.2s ease;
 }
 
-.root:disabled {
+.root:disabled:not(.nav) {
   background: var(--surface-disabled);
   color: var(--text-disabled);
   border-color: transparent;
@@ -231,4 +231,95 @@
   border-color: transparent;
   cursor: not-allowed;
   pointer-events: none;
+}
+
+/* Nav (Figma NavBatton) — compact prev/next control */
+.nav {
+  height: var(--size-2xlarge);
+  min-height: var(--size-2xlarge);
+  padding: var(--space-small) var(--space-medium);
+  gap: var(--space-small);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.navLabel {
+  display: inline-block;
+}
+
+.navIcon {
+  flex-shrink: 0;
+  width: var(--size-2xsmall);
+  height: var(--size-2xsmall);
+  color: currentColor;
+}
+
+/* Nav · Outline */
+.navOutline {
+  background: var(--surface-default);
+  border-width: var(--border-width-small);
+  border-style: solid;
+  border-color: var(--border-default);
+  color: var(--text-default);
+}
+
+.navOutline:hover:not(:disabled):not([data-active="true"]) {
+  background: var(--surface-subtle-neutral);
+  border-color: var(--border-default);
+}
+
+.nav.navOutline:disabled {
+  background: transparent;
+  border-width: var(--border-width-small);
+  border-style: solid;
+  border-color: var(--text-disabled);
+  color: var(--text-disabled);
+  cursor: not-allowed;
+  padding-left: var(--space-medium);
+  padding-right: var(--space-medium);
+}
+
+.nav.navOutline:disabled .navLabel {
+  font-weight: 400;
+}
+
+.nav.navOutline:disabled .navIcon {
+  color: var(--text-disabled);
+}
+
+.navOutline[data-active="true"]:not(:disabled) {
+  border-width: var(--border-width-medium);
+  border-color: var(--border-strong);
+  padding-left: var(--space-large);
+  padding-right: var(--space-large);
+}
+
+.navOutline[data-active="true"]:not(:disabled) .navLabel {
+  font-weight: 700;
+}
+
+/* Nav · Ghost */
+.navGhost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-default);
+}
+
+.navGhost:hover:not(:disabled) .navLabel {
+  text-decoration: underline;
+}
+
+.nav.navGhost:disabled {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+.nav.navGhost:disabled .navLabel {
+  text-decoration: none;
+}
+
+.nav.navGhost:disabled .navIcon {
+  color: var(--text-disabled);
 }

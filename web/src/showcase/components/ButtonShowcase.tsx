@@ -15,6 +15,9 @@ const TOKENS_USED = [
   "Contact light: --surface-contact-subtle, --surface-contact-subtle-hover, --text-inverse",
   "Contact dark: --border-contact, --text-link, hover --surface-default",
   "Contact layout: --space-medium/large/2xlarge, --radius-round, --size-medium (icon)",
+  "Nav: --size-2xlarge height, --size-2xsmall icons, --border-default, --text-default",
+  "Nav outline hover: --surface-subtle-neutral; active: --border-strong, --border-width-medium",
+  "Nav ghost hover: underline on label; disabled: --text-disabled",
   "Typography: --pryt-brand-font-size-300, Inter",
 ];
 
@@ -110,6 +113,60 @@ export function ButtonShowcase() {
         </div>
       </ShowcaseSection>
 
+      <ShowcaseSection
+        title="Nav"
+        description="variant=nav — Figma NavBatton (state=Disabled). Hover — наведи курсор."
+      >
+        <div className={styles.navMatrix}>
+          <div className={styles.navRow}>
+            <div className={styles.navCell}>
+              <span className={styles.navCaption}>Outline · Default</span>
+              <Button variant="nav" navAppearance="outline">
+                попередня
+              </Button>
+            </div>
+            <div className={styles.navCell}>
+              <span className={styles.navCaption}>Outline · Hover</span>
+              <Button variant="nav" navAppearance="outline">
+                попередня
+              </Button>
+            </div>
+            <div className={styles.navCell}>
+              <span className={styles.navCaption}>Outline · Disabled</span>
+              <Button variant="nav" navAppearance="outline" disabled>
+                попередня
+              </Button>
+            </div>
+            <div className={styles.navCell}>
+              <span className={styles.navCaption}>Outline · Active</span>
+              <Button variant="nav" navAppearance="outline" active>
+                попередня
+              </Button>
+            </div>
+          </div>
+          <div className={styles.navRow}>
+            <div className={styles.navCell}>
+              <span className={styles.navCaption}>Ghost · Default</span>
+              <Button variant="nav" navAppearance="ghost">
+                попередня
+              </Button>
+            </div>
+            <div className={styles.navCell}>
+              <span className={styles.navCaption}>Ghost · Hover</span>
+              <Button variant="nav" navAppearance="ghost">
+                попередня
+              </Button>
+            </div>
+            <div className={styles.navCell}>
+              <span className={styles.navCaption}>Ghost · Disabled</span>
+              <Button variant="nav" navAppearance="ghost" disabled>
+                попередня
+              </Button>
+            </div>
+          </div>
+        </div>
+      </ShowcaseSection>
+
       <ShowcaseSection title="Disabled">
         <div className={styles.row}>
           <Button variant="primary" theme="light" disabled>
@@ -200,6 +257,10 @@ export function ButtonShowcase() {
                 Contact — email/phone на футері та темних секціях (mailto: /
                 tel:)
               </li>
+              <li>
+                Nav — «попередня» / «наступна» у каруселях (outline на світлому
+                фоні, ghost без рамки)
+              </li>
             </ul>
           </div>
 
@@ -230,6 +291,10 @@ export function ButtonShowcase() {
               <li>
                 Не використовуй Contact як звичайну action-кнопку — це лінк-чіп,
                 не primary CTA
+              </li>
+              <li>
+                Не використовуй Nav для основних CTA — лише пагінація /
+                навігація слайдера
               </li>
               <li>
                 Не змінюй padding/height — вони фіксовані за дизайн-системою

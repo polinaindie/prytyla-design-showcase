@@ -257,6 +257,45 @@ Resolve variables with `getLocalVariableCollections()`, `getLocalVariables()`, f
 
 ---
 
+## Token approximation rule
+
+When mapping Figma values to tokens, treat **colors** and **sizes** differently.
+
+### Colors (and other perceptual tokens)
+
+- Prefer the **closest existing** Alias or Mapped token.
+- **Never** add raw hex/rgb in components to “match Figma exactly.”
+- Small drift in Figma (e.g. `#1f1f1f` vs black) is usually accidental, not a deliberate second color — use the semantic token.
+- Escalate to the designer only when the mismatch looks **intentional** (e.g. two clearly different roles in the same frame).
+
+**Examples:**
+
+| Figma | Use | Do not |
+|-------|-----|--------|
+| `#1f1f1f` body text | `--text-default` | New “softer black” or raw hex |
+| `#e7e7e7` border | `--border-default` | `--bg-badge` (wrong role) |
+| `#b0b0b0` muted | `--text-disabled` | Lighter one-off gray |
+
+### Sizes, radii, border-widths
+
+- These affect **pixel layout**; 8px vs 10px vs 12px are visibly different — do not “approximate” a smaller size token.
+- If no token matches: **add** one in Figma + `figma-variables.tsv` + `npm run build:tokens`, then use it.
+- Temporary gap only: use the nearest size **with a TODO** to add the correct token — not as a permanent substitute.
+
+**Examples:**
+
+| Figma | Use | Do not |
+|-------|-----|--------|
+| 10px icon | `--size-2xsmall` (new) | `--size-small` (8px) without TODO |
+| 22px radius | `--radius-2xlarge` (20px) if acceptable, else new token | Raw `22px` in CSS |
+| 36px nav height | `--size-2xlarge` | `--size-4xlarge` (44px) |
+
+### Confirm with designer
+
+Only when a color or size mismatch appears **deliberate** in context (two roles, spec annotation, or repeated exact value across components) — not for routine Figma export drift.
+
+---
+
 ## Approved exceptions
 
 The design system uses CSS custom properties for all UI styling.
