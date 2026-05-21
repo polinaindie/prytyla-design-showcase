@@ -3,9 +3,11 @@ import type {
   ButtonContactProps,
   ButtonNavProps,
   ButtonProps,
+  ButtonSocialProps,
 } from "./Button.types";
 import {
   ButtonIconArrowRight,
+  ButtonIconFacebook,
   ButtonIconMenu,
   ButtonIconNavArrowLeft,
   ButtonIconNavArrowRight,
@@ -21,6 +23,10 @@ function getThemeClass(props: ButtonProps): string {
 
   if (props.variant === "nav") {
     return props.navAppearance === "ghost" ? styles.navGhost : styles.navOutline;
+  }
+
+  if (props.variant === "social") {
+    return props.theme === "light" ? styles.socialLight : styles.socialDark;
   }
 
   if (props.theme === "special") {
@@ -47,9 +53,17 @@ function isNavProps(props: ButtonProps): props is ButtonNavProps {
   return props.variant === "nav";
 }
 
+function isSocialProps(props: ButtonProps): props is ButtonSocialProps {
+  return props.variant === "social";
+}
+
 export function Button(props: ButtonProps) {
   if (isContactProps(props)) {
     return <ButtonContact {...props} />;
+  }
+
+  if (isSocialProps(props)) {
+    return <ButtonSocial {...props} />;
   }
 
   if (isNavProps(props)) {
@@ -209,6 +223,36 @@ function ButtonContact({
         ) : null}
         <span className={styles.contactValue}>{children}</span>
       </span>
+      {icon}
+    </a>
+  );
+}
+
+function ButtonSocial({
+  theme,
+  socialNetwork,
+  href,
+  className,
+  ...rest
+}: ButtonSocialProps) {
+  const themeClass = getThemeClass({
+    variant: "social",
+    theme,
+    socialNetwork,
+    href,
+    "aria-label": rest["aria-label"],
+  });
+  const rootClass = [styles.root, styles.social, themeClass, className]
+    .filter(Boolean)
+    .join(" ");
+
+  const icon =
+    socialNetwork === "facebook" ? (
+      <ButtonIconFacebook className={styles.socialIcon} theme={theme} />
+    ) : null;
+
+  return (
+    <a href={href} className={rootClass} {...rest}>
       {icon}
     </a>
   );

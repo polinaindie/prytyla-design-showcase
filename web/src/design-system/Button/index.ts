@@ -5,6 +5,8 @@ export type {
   ButtonHtmlType,
   ButtonNavAppearance,
   ButtonNavProps,
+  ButtonSocialNetwork,
+  ButtonSocialProps,
   ButtonProps,
   ButtonSpecialProps,
   ButtonStandardProps,

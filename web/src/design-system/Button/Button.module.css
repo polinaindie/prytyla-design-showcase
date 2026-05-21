@@ -140,6 +140,7 @@
 }
 
 .special:hover:not(:disabled) .icon path {
+  fill: var(--text-default);
   stroke: var(--text-default);
 }
 
@@ -322,4 +323,46 @@
 
 .nav.navGhost:disabled .navIcon {
   color: var(--text-disabled);
+}
+
+/* Social (Figma SocialLink) — 44px circular icon link */
+.social {
+  width: var(--size-4xlarge);
+  height: var(--size-4xlarge);
+  min-height: var(--size-4xlarge);
+  padding: 0;
+  gap: 0;
+  flex-shrink: 0;
+  text-decoration: none;
+  border-style: solid;
+  border-width: var(--border-width-small);
+}
+
+.socialIcon {
+  flex-shrink: 0;
+  width: var(--size-large);
+  height: var(--size-large);
+}
+
+/* Social · Light (on dark / inverse surfaces) */
+.socialLight {
+  background: var(--surface-contact-subtle);
+  border-color: transparent;
+  color: var(--text-inverse);
+}
+
+.socialLight:hover {
+  background: var(--surface-contact-subtle-hover);
+}
+
+/* Social · Dark (on light surfaces) */
+.socialDark {
+  background: transparent;
+  border-color: var(--border-contact);
+  color: var(--text-link);
+}
+
+.socialDark:hover {
+  background: var(--surface-default);
+  border-color: var(--border-contact);
 }

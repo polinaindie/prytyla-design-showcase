@@ -8,7 +8,10 @@ import type {
  * Visual variant (Figma `type`). Named `variant` to avoid clashing with
  * the native `<button type="...">` attribute — use `htmlType` for that.
  */
-export type ButtonVariant = "primary" | "secondary" | "contact" | "nav";
+export type ButtonVariant = "primary" | "secondary" | "contact" | "nav" | "social";
+
+/** Social network (Figma SocialLink `network`). */
+export type ButtonSocialNetwork = "facebook";
 
 /** Surface context (Figma `theme`). `special` is donate CTA only. */
 export type ButtonTheme = "light" | "dark" | "special";
@@ -88,8 +91,27 @@ export type ButtonNavProps = ButtonPropsBase & {
   active?: boolean;
 } & ButtonElementProps;
 
+/**
+ * Social icon link (Figma SocialLink) — circular 44px, icon-only.
+ * Renders as `<a>`; `aria-label` is required.
+ */
+export type ButtonSocialProps = Omit<
+  ButtonPropsBase,
+  "children" | "leftIcon" | "rightIcon" | "showLeftIcon" | "showRightIcon"
+> & {
+  variant: "social";
+  theme: "light" | "dark";
+  socialNetwork: ButtonSocialNetwork;
+  href: string;
+  "aria-label": string;
+} & Omit<
+  AnchorHTMLAttributes<HTMLAnchorElement>,
+  "href" | "children" | "type"
+>;
+
 export type ButtonProps =
   | ButtonStandardProps
   | ButtonSpecialProps
   | ButtonContactProps
-  | ButtonNavProps;
+  | ButtonNavProps
+  | ButtonSocialProps;

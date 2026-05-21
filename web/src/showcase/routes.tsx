@@ -1,5 +1,6 @@
 import type { ComponentType } from "react";
 import { ButtonShowcase } from "./components/ButtonShowcase";
+import { IconsShowcase } from "./components/IconsShowcase";
 import { ColorsPage } from "./tokens/ColorsPage";
 import { RadiusPage } from "./tokens/RadiusPage";
 import { SpacingPage } from "./tokens/SpacingPage";
@@ -80,6 +81,12 @@ export const showcaseRoutes: ShowcaseGroup[] = [
             label: "Button",
             path: "button",
             Component: ButtonShowcase,
+          },
+          {
+            id: "icons",
+            label: "Icons",
+            path: "icons",
+            Component: IconsShowcase,
           },
         ],
       },

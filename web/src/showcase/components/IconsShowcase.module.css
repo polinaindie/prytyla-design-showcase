@@ -1,0 +1,65 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-large);
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-small);
+  padding: var(--space-large);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-large);
+  background: var(--surface-default);
+  color: var(--text-default);
+}
+
+.cellIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-4xlarge);
+  height: var(--size-4xlarge);
+}
+
+.name {
+  font-size: var(--pryt-brand-font-size-300);
+  font-weight: 600;
+  text-align: center;
+}
+
+.meta {
+  font-size: var(--pryt-brand-font-size-200);
+  color: var(--text-muted);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  text-align: center;
+}
+
+.onDark {
+  display: inline-block;
+  padding: var(--space-large);
+  background: var(--surface-primary);
+  border-radius: var(--radius-medium);
+  color: var(--text-inverse);
+}
+
+.onDark .cell {
+  background: transparent;
+  border-color: var(--border-inverse);
+  color: var(--text-inverse);
+}
+
+.tokenList {
+  margin: 0;
+  padding-left: var(--space-large);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--pryt-brand-font-size-300);
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.tokenList li {
+  margin-bottom: var(--space-xsmall);
+}

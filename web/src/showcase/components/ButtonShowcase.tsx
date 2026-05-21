@@ -18,7 +18,10 @@ const TOKENS_USED = [
   "Nav: --size-2xlarge height, --size-2xsmall icons, --border-default, --text-default",
   "Nav outline hover: --surface-subtle-neutral; active: --border-strong, --border-width-medium",
   "Nav ghost hover: underline on label; disabled: --text-disabled",
+  "Social light: --surface-contact-subtle/hover; Social dark: --border-contact, hover --surface-default",
+  "Social: --size-4xlarge circle, --size-large icon, --radius-round",
   "Typography: --pryt-brand-font-size-300, Inter",
+  "Button icons: IconMenu, IconArrowUpRight from design-system/Icons (Figma export)",
 ];
 
 export function ButtonShowcase() {
@@ -109,6 +112,38 @@ export function ButtonShowcase() {
             >
               0 800 000 000
             </Button>
+          </div>
+        </div>
+      </ShowcaseSection>
+
+      <ShowcaseSection
+        title="Social"
+        description="variant=social — Figma SocialLink, 44px icon-only (Facebook). Hover — наведи курсор."
+      >
+        <div className={styles.row}>
+          <div className={styles.navCell}>
+            <span className={styles.navCaption}>Dark · Default</span>
+            <Button
+              variant="social"
+              theme="dark"
+              socialNetwork="facebook"
+              href="https://www.facebook.com/"
+              aria-label="Facebook"
+            />
+          </div>
+        </div>
+        <div className={styles.onDark}>
+          <div className={styles.row}>
+            <div className={styles.navCell}>
+              <span className={styles.navCaption}>Light · Default</span>
+              <Button
+                variant="social"
+                theme="light"
+                socialNetwork="facebook"
+                href="https://www.facebook.com/"
+                aria-label="Facebook"
+              />
+            </div>
           </div>
         </div>
       </ShowcaseSection>
@@ -261,6 +296,10 @@ export function ButtonShowcase() {
                 Nav — «попередня» / «наступна» у каруселях (outline на світлому
                 фоні, ghost без рамки)
               </li>
+              <li>
+                Social — іконка соцмережі у футері (theme=dark на світлому фоні,
+                theme=light на темному)
+              </li>
             </ul>
           </div>
 
@@ -295,6 +334,10 @@ export function ButtonShowcase() {
               <li>
                 Не використовуй Nav для основних CTA — лише пагінація /
                 навігація слайдера
+              </li>
+              <li>
+                Не використовуй Social як текстову кнопку — лише icon-only з
+                aria-label
               </li>
               <li>
                 Не змінюй padding/height — вони фіксовані за дизайн-системою
