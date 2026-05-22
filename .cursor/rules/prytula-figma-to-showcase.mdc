@@ -143,19 +143,45 @@ Verify: `npm run build` in `web/` (or `tsc -b`); no raw hex in CSS.
 
 ---
 
-## Phase 3: Showcase page + routes
+## Phase 3: Showcase page + registration & routes
 
 1. Create `web/src/showcase/components/[Name]Showcase.tsx` using primitives from `web/src/showcase/primitives/` (див. **Showcase Page Standards**).
 2. Sections: дотримуйся порядку з **Showcase Page Standards** (не legacy «Variants → Sizes → …» якщо суперечить стандарту).
 3. **Tokens used** — list Figma paths + CSS vars (e.g. `action/donate` → `--action-donate`).
 4. Copy: **Ukrainian**, realistic («Підтримати», «Скасувати»).
-5. Register in **`web/src/showcase/routes.tsx`** (see below).
 
-Tell user: `npm run dev` → `http://localhost:5173/showcase/[path]`.
+Then **mandatory** registration (do not skip — even if the user did not specify a subgroup):
+
+### Step 3.1: Classify component
+
+Before registering, classify using **Component Categorization** decision tree (see section above). **State your reasoning** in the Phase 3 reply:
+
+- Component name: [X]
+- Imports: [list other DS components imported; Icons / Illustration3D do not count]
+- Has card-shaped surface? [yes/no]
+- Is complex structural? [yes/no]
+- Is a page section? [yes/no]
+
+→ Category: [Building Blocks / Components / Cards / Composite / Patterns/Page Sections / Foundations → Tokens|Layout|Iconography]  
+→ Reason: [one sentence why]
+
+If the component is a token/layout/iconography primitive, register under **Foundations** (not Components). Do not guess — apply the tree.
+
+### Step 3.2: Update routes.tsx
+
+Add to the chosen subgroup in `web/src/showcase/routes.tsx` using the **Routes Structure** template and **`routes.tsx` structure (current)** below (`ShowcasePageConfig` shape, imports, `path` slug).
+
+### Step 3.3: Show diff
+
+Show the user **`git diff web/src/showcase/routes.tsx`** (or an equivalent diff of the routes entry) **before** proposing commit.
+
+Tell user: `npm run dev` → `http://localhost:5173/showcase/[path]` — confirm sidebar shows the new entry under the classified subgroup.
 
 ### STOP — Phase 3 deliverables
 
+- **Classification block** (Step 3.1) — mandatory.
 - List of **new/updated files** (showcase + `routes.tsx`).
+- **`routes.tsx` diff** (Step 3.3) — mandatory.
 - **Proposed commit message** (do not run `git commit` / `git push` unless asked).
 - **Wait for user OK** (and visual check) before commit.
 
@@ -218,6 +244,7 @@ Existing: `web/src/showcase/tokens/` — Colors, Typography, Spacing, Radius. Wh
 ## Pitfalls
 
 - Skipping mapping table and coding from hex by eye
+- Skipping **Step 3.1** classification or registering in the wrong subgroup without reasoning
 - Relative `NavLink` paths in showcase sidebar
 - Component without showcase or without `routes.tsx` entry
 - `comingSoon: true` left on Components after first component ships
@@ -456,12 +483,23 @@ When registering in Phase 3, use the subgroup from this decision tree — see al
 
 ## How to invoke this skill
 
-**Minimum prompt** (user can write only this):
+**Minimum prompt the user needs to write:**
 
 ```
 Додай компонент [Name] за нашими скілами.
-Figma: [https://figma.com/design/...?node-id=...]
+Figma: [URL with node-id]
 ```
+
+**Cursor will:**
+
+1. Read this skill and `prytula-design-system`
+2. **Phase 1:** Read Figma node, present mapping table, **STOP for OK**
+3. **Phase 2:** Generate component files, show diff, **STOP for OK**
+4. **Phase 3.1:** Classify component using decision tree (**mandatory**)
+5. **Phase 3.2:** Register in `routes.tsx` in the correct subgroup
+6. **Phase 3.3:** Show `routes.tsx` diff, **STOP for OK**
+
+No additional instructions needed — classification is automatic based on the decision tree.
 
 **Optional additions:**
 
@@ -481,4 +519,4 @@ Figma: https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?no
 
 **Example (agent after Phase 1):** structure + mapping table → wait.  
 **After Phase 2:** files + `DonateButton.tsx` → wait.  
-**After Phase 3:** `DonateButtonShowcase.tsx`, `routes.tsx` diff + commit message → wait.
+**After Phase 3:** classification block + `DonateButtonShowcase.tsx` + `routes.tsx` diff + commit message → wait.
