@@ -15,6 +15,7 @@ export { IconDocumentView } from "./IconDocumentView";
 
 export {
   IconChevronDown10,
+  IconDropdownArrow10,
   IconArrowLeft10,
   IconArrowRight10,
   IconArrowLeftDouble10,
@@ -28,6 +29,7 @@ export {
   IconEmail20,
   IconArrowDown20,
   IconClose20,
+  IconCopy20,
 } from "./small";
 
 export {

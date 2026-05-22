@@ -13,6 +13,7 @@ import { QuickAmountShowcase } from "./components/QuickAmountShowcase";
 import { DirectionsExternalLinksShowcase } from "./components/DirectionsExternalLinksShowcase";
 import { LinkCardShowcase } from "./components/LinkCardShowcase";
 import { VacancyCardShowcase } from "./components/VacancyCardShowcase";
+import { GeneralWidgetShowcase } from "./components/GeneralWidgetShowcase";
 import { SubPageHeroShowcase } from "./components/SubPageHeroShowcase";
 import { MenuShowcase } from "./components/MenuShowcase";
 import { BadgeShowcase } from "./components/BadgeShowcase";
@@ -253,8 +254,14 @@ export const showcaseRoutes: ShowcaseGroup[] = [
       {
         id: "composite",
         label: "Composite",
-        comingSoon: true,
-        pages: [],
+        pages: [
+          {
+            id: "general-widget",
+            label: "General Widget",
+            path: "general-widget",
+            Component: GeneralWidgetShowcase,
+          },
+        ],
       },
     ],
   },

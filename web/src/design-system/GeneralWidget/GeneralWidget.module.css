@@ -1,0 +1,267 @@
+/* Figma GeneralWidget 287:14741 — ітерація 1 (once, paymentInfo, veryShort) */
+
+.root {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 20.5625rem;
+  overflow: hidden;
+  border-radius: var(--radius-large);
+  background: var(--surface-default);
+}
+
+.rootVeryShort {
+  border: var(--border-width-medium) solid var(--accent-secondary);
+  border-radius: var(--radius-medium);
+}
+
+.progressSection {
+  display: flex;
+  gap: var(--space-medium);
+  align-items: flex-start;
+  padding: var(--space-large);
+  border-top: none;
+  border-right: var(--border-width-small) solid var(--pryt-brand-neutral-100);
+  border-bottom: var(--border-width-small) solid var(--pryt-brand-neutral-100);
+  border-left: var(--border-width-small) solid var(--pryt-brand-neutral-100);
+  color: var(--text-default);
+  background: var(--surface-subtle-neutral);
+}
+
+.progressSectionCompact {
+  border: none;
+  background: var(--surface-default);
+}
+
+.progressThumb {
+  flex-shrink: 0;
+  width: 4.625rem;
+  height: 5.9375rem;
+  overflow: hidden;
+  border-radius: var(--radius-small);
+  object-fit: cover;
+}
+
+.progressBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-medium);
+  min-width: 0;
+}
+
+.progressTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--pryt-brand-font-size-450);
+  font-weight: 900;
+  line-height: 1.2;
+  color: var(--text-default);
+}
+
+.progressBarWrap {
+  width: 100%;
+}
+
+.progressBarWrap :global([role="progressbar"]) {
+  max-width: none;
+}
+
+.progressStats {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-medium);
+}
+
+.statBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3xsmall);
+}
+
+.statBlockEnd {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.statLabel {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-300);
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--text-muted);
+}
+
+.statValue {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-400);
+  font-weight: 600;
+  line-height: 1.43;
+  color: var(--text-default);
+}
+
+.statValueMuted {
+  color: var(--text-muted);
+}
+
+.hero {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 329 / 374;
+  overflow: hidden;
+  background: var(--surface-subtle-neutral);
+}
+
+.heroImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-large);
+  padding: var(--space-2xlarge) var(--space-large) var(--space-3xlarge);
+  border-right: var(--border-width-small) solid var(--border-default);
+  border-bottom: var(--border-width-small) solid var(--border-default);
+  border-left: var(--border-width-small) solid var(--border-default);
+  border-radius: 0 0 var(--radius-large) var(--radius-large);
+}
+
+.tabs {
+  display: flex;
+  gap: var(--space-small);
+  width: 100%;
+}
+
+.tabs .tabChip {
+  display: flex;
+  flex: 1 1 0;
+  flex-shrink: 1;
+  min-width: 0;
+  width: 100%;
+}
+
+.amountBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-large);
+  width: 100%;
+}
+
+.amountInput {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xsmall);
+  width: 100%;
+}
+
+.amountRow {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-small);
+}
+
+.amountValue {
+  margin: 0;
+  font-family: "Mariupol", Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-1000);
+  font-weight: 400;
+  line-height: 1;
+  color: var(--text-muted);
+}
+
+.currencyDropdown {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--space-3xsmall);
+}
+
+.currencyLabel {
+  margin: 0;
+  font-family: "Mariupol", Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-700);
+  font-weight: 500;
+  line-height: 1.29;
+  color: var(--text-muted);
+}
+
+.currencyIcon {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--text-muted);
+  transform: scaleY(-1);
+}
+
+.amountUnderline {
+  width: 100%;
+  height: 1px;
+  background: var(--border-default);
+}
+
+.quickAmounts {
+  display: flex;
+  gap: var(--space-small);
+  width: 100%;
+}
+
+.quickAmount {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.paymentInfoRoot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
+  width: 100%;
+}
+
+.paymentInfoSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-small);
+  width: 100%;
+}
+
+.sectionHeading {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-250);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.subscriptionPlaceholder {
+  margin: 0;
+  padding: var(--space-large);
+  border: var(--border-width-small) dashed var(--border-default);
+  border-radius: var(--radius-large);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-400);
+  line-height: 1.43;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-2xsmall);
+  width: 100%;
+}
+
+.actionFull {
+  width: 100%;
+}
+
+.bankIcon {
+  flex-shrink: 0;
+}

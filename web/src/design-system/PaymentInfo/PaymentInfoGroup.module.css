@@ -1,0 +1,6 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
+  width: 100%;
+}

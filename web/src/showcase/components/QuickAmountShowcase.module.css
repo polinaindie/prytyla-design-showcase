@@ -1,0 +1,37 @@
+.pageRoot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xlarge);
+  color: var(--text-default);
+}
+
+.pageRoot[data-showcase-theme="dark"] {
+  color: var(--text-inverse);
+}
+
+.variantGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-medium);
+  padding-top: var(--space-large);
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-small);
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-small);
+}
+
+.cellLabel {
+  margin: 0;
+  font-size: var(--pryt-brand-font-size-200);
+  color: var(--text-muted);
+}

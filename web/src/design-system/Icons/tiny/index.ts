@@ -1,4 +1,5 @@
 export { IconChevronDown10 } from "./IconChevronDown10";
+export { IconDropdownArrow10 } from "./IconDropdownArrow10";
 export { IconArrowLeft10 } from "./IconArrowLeft10";
 export { IconArrowRight10 } from "./IconArrowRight10";
 export { IconArrowLeftDouble10 } from "./IconArrowLeftDouble10";

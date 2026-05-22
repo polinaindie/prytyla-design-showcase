@@ -1,0 +1,59 @@
+/* Figma QuickAmount 1407:37060 — Default · Hover (як ChipPaymentType) */
+
+.root {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-height: var(--size-2xlarge);
+  padding: var(--space-small);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-round);
+  background: var(--surface-subtle-neutral);
+  box-shadow: 0 0 0 0 transparent;
+  color: var(--text-default);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-300);
+  font-weight: 400;
+  line-height: 1.4;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.root:hover:not(:disabled) {
+  border-color: var(--accent-secondary);
+  background: var(--surface-subtle-neutral);
+  /* Другий px обводки без зміни border-box (Figma hover 2px) */
+  box-shadow: 0 0 0 1px var(--accent-secondary);
+}
+
+.root:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.root:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2xsmall);
+}
+
+.prefix,
+.amount {
+  color: var(--text-default);
+}
+
+.currency {
+  font-weight: 300;
+  color: var(--text-muted);
+}

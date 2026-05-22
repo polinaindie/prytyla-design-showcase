@@ -1,0 +1,232 @@
+/* Figma PaymentInfo 284:13904 — Default · Hover · OnClick */
+
+.item {
+  box-sizing: border-box;
+  width: 100%;
+  border: var(--border-width-small) solid var(--pryt-brand-neutral-100);
+  border-radius: var(--radius-large);
+  background: var(--surface-default);
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.item:hover:not(.open) {
+  border-color: var(--border-default);
+  background: var(--surface-subtle-neutral);
+}
+
+.open {
+  border-color: var(--border-default);
+  background: var(--surface-default);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-medium);
+  width: 100%;
+  padding: var(--space-medium);
+  border: none;
+  border-radius: inherit;
+  background: transparent;
+  text-align: left;
+  color: var(--text-default);
+  cursor: pointer;
+}
+
+.open .header {
+  border-radius: calc(var(--radius-large) - 1px) calc(var(--radius-large) - 1px) 0 0;
+  /* Figma brand/accent-soft #ffda46 → orange/300 */
+  background: var(--pryt-brand-orange-300);
+}
+
+.header:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.headerMain {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: var(--space-medium);
+  min-width: 0;
+}
+
+.iconTile {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-2xlarge);
+  height: var(--size-2xlarge);
+  border-radius: 10px;
+  background: var(--surface-subtle-neutral);
+  color: var(--text-default);
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.item:hover:not(.open) .iconTile {
+  background: var(--accent-highlight);
+}
+
+/* Figma OnClick — black tile + white glyph */
+.open .iconTile {
+  background: var(--bg-inverse-strong);
+  color: var(--text-on-inverse);
+}
+
+.title {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-400);
+  font-weight: 600;
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: var(--icon-muted);
+  transform: rotate(-90deg) scaleX(-1) rotate(270deg);
+  transition: transform 0.2s ease;
+}
+
+.chevron svg {
+  display: block;
+}
+
+.chevron path {
+  stroke: var(--icon-muted);
+}
+
+.open .chevron {
+  transform: rotate(-90deg) scaleX(-1) rotate(270deg) rotate(450deg) rotate(90deg);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-small);
+  padding: 0 var(--border-width-small) var(--border-width-small);
+}
+
+.panel[hidden] {
+  display: none;
+}
+
+.description {
+  padding: var(--space-large) var(--space-medium) var(--space-medium);
+  border-bottom: var(--border-width-small) solid var(--surface-subtle-neutral);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-300);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-default);
+}
+
+.description :where(p) {
+  margin: 0;
+}
+
+.field {
+  border-bottom: var(--border-width-small) solid var(--surface-subtle-neutral);
+}
+
+.field:last-child {
+  border-bottom: none;
+}
+
+.fieldInner {
+  margin-top: var(--space-3xsmall);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xsmall);
+  /* TODO: replace 6px with space token when added in Figma */
+  padding: var(--space-large) var(--space-medium) 6px;
+}
+
+.fieldLabel {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-200);
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--text-muted);
+}
+
+.valueRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xlarge);
+  min-width: 0;
+}
+
+.value {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-400);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-default);
+  word-break: break-word;
+}
+
+.value :where(a) {
+  font-weight: 600;
+  text-decoration: underline;
+  color: inherit;
+}
+
+/* Figma Copy Button 284:13986 — 36×36, icon 20×20, padding 8px */
+.copyButton {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-2xlarge);
+  height: var(--size-2xlarge);
+  padding: var(--space-small);
+  border: none;
+  border-radius: var(--radius-small);
+  background: transparent;
+  color: var(--accent-secondary);
+  cursor: pointer;
+}
+
+.copyButton svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+.copyButton:hover {
+  background: var(--surface-subtle-neutral);
+}
+
+.copyButton:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.copyButtonCopied {
+  width: auto;
+  min-width: var(--size-2xlarge);
+  padding-inline: var(--space-small);
+}
+
+.copyFeedback {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-200);
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+

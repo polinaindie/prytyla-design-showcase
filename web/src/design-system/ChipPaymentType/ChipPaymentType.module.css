@@ -1,0 +1,100 @@
+/* Figma ChipPaymentType 284:14412 — Default · Hover (selected) · optional Label Badge */
+
+.wrapper {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Figma gap 5px — найближче --space-xsmall (4px) */
+  gap: var(--space-xsmall);
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--size-2xsmall) var(--space-medium);
+  border: var(--border-width-medium) solid var(--border-default);
+  border-radius: var(--radius-large);
+  background: var(--surface-default);
+  color: var(--text-muted);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-250);
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.root:hover:not(:disabled),
+.selected {
+  border-color: var(--accent-secondary);
+  background: var(--surface-page);
+  color: var(--text-default);
+}
+
+.root:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.root:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.iconWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Figma icon frame radius 10px — між radius-medium (8) і large (12) */
+  border-radius: 10px;
+  color: inherit;
+}
+
+.iconWrap svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+.iconWrap path {
+  fill: currentColor;
+}
+
+.root:hover:not(:disabled) .iconWrap,
+.selected .iconWrap {
+  color: var(--accent-secondary);
+}
+
+.label {
+  word-break: break-word;
+  white-space: nowrap;
+}
+
+.recommendBadge {
+  position: absolute;
+  top: -10.5px;
+  left: 50%;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 18px;
+  padding: 2px var(--space-small);
+  border-radius: var(--radius-round);
+  background: var(--accent-secondary);
+  color: var(--text-default);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-100);
+  font-weight: 600;
+  line-height: 1.4;
+  white-space: nowrap;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
