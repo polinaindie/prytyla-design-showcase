@@ -181,15 +181,14 @@ Target: `ShowcaseGroup` with `id: "components"`.
 1. If **first component** in the library:
    - Remove `comingSoon: true` from the Components group.
    - Add `groups: [{ id: "building-blocks", label: "Building blocks", pages: [...] }]`.
-2. Else append to the right **subgroup** (create subgroup if needed):
+2. Else append to the right **subgroup** per **Component Categorization** (create subgroup if needed):
 
 | Subgroup id | Label | Examples |
 |-------------|-------|----------|
-| `building-blocks` | Building blocks | Button, Input, Tag, Chip, IconButton, Divider, Avatar |
-| `cards` | Cards | ProjectCard, NewsCard, PartnerCard, ProgressCard |
-| `composite` | Composite | Hero, banners, headers |
-| `forms` | Forms | fields, groups |
-| `navigation` | Navigation | tabs, breadcrumbs |
+| `building-blocks` | Building Blocks | Button, Tag, Badge, Filter Chip, Sort Control |
+| `components` | Components | Link Card, Menu, Tabs, Accordion, Payment Info |
+| `cards` | Cards | Project Card, News Card, Partner Card, Vacancy Card |
+| `composite` | Composite | Modal/Dialog, Table, Pagination, Empty State |
 
 Example entry:
 
@@ -334,6 +333,124 @@ export function ExampleShowcase() {
 ### 5. Міграція існуючих сторінок
 
 Рефактор **окремою задачею** — не змішувати з Phase 1–3 нового компонента. Порядок міграції: Button → Icons → token pages.
+
+---
+
+## Component Categorization
+
+When adding a new component, decide its category by asking:
+
+1. Is it a foundational primitive (token, grid, icon, illustration)?
+   → **Foundations** group (Tokens / Layout / Iconography subgroups)
+
+2. Does it import any other design-system component
+   (Icons don't count — they're foundations)?
+
+   **NO** → **Building Blocks** subgroup  
+   Examples: Button, Tag, Badge, Logo, Filter Chip,  
+   Progress Bar, Dropdown Item, Sort Control, Currency Select
+
+   **YES, 1–2 atoms** → **Components** subgroup  
+   Examples: ContactLink (Icon + text),  
+   Menu (Logo + NavItem + Button), Tabs, Accordion,  
+   Link Card, Payment Info
+
+   **YES, has card-shaped surface** (rounded container + content)  
+   → **Cards** subgroup  
+   Examples: Project Card, News Card, Partner Card,  
+   Vacancy Card, Report Card, CTA Card, Impact Card,  
+   Format Card, Timeline Card, Main News Card
+
+   **YES, complex/structural** (modals, tables, charts, error states,  
+   pagination, vertical tabs) → **Composite** subgroup  
+   Examples: Modal/Dialog, Table, Pagination, Empty State,  
+   Error State, Vertical Tabs, Article Body, General Widget
+
+3. Is it a ready-to-copy page section (large composed UI block)?
+   → **Patterns** group (not really reusable through import)  
+   Examples: CTA Banner, Footer, Header, Hero Section,  
+   Sub-page Hero, Yellow Hero, Media Mentions, Memorandums Grid
+
+### Naming Conventions
+
+- **Building Blocks:** 1–2 word names (Button, Filter Chip, Sort Control)
+- **Cards:** always end with "Card" (Vacancy Card, News Card)
+- **Compositions:** descriptive (Search Filter Bar, Empty State)
+- **Patterns:** section-style names (CTA Banner, Hero Section)
+
+### Why Cards Are A Separate Subgroup
+
+Cards could technically live in Components, but they share:
+
+- Same visual pattern (rounded container + content)
+- Same composition rules (image/icon + heading + description +
+  optional action)
+- High count in the system (10+ cards expected)
+
+Keeping them separate improves discoverability and prevents
+Components subgroup from being overwhelmed by cards.
+
+### Routes Structure
+
+```typescript
+export const routes: ShowcaseGroup[] = [
+  {
+    id: "foundations",
+    label: "Foundations",
+    subgroups: [
+      {
+        id: "tokens",
+        label: "Tokens",
+        pages: [
+          { id: "colors", label: "Colors", path: "colors", Component: ColorsPage },
+          // ...
+        ],
+      },
+      {
+        id: "iconography",
+        label: "Iconography",
+        pages: [
+          { id: "icons", label: "Icons", path: "icons", Component: IconsShowcase },
+          // ...
+        ],
+      },
+    ],
+  },
+  {
+    id: "components",
+    label: "Components",
+    subgroups: [
+      {
+        id: "building-blocks",
+        label: "Building Blocks",
+        pages: [/* atoms */],
+      },
+      {
+        id: "components",
+        label: "Components",
+        pages: [/* molecules + organisms */],
+      },
+      {
+        id: "cards",
+        label: "Cards",
+        pages: [/* card-shaped components */],
+      },
+      {
+        id: "composite",
+        label: "Composite",
+        pages: [/* complex structural */],
+      },
+    ],
+  },
+  {
+    id: "patterns",
+    label: "Patterns",
+    subgroups: [/* ready-to-copy sections */],
+  },
+];
+```
+
+When registering in Phase 3, use the subgroup from this decision tree — see also **`routes.tsx` structure (current)** above for `ShowcasePageConfig` entry shape.
 
 ---
 

@@ -7,8 +7,13 @@ import { CurrencySelectShowcase } from "./components/CurrencySelectShowcase";
 import { SortControlShowcase } from "./components/SortControlShowcase";
 import { TabsShowcase } from "./components/TabsShowcase";
 import { AccordionShowcase } from "./components/AccordionShowcase";
+import { PaymentInfoShowcase } from "./components/PaymentInfoShowcase";
+import { ChipPaymentTypeShowcase } from "./components/ChipPaymentTypeShowcase";
+import { QuickAmountShowcase } from "./components/QuickAmountShowcase";
 import { DirectionsExternalLinksShowcase } from "./components/DirectionsExternalLinksShowcase";
 import { LinkCardShowcase } from "./components/LinkCardShowcase";
+import { VacancyCardShowcase } from "./components/VacancyCardShowcase";
+import { SubPageHeroShowcase } from "./components/SubPageHeroShowcase";
 import { MenuShowcase } from "./components/MenuShowcase";
 import { BadgeShowcase } from "./components/BadgeShowcase";
 import { ProgressBarShowcase } from "./components/ProgressBarShowcase";
@@ -33,6 +38,8 @@ export type ShowcaseSubgroup = {
   id: string;
   label: string;
   pages: ShowcasePageConfig[];
+  /** Empty subgroup placeholder */
+  comingSoon?: boolean;
 };
 
 export type ShowcaseGroup = {
@@ -42,7 +49,7 @@ export type ShowcaseGroup = {
   groups?: ShowcaseSubgroup[];
   /** Leaf pages directly under this group */
   pages?: ShowcasePageConfig[];
-  /** Empty group placeholder (e.g. Components before first component ships) */
+  /** Empty group placeholder */
   comingSoon?: boolean;
 };
 
@@ -93,22 +100,10 @@ export const showcaseRoutes: ShowcaseGroup[] = [
           },
         ],
       },
-    ],
-  },
-  {
-    id: "components",
-    label: "Components",
-    groups: [
       {
-        id: "building-blocks",
-        label: "Building blocks",
+        id: "iconography",
+        label: "Iconography",
         pages: [
-          {
-            id: "button",
-            label: "Button",
-            path: "button",
-            Component: ButtonShowcase,
-          },
           {
             id: "icons",
             label: "Icons",
@@ -121,18 +116,18 @@ export const showcaseRoutes: ShowcaseGroup[] = [
             path: "illustration-3d",
             Component: Illustration3DShowcase,
           },
-          {
-            id: "logo",
-            label: "Logo",
-            path: "logo",
-            Component: LogoShowcase,
-          },
-          {
-            id: "filter-chip",
-            label: "Filter Chip",
-            path: "filter-chip",
-            Component: FilterChipShowcase,
-          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "components",
+    label: "Components",
+    groups: [
+      {
+        id: "building-blocks",
+        label: "Building Blocks",
+        pages: [
           {
             id: "badge",
             label: "Badge",
@@ -140,28 +135,16 @@ export const showcaseRoutes: ShowcaseGroup[] = [
             Component: BadgeShowcase,
           },
           {
-            id: "progress-bar",
-            label: "Progress bar",
-            path: "progress-bar",
-            Component: ProgressBarShowcase,
+            id: "button",
+            label: "Button",
+            path: "button",
+            Component: ButtonShowcase,
           },
           {
-            id: "tag",
-            label: "Tag",
-            path: "tag",
-            Component: TagShowcase,
-          },
-          {
-            id: "dropdown-item",
-            label: "Dropdown Item",
-            path: "dropdown-item",
-            Component: DropdownItemShowcase,
-          },
-          {
-            id: "sort-control",
-            label: "Sort Control",
-            path: "sort-control",
-            Component: SortControlShowcase,
+            id: "chip-payment-type",
+            label: "Chip Payment Type",
+            path: "chip-payment-type",
+            Component: ChipPaymentTypeShowcase,
           },
           {
             id: "currency-select",
@@ -170,16 +153,58 @@ export const showcaseRoutes: ShowcaseGroup[] = [
             Component: CurrencySelectShowcase,
           },
           {
-            id: "tabs",
-            label: "Tabs",
-            path: "tabs",
-            Component: TabsShowcase,
+            id: "dropdown-item",
+            label: "Dropdown Item",
+            path: "dropdown-item",
+            Component: DropdownItemShowcase,
           },
           {
-            id: "link-card",
-            label: "Link Card",
-            path: "link-card",
-            Component: LinkCardShowcase,
+            id: "filter-chip",
+            label: "Filter Chip",
+            path: "filter-chip",
+            Component: FilterChipShowcase,
+          },
+          {
+            id: "logo",
+            label: "Logo",
+            path: "logo",
+            Component: LogoShowcase,
+          },
+          {
+            id: "progress-bar",
+            label: "Progress Bar",
+            path: "progress-bar",
+            Component: ProgressBarShowcase,
+          },
+          {
+            id: "quick-amount",
+            label: "Quick Amount",
+            path: "quick-amount",
+            Component: QuickAmountShowcase,
+          },
+          {
+            id: "sort-control",
+            label: "Sort Control",
+            path: "sort-control",
+            Component: SortControlShowcase,
+          },
+          {
+            id: "tag",
+            label: "Tag",
+            path: "tag",
+            Component: TagShowcase,
+          },
+        ],
+      },
+      {
+        id: "components",
+        label: "Components",
+        pages: [
+          {
+            id: "accordion",
+            label: "Accordion",
+            path: "accordion",
+            Component: AccordionShowcase,
           },
           {
             id: "directions-external-links",
@@ -188,16 +213,64 @@ export const showcaseRoutes: ShowcaseGroup[] = [
             Component: DirectionsExternalLinksShowcase,
           },
           {
-            id: "accordion",
-            label: "Accordion",
-            path: "accordion",
-            Component: AccordionShowcase,
+            id: "link-card",
+            label: "Link Card",
+            path: "link-card",
+            Component: LinkCardShowcase,
           },
           {
             id: "menu",
             label: "Menu",
             path: "menu",
             Component: MenuShowcase,
+          },
+          {
+            id: "payment-info",
+            label: "Payment Info",
+            path: "payment-info",
+            Component: PaymentInfoShowcase,
+          },
+          {
+            id: "tabs",
+            label: "Tabs",
+            path: "tabs",
+            Component: TabsShowcase,
+          },
+        ],
+      },
+      {
+        id: "cards",
+        label: "Cards",
+        pages: [
+          {
+            id: "vacancy-card",
+            label: "Vacancy Card",
+            path: "vacancy-card",
+            Component: VacancyCardShowcase,
+          },
+        ],
+      },
+      {
+        id: "composite",
+        label: "Composite",
+        comingSoon: true,
+        pages: [],
+      },
+    ],
+  },
+  {
+    id: "patterns",
+    label: "Patterns",
+    groups: [
+      {
+        id: "page-sections",
+        label: "Page Sections",
+        pages: [
+          {
+            id: "sub-page-hero",
+            label: "Sub-page Hero",
+            path: "sub-page-hero",
+            Component: SubPageHeroShowcase,
           },
         ],
       },
