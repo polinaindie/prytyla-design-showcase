@@ -2,12 +2,13 @@ import { DirectionsExternalLinks } from "../../design-system/DirectionsExternalL
 import {
   ShowcaseCodeBlock,
   ShowcaseDoDont,
+  ShowcaseMatrix,
   ShowcasePageLayout,
+  ShowcasePreview,
   ShowcasePropsTable,
   ShowcaseSection,
   ShowcaseThemeProvider,
   ShowcaseTokensList,
-  ShowcaseToolbar,
   type TokenUsage,
   useShowcaseTheme,
 } from "../primitives";
@@ -48,7 +49,7 @@ const TOKENS_USED: TokenUsage[] = [
   },
   {
     category: "Typography",
-    name: "--pryt-brand-font-size-1000 / 800 / 450",
+    name: "--font-size-numbers-section, --font-size-heading-h3, --font-size-heading-h4",
     usedIn: "Index + title (desktop/mobile)",
   },
   {
@@ -74,7 +75,6 @@ function DirectionsExternalLinksShowcasePage() {
         title="Directions External Links"
         description="Рядок-посилання на зовнішній напрям (Figma 3:7303). Як LinkCard — <a href>, але list-row з номером, display-заголовком і Arrow-Up-Right."
       >
-        <ShowcaseToolbar showSearch={false} />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock code={QUICK_EXAMPLE} language="tsx" />
@@ -84,22 +84,31 @@ function DirectionsExternalLinksShowcasePage() {
           title="Desktop"
           description="Наведи курсор — жовтий фон (Hover). Склади кілька рядків у колонку."
         >
-          <div className={styles.list}>
+          <ShowcasePreview className={styles.list}>
             {DEMO_ITEMS.map((item) => (
               <DirectionsExternalLinks key={item.index} {...item} size="desktop" />
             ))}
-          </div>
+          </ShowcasePreview>
         </ShowcaseSection>
 
         <ShowcaseSection title="Mobile">
-          <div className={`${styles.list} ${styles.listMobile}`}>
-            <DirectionsExternalLinks
-              href="#"
-              index="01"
-              title="Допомога військовим"
-              size="mobile"
-            />
-          </div>
+          <ShowcaseMatrix
+            columns={["Mobile"]}
+            rows={[
+              {
+                cells: [
+                  <ShowcasePreview className={styles.listMobile}>
+                    <DirectionsExternalLinks
+                      href="#"
+                      index="01"
+                      title="Допомога військовим"
+                      size="mobile"
+                    />
+                  </ShowcasePreview>,
+                ],
+              },
+            ]}
+          />
           <p className={styles.hint}>max-width 343px (Figma mobile)</p>
         </ShowcaseSection>
 

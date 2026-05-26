@@ -1,0 +1,18 @@
+# Prytula-Responsive — Semantic collection, font-size/* (FLOAT, px).
+# Modes: Mobile (<768), Tablet (768–1023), Desktop (1024+). Synced from Figma 2026-05-22.
+# Regenerate CSS: npm run build:tokens
+VariableID	Collection	Name	Type	Mobile	Tablet	Desktop
+VariableID:526:4840	Semantic	font-size/body-large	FLOAT	14	18	20
+VariableID:526:4841	Semantic	font-size/body-medium	FLOAT	14	14	16
+VariableID:526:4842	Semantic	font-size/body-small	FLOAT	14	14	14
+VariableID:532:4833	Semantic	font-size/caption	FLOAT	12	12	12
+VariableID:532:4834	Semantic	font-size/caption-medium	FLOAT	13	13	13
+VariableID:526:4835	Semantic	font-size/heading-h0	FLOAT	40	56	72
+VariableID:526:4836	Semantic	font-size/heading-h1	FLOAT	32	40	56
+VariableID:526:4837	Semantic	font-size/heading-h2	FLOAT	28	32	40
+VariableID:526:4838	Semantic	font-size/heading-h3	FLOAT	24	28	32
+VariableID:526:4839	Semantic	font-size/heading-h4	FLOAT	18	22	24
+VariableID:532:4835	Semantic	font-size/image-caption	FLOAT	14	16	18
+VariableID:532:4837	Semantic	font-size/numbers-section	FLOAT	32	40	52
+VariableID:532:4838	Semantic	font-size/numbers-tiny	FLOAT	10	10	10
+VariableID:532:4836	Semantic	font-size/tab-label	FLOAT	20	24	28

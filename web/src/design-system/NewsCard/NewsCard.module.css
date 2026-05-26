@@ -1,0 +1,311 @@
+/* Figma News Card 3:7070 — Desktop / Tablet; Default + Hover */
+
+/* scale ≥ 1.08 — щоб pan не відкривав порожні краї в .media */
+@keyframes newsCardImagePan {
+  0% {
+    transform: scale(1.08) translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: scale(1.08) translate3d(-2.5%, -2%, 0);
+  }
+}
+
+/* Плавний hover-zoom (окремо від pan-анімації всередині) */
+.imageMotion {
+  position: absolute;
+  inset: 0;
+  transform: scale(1);
+  transform-origin: center center;
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (hover: hover) {
+  .root:hover .imageMotion {
+    transform: scale(1.1);
+  }
+}
+
+.imagePan {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  transform-origin: center center;
+  animation: newsCardImagePan 24s ease-in-out infinite alternate;
+}
+
+.root:hover .imagePan {
+  animation-play-state: paused;
+}
+
+.image {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.root {
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.root:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* ——— Desktop (Figma 448×470 column) ——— */
+
+.desktop {
+  flex-direction: column;
+  max-width: 28rem;
+}
+
+.desktop .media {
+  position: relative;
+  flex-shrink: 0;
+  width: 100%;
+  height: 15.9375rem;
+  overflow: hidden;
+  border-radius: var(--radius-large) var(--radius-large) 0 0;
+  background: var(--surface-subtle-neutral);
+}
+
+.desktop .body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  box-sizing: border-box;
+  min-height: 13.4375rem;
+  padding: var(--space-2xlarge) var(--space-3xlarge);
+  border: var(--border-width-small) solid var(--border-default);
+  border-top: none;
+  border-radius: 0 0 var(--radius-large) var(--radius-large);
+  background: var(--surface-default);
+}
+
+/* ——— Tablet (Figma 811×255 row) ——— */
+
+.tablet {
+  flex-direction: row;
+  align-items: stretch;
+  max-width: 50.6875rem;
+  border-radius: var(--radius-large);
+  overflow: hidden;
+}
+
+.tablet .media {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 15.9375rem;
+  overflow: hidden;
+  background: var(--surface-subtle-neutral);
+}
+
+.tablet .media {
+  border-radius: var(--radius-large) 0 0 var(--radius-large);
+}
+
+.tablet .body {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--space-2xlarge);
+  border: var(--border-width-small) solid var(--border-default);
+  border-left: none;
+  border-radius: 0 var(--radius-large) var(--radius-large) 0;
+  background: var(--surface-default);
+}
+
+/* ——— Shared body ——— */
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-large);
+  width: 100%;
+  min-width: 0;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-medium);
+}
+
+.date {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-small);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.metaDot {
+  flex-shrink: 0;
+  width: var(--space-xsmall);
+  height: var(--space-xsmall);
+  border-radius: var(--radius-round);
+  background: var(--text-muted);
+}
+
+.category {
+  flex-shrink: 0;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--font-size-heading-h4);
+  font-weight: 900;
+  line-height: 1.2;
+  color: var(--text-default);
+  text-decoration: none;
+  word-break: break-word;
+}
+
+.root:hover .title {
+  text-decoration: underline;
+}
+
+.tag {
+  flex-shrink: 0;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-xsmall);
+  width: 100%;
+}
+
+.tagItem {
+  flex-shrink: 0;
+  max-width: 100%;
+}
+
+/* ——— Featured / Main News (Figma 292:5047) ——— */
+
+.featuredDesktop {
+  flex-direction: row;
+  align-items: stretch;
+  max-width: 87rem;
+  min-height: 27rem;
+  border-radius: var(--radius-large);
+  overflow: hidden;
+}
+
+.featuredDesktop .body {
+  display: flex;
+  flex: 1 1 50%;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--space-2xlarge) var(--space-4xlarge);
+  gap: var(--space-small);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-large) 0 0 var(--radius-large);
+  background: var(--surface-default);
+}
+
+.featuredDesktop .header {
+  /* Figma gap-hero-heading 18px — найближчий --space-large (16px) */
+  gap: var(--space-large);
+}
+
+.featuredDesktop .title {
+  font-size: var(--font-size-heading-h2);
+  line-height: 1;
+}
+
+.featuredDesktop .media {
+  position: relative;
+  flex: 1 1 50%;
+  min-width: 0;
+  height: 27rem;
+  overflow: hidden;
+  border-radius: 0 var(--radius-large) var(--radius-large) 0;
+  background: var(--surface-subtle-neutral);
+}
+
+.featuredMobile {
+  flex-direction: column;
+  max-width: 21.4375rem;
+  border-radius: var(--radius-large);
+  overflow: hidden;
+}
+
+.featuredMobile .media {
+  position: relative;
+  flex-shrink: 0;
+  width: 100%;
+  height: 15.9375rem;
+  overflow: hidden;
+  border-radius: var(--radius-large) var(--radius-large) 0 0;
+  background: var(--surface-subtle-neutral);
+}
+
+.featuredMobile .body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  box-sizing: border-box;
+  gap: var(--space-small);
+  padding: var(--space-large);
+  border: var(--border-width-small) solid var(--border-default);
+  border-top: none;
+  border-radius: 0 0 var(--radius-large) var(--radius-large);
+  background: var(--surface-default);
+}
+
+.featuredMobile .header {
+  gap: var(--space-large);
+}
+
+.featuredMobile .title {
+  font-size: var(--font-size-heading-h4);
+  line-height: 1.2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .imageMotion {
+    transition-duration: 0.2s;
+  }
+
+  .imagePan {
+    animation: none;
+    transform: scale(1.08);
+  }
+
+  @media (hover: hover) {
+    .root:hover .imageMotion {
+      transform: scale(1.05);
+    }
+  }
+}

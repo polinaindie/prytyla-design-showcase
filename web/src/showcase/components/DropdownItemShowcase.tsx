@@ -4,11 +4,11 @@ import {
   ShowcaseCodeBlock,
   ShowcaseDoDont,
   ShowcasePageLayout,
+  ShowcasePreview,
   ShowcasePropsTable,
   ShowcaseSection,
   ShowcaseThemeProvider,
   ShowcaseTokensList,
-  ShowcaseToolbar,
   type TokenUsage,
   useShowcaseTheme,
 } from "../primitives";
@@ -38,7 +38,7 @@ const PROPS = [
 const TOKENS_USED: TokenUsage[] = [
   {
     category: "Typography",
-    name: "--pryt-brand-font-size-400",
+    name: "--font-size-body-medium",
     usedIn: "Label 16px regular",
   },
   { category: "Color", name: "--text-default", usedIn: "Label" },
@@ -88,7 +88,6 @@ function DropdownItemShowcasePage() {
         title="Dropdown Item"
         description="Один пункт списку в dropdown. Figma Small Dropdown Item (473:6474). Обгортку меню додамо окремим компонентом."
       >
-        <ShowcaseToolbar showThemeToggle />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock code={QUICK_EXAMPLE} />
@@ -101,19 +100,21 @@ function DropdownItemShowcasePage() {
           title="У списку"
           description="Клік і hover — наведи на пункт. Ширина від контейнера меню."
         >
-          <ul className={styles.menu}>
-            {SORT_OPTIONS.map((label) => (
-              <li key={label}>
-                <DropdownItem
-                  onClick={() => setSelected(label)}
-                  aria-current={selected === label ? "true" : undefined}
-                >
-                  {label}
-                </DropdownItem>
-              </li>
-            ))}
-          </ul>
-          <p className={styles.cellLabel}>Обрано: {selected}</p>
+          <ShowcasePreview>
+            <ul className={styles.menu}>
+              {SORT_OPTIONS.map((label) => (
+                <li key={label}>
+                  <DropdownItem
+                    onClick={() => setSelected(label)}
+                    aria-current={selected === label ? "true" : undefined}
+                  >
+                    {label}
+                  </DropdownItem>
+                </li>
+              ))}
+            </ul>
+            <p className={styles.cellLabel}>Обрано: {selected}</p>
+          </ShowcasePreview>
         </ShowcaseSection>
 
         <ShowcaseSection title="Props">

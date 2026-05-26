@@ -1,0 +1,405 @@
+/* Figma Footer 451:3822 — CTA + dark card; existing alias tokens only */
+
+.root {
+  box-sizing: border-box;
+  width: 100%;
+  background: var(--bg-subtle-info);
+  color: var(--text-default);
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 94.5rem;
+  margin-inline: auto;
+}
+
+/* ——— CTA (Header Section) ——— */
+
+.ctaSection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  gap: var(--space-small);
+}
+
+.ctaTitle {
+  margin: 0;
+  width: 100%;
+  font-family: var(--font-display);
+  font-size: var(--font-size-heading-h3);
+  font-weight: 900;
+  line-height: 1;
+  color: var(--text-default);
+  word-break: break-word;
+}
+
+.ctaRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-small);
+  width: 100%;
+}
+
+.ctaText {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-medium);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-default);
+  white-space: pre-wrap;
+}
+
+.ctaButton {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  height: var(--size-4xlarge);
+  padding: 0 var(--space-2xlarge);
+  border-radius: var(--radius-round);
+  background: var(--surface-action);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-small);
+  font-weight: 600;
+  line-height: 1.43;
+  color: var(--text-on-action);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.ctaButton:hover {
+  background: var(--surface-action-hover);
+}
+
+.ctaButton:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* ——— Body (dark card + copyright) ——— */
+
+.bodySection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  gap: var(--space-2xlarge);
+}
+
+.mobile .bodySection {
+  gap: var(--space-large);
+}
+
+.darkCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  border-radius: var(--radius-xlarge);
+  background: var(--accent-primary);
+  color: var(--text-on-inverse);
+}
+
+.topRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: var(--space-2xlarge);
+}
+
+.logoLink {
+  display: inline-flex;
+  flex-shrink: 0;
+  line-height: 0;
+  text-decoration: none;
+}
+
+.logo {
+  display: block;
+  color: var(--text-on-inverse);
+}
+
+.socialRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-small);
+}
+
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--size-4xlarge);
+  height: var(--size-4xlarge);
+  border-radius: var(--radius-round);
+  background: var(--surface-contact-subtle);
+  color: var(--text-on-inverse);
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.socialLink:hover {
+  background: var(--surface-contact-subtle-hover);
+}
+
+.socialLink:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.socialIcon {
+  flex-shrink: 0;
+}
+
+.divider {
+  flex-shrink: 0;
+  width: 100%;
+  height: var(--border-width-small);
+  background: var(--pryt-brand-neutral-inverse-20);
+}
+
+.midRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  width: 100%;
+  gap: var(--space-3xlarge);
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-6xlarge);
+}
+
+.navCol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  gap: var(--space-xlarge);
+}
+
+.navLink {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-large);
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--text-on-inverse);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.navLink:hover {
+  text-decoration: underline;
+  text-underline-position: from-font;
+}
+
+.navLink:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.contacts {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-small);
+  min-width: 0;
+}
+
+.contactChip {
+  width: 100%;
+  max-width: 19rem;
+  border-radius: var(--radius-2xlarge);
+}
+
+.bottomRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: var(--space-large);
+}
+
+.copyright {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-small);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+.poweredBy {
+  display: block;
+  width: 10.3125rem;
+  height: 1.25rem;
+  object-fit: contain;
+  object-position: left center;
+}
+
+/* ——— Desktop ——— */
+
+.desktop {
+  padding-block: var(--space-6xlarge) var(--space-2xlarge);
+  padding-inline: var(--space-2xlarge);
+}
+
+.desktop .inner {
+  gap: var(--space-5xlarge);
+}
+
+.desktop .ctaButton {
+  width: 15rem;
+}
+
+.desktop .darkCard {
+  gap: var(--space-3xlarge);
+  padding: var(--space-5xlarge) var(--space-2xlarge);
+}
+
+.desktop .midRow {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.desktop .navCol {
+  width: 10rem;
+}
+
+/* ——— Tablet ——— */
+
+.tablet {
+  max-width: 37.5rem;
+  padding-block: var(--space-6xlarge) var(--space-large);
+  padding-inline: var(--space-large);
+}
+
+.tablet .inner {
+  gap: var(--space-3xlarge);
+}
+
+.tablet .ctaButton {
+  width: 15rem;
+}
+
+.tablet .darkCard {
+  gap: var(--space-3xlarge);
+  padding: var(--space-3xlarge) var(--space-large);
+}
+
+.tablet .socialRow {
+  gap: var(--space-3xsmall);
+}
+
+.tablet .midRow {
+  gap: var(--space-3xlarge);
+}
+
+.tablet .contacts {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* ——— Mobile ——— */
+
+.mobile {
+  max-width: 23.4375rem;
+  padding-block: var(--space-6xlarge) var(--space-large);
+  padding-inline: var(--space-large);
+}
+
+.mobile .inner {
+  gap: var(--space-2xlarge);
+}
+
+.mobile .ctaRow {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.mobile .ctaButton {
+  width: 100%;
+}
+
+.mobile .darkCard {
+  gap: var(--space-3xlarge);
+  padding: var(--space-2xlarge) var(--space-large);
+}
+
+.mobile .topRow {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3xlarge);
+}
+
+.mobile .socialRow {
+  justify-content: space-between;
+  width: 100%;
+  gap: var(--space-3xsmall);
+}
+
+.mobile .midRow {
+  flex-direction: column;
+  gap: var(--space-3xlarge);
+}
+
+.mobile .nav {
+  justify-content: space-between;
+  width: 100%;
+  gap: var(--space-3xlarge);
+}
+
+.mobile .navCol {
+  width: 8.625rem;
+}
+
+.mobile .contacts {
+  width: 100%;
+}
+
+.mobile .contactChip {
+  max-width: none;
+}
+
+.mobile .bottomRow {
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-large);
+}
+
+.mobile .copyright {
+  width: 100%;
+  text-align: center;
+}
+
+.mobile .poweredBy {
+  object-position: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ctaButton,
+  .socialLink {
+    transition-duration: 0.01ms;
+  }
+}

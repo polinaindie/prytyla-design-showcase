@@ -7,14 +7,14 @@
 .table {
   width: 100%;
   border-collapse: collapse;
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
 }
 
 .th {
   padding: var(--space-small) var(--space-medium);
   text-align: left;
   font-family: var(--font-display);
-  font-size: var(--pryt-brand-font-size-400);
+  font-size: var(--font-size-body-medium);
   font-weight: 600;
   color: var(--text-default);
   background: var(--surface-subtle-neutral);
@@ -30,12 +30,12 @@
 
 .mono {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
   color: var(--text-secondary);
 }
 
 .required {
   margin-left: var(--space-xsmall);
   color: var(--text-muted);
-  font-size: var(--pryt-brand-font-size-200);
+  font-size: var(--font-size-caption);
 }

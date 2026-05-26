@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { ShowcaseViewportBar } from "./ShowcaseViewportBar";
 import styles from "./ShowcasePageLayout.module.css";
 
 type ShowcasePageLayoutProps = {
@@ -18,6 +19,7 @@ export function ShowcasePageLayout({
         <h1 className={styles.title}>{title}</h1>
         {description ? <p className={styles.description}>{description}</p> : null}
       </header>
+      <ShowcaseViewportBar />
       <div className={styles.body}>{children}</div>
     </article>
   );

@@ -4,16 +4,16 @@ import {
   Illustration3D,
   type Illustration3DVariant,
 } from "../../design-system/Illustration3D";
-import { IconSearch } from "../../design-system/Icons";
 import {
   ShowcaseCodeBlock,
   ShowcaseDoDont,
   ShowcasePageLayout,
+  ShowcasePreview,
   ShowcaseSection,
   ShowcaseThemeProvider,
   ShowcaseTokensList,
-  ShowcaseToolbar,
   type TokenUsage,
+  useShowcaseSearch,
   useShowcaseTheme,
 } from "../primitives";
 import styles from "./Illustration3DShowcase.module.css";
@@ -54,7 +54,7 @@ async function copyUsage(variant: Illustration3DVariant): Promise<boolean> {
 
 function Illustration3DShowcasePage() {
   const { theme } = useShowcaseTheme();
-  const [query, setQuery] = useState("");
+  const { query } = useShowcaseSearch();
   const [copiedVariant, setCopiedVariant] = useState<string | null>(null);
 
   useEffect(() => {
@@ -94,13 +94,6 @@ function Illustration3DShowcasePage() {
         title="3D Illustrations"
         description="Білі 3D-ілюстрації з Figma `3d images` (node 293:3871). Варіант = тема картки / напрямку."
       >
-        <ShowcaseToolbar
-          showSearch
-          searchPlaceholder="Пошук варіанту…"
-          searchValue={query}
-          onSearch={setQuery}
-          searchIcon={<IconSearch size={24} aria-hidden />}
-        />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock code={QUICK_EXAMPLE} />
@@ -110,11 +103,13 @@ function Illustration3DShowcasePage() {
           title="Live preview"
           description="Три типові варіанти: humanitarian (small), drone (large), annual reports."
         >
-          <div className={styles.livePreview}>
-            {LIVE_VARIANTS.map((variant) => (
-              <Illustration3D key={variant} variant={variant} />
-            ))}
-          </div>
+          <ShowcasePreview>
+            <div className={styles.livePreview}>
+              {LIVE_VARIANTS.map((variant) => (
+                <Illustration3D key={variant} variant={variant} />
+              ))}
+            </div>
+          </ShowcasePreview>
         </ShowcaseSection>
 
         {searchActive ? (

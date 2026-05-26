@@ -31,7 +31,7 @@
 
 .variantLabel {
   margin: 0 0 var(--space-small);
-  font-size: var(--pryt-brand-font-size-200);
+  font-size: var(--font-size-caption);
   color: var(--text-muted);
 }
 
@@ -49,6 +49,6 @@
 
 .rangeMeta {
   margin: 0;
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
   color: var(--text-secondary);
 }

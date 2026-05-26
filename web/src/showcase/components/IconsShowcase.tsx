@@ -17,8 +17,10 @@ import {
   IconCalendar,
   IconChevronDown,
   IconChevronDown10,
+  IconDropdownArrow10,
   IconClose,
   IconClose20,
+  IconCopy20,
   IconDocumentView,
   IconDropdown,
   IconEmail20,
@@ -54,16 +56,22 @@ import {
 import {
   ShowcaseCodeBlock,
   ShowcaseDoDont,
+  ShowcaseMatrix,
   ShowcasePageLayout,
+  ShowcasePreview,
   ShowcaseSection,
   ShowcaseThemeProvider,
   ShowcaseTokensList,
-  ShowcaseToolbar,
-  type ShowcaseToolbarFilter,
   type TokenUsage,
+  useShowcaseSearch,
   useShowcaseTheme,
 } from "../primitives";
 import styles from "./IconsShowcase.module.css";
+
+type IconCategoryFilter = {
+  id: string;
+  label: string;
+};
 
 type IconCategory =
   | "ui"
@@ -89,7 +97,7 @@ type IconCatalogEntry = {
   illustration?: boolean;
 };
 
-const CATEGORY_FILTERS: ShowcaseToolbarFilter[] = [
+const CATEGORY_FILTERS: IconCategoryFilter[] = [
   { id: "ui", label: "UI" },
   { id: "small", label: "Small" },
   { id: "tiny", label: "Tiny" },
@@ -152,8 +160,10 @@ const ICON_CATALOG: IconCatalogEntry[] = [
   { name: "Email", exportName: "IconEmail20", figmaPath: "Icon/20/Email", nodeId: "5:8743", category: "small", nativeSize: 20, Component: IconEmail20 },
   { name: "Arrow Down", exportName: "IconArrowDown20", figmaPath: "Icon/20/Arrow Down", nodeId: "1261:29064", category: "small", nativeSize: 20, Component: IconArrowDown20 },
   { name: "Close", exportName: "IconClose20", figmaPath: "Icon/20/Close", nodeId: "1318:53976", category: "small", nativeSize: 20, Component: IconClose20 },
+  { name: "Copy", exportName: "IconCopy20", figmaPath: "Icon/20/Copy", nodeId: "284:13987", category: "small", nativeSize: 20, Component: IconCopy20 },
 
   { name: "Chevron-Down", exportName: "IconChevronDown10", figmaPath: "Icon/10/Chevron-Down", nodeId: "3:7824", category: "tiny", nativeSize: 10, Component: IconChevronDown10 },
+  { name: "Dropdown-Arrow", exportName: "IconDropdownArrow10", figmaPath: "GeneralWidget/Dropdown Arrow", nodeId: "287:14761", category: "tiny", nativeSize: 10, Component: IconDropdownArrow10 },
   { name: "Arrow-Left", exportName: "IconArrowLeft10", figmaPath: "Icon/10/Arrow-Left", nodeId: "1319:35979", category: "tiny", nativeSize: 10, Component: IconArrowLeft10 },
   { name: "Arrow-Right", exportName: "IconArrowRight10", figmaPath: "Icon/10/Arrow-Right", nodeId: "1319:35980", category: "tiny", nativeSize: 10, Component: IconArrowRight10 },
   { name: "Arrow-Left-Double", exportName: "IconArrowLeftDouble10", figmaPath: "Icon/10/Arrow-Left-Double", nodeId: "1319:36158", category: "tiny", nativeSize: 10, Component: IconArrowLeftDouble10 },
@@ -193,8 +203,8 @@ const ICON_CATALOG: IconCatalogEntry[] = [
 const ICON_TOKENS: TokenUsage[] = [
   {
     category: "Color",
-    name: "--text-default",
-    usedIn: "Колір монохромних іконок через currentColor на світлому фоні",
+    name: "--icon-muted",
+    usedIn: "Колір монохромних іконок у сітці превʼю (currentColor на svg)",
   },
   {
     category: "Color",
@@ -235,7 +245,7 @@ async function copyImportLine(exportName: string): Promise<boolean> {
 
 function IconsShowcasePage() {
   const { theme } = useShowcaseTheme();
-  const [query, setQuery] = useState("");
+  const { query } = useShowcaseSearch();
   const [activeFilterIds, setActiveFilterIds] = useState<string[]>(ALL_FILTER_IDS);
   const [copiedExport, setCopiedExport] = useState<string | null>(null);
 
@@ -299,16 +309,6 @@ function IconsShowcasePage() {
         title="Icons"
         description="Повний набір іконок Prytula DS з Figma SVG export. Prytula-Responsive → Icons frame."
       >
-        <ShowcaseToolbar
-          showSearch
-          searchPlaceholder="Пошук іконки…"
-          searchValue={query}
-          onSearch={setQuery}
-          searchIcon={<IconSearch size={24} aria-hidden />}
-          filters={CATEGORY_FILTERS}
-          activeFilterIds={activeFilterIds}
-          onToggleFilter={handleToggleFilter}
-        />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock
@@ -322,9 +322,51 @@ function IconsShowcasePage() {
           title="Live preview"
           description="Типовий UI-іконка; тема сторінки керує кольором currentColor."
         >
-          <div className={styles.livePreview}>
+          <ShowcasePreview>
             <IconArrowUpRight size={24} aria-label="Open in new tab" />
+          </ShowcasePreview>
+        </ShowcaseSection>
+
+        <ShowcaseSection
+          title="Категорії"
+          description="Фільтр сітки іконок; пошук — у sidebar."
+        >
+          <div className={styles.categoryFilters} role="group" aria-label="Категорії іконок">
+            {CATEGORY_FILTERS.map((filter) => {
+              const active = activeFilterIds.includes(filter.id);
+              return (
+                <button
+                  key={filter.id}
+                  type="button"
+                  className={`${styles.categoryChip} ${active ? styles.categoryChipActive : ""}`}
+                  aria-pressed={active}
+                  onClick={() => handleToggleFilter(filter.id)}
+                >
+                  {filter.label}
+                </button>
+              );
+            })}
           </div>
+        </ShowcaseSection>
+
+        <ShowcaseSection
+          title="Sizes"
+          description="Типові artboard-розміри з Figma — обирай компонент відповідного розміру."
+        >
+          <ShowcaseMatrix
+            columns={["24px UI", "20px Small", "10px Tiny", "32px Large", "36px Payment"]}
+            rows={[
+              {
+                cells: [
+                  <IconSearch size={24} aria-hidden />,
+                  <IconCopy20 aria-hidden />,
+                  <IconChevronDown10 aria-hidden />,
+                  <IconArrowUpRight32 aria-hidden />,
+                  <IconPaymentCard aria-hidden />,
+                ],
+              },
+            ]}
+          />
         </ShowcaseSection>
 
         {searchActive ? (

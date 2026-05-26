@@ -3,12 +3,12 @@ import { LinkCard } from "../../design-system/LinkCard";
 import {
   ShowcaseCodeBlock,
   ShowcaseDoDont,
+  ShowcaseMatrix,
   ShowcasePageLayout,
   ShowcasePropsTable,
   ShowcaseSection,
   ShowcaseThemeProvider,
   ShowcaseTokensList,
-  ShowcaseToolbar,
   type TokenUsage,
   useShowcaseTheme,
 } from "../primitives";
@@ -53,7 +53,7 @@ const TOKENS_USED: TokenUsage[] = [
   },
   {
     category: "Typography",
-    name: "--pryt-brand-font-size-500 / 200",
+    name: "--font-size-body-large, --font-size-caption",
     usedIn: "Desktop 20px / mobile 12px",
   },
   {
@@ -89,7 +89,6 @@ function LinkCardShowcasePage() {
         title="Link Card"
         description="Картка-посилання з 3D-ілюстрацією. Figma Link card (40:12193)."
       >
-        <ShowcaseToolbar showThemeToggle />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock code={QUICK_EXAMPLE} />
@@ -102,26 +101,27 @@ function LinkCardShowcasePage() {
           title="Розміри"
           description="Наведи на desktop — hover (фон + менша ілюстрація). Mobile без стрілки."
         >
-          <div className={styles.row}>
-            <div className={styles.stack}>
-              <LinkCard
-                href="#"
-                title="Звітність фонду"
-                illustration="annualReports"
-                size="desktop"
-              />
-              <p className={styles.hint}>Desktop</p>
-            </div>
-            <div className={styles.stack}>
-              <LinkCard
-                href="#"
-                title="Звітність"
-                illustration="annualReports"
-                size="mobile"
-              />
-              <p className={styles.hint}>Mobile</p>
-            </div>
-          </div>
+          <ShowcaseMatrix
+            columns={["Desktop", "Mobile"]}
+            rows={[
+              {
+                cells: [
+                  <LinkCard
+                    href="#"
+                    title="Звітність фонду"
+                    illustration="annualReports"
+                    size="desktop"
+                  />,
+                  <LinkCard
+                    href="#"
+                    title="Звітність"
+                    illustration="annualReports"
+                    size="mobile"
+                  />,
+                ],
+              },
+            ]}
+          />
         </ShowcaseSection>
 
         <ShowcaseSection title="Props">

@@ -4,6 +4,11 @@
  * Regenerate via use_figma — do not hand-edit paths.
  */
 
+/** GeneralWidget currency picker — node `287:14761` (10×5, flip Y in component). */
+export const FIGMA_SVG_DROPDOWN_ARROW_10 = `<svg width="10" height="5" viewBox="0 0 8.66026 3.75" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M4.33013 0L8.66025 3.75H0L4.33013 0Z" fill="#757575"/>
+</svg>`;
+
 export const FIGMA_SVG_CHEVRON_DOWN_10 = `<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M8.52827 2.52827C8.78862 2.26792 9.21128 2.26792 9.47163 2.52827C9.73198 2.78862 9.73198 3.21128 9.47163 3.47163L5.47163 7.47163C5.21128 7.73198 4.78862 7.73198 4.52827 7.47163L0.52827 3.47163C0.26792 3.21128 0.26792 2.78862 0.52827 2.52827C0.788619 2.26792 1.21128 2.26792 1.47163 2.52827L4.99995 6.05659L8.52827 2.52827Z" fill="#1F1F1F"/>
 </svg>`;

@@ -1,0 +1,15 @@
+.pageRoot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xlarge);
+  color: var(--text-default);
+}
+
+.pageRoot[data-showcase-theme="dark"] {
+  color: var(--text-inverse);
+}
+
+.preview {
+  width: 100%;
+  max-width: 42.75rem;
+}

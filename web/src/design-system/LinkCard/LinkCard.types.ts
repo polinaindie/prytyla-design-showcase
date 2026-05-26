@@ -13,6 +13,8 @@ export type LinkCardProps = Omit<
 > & {
   title: string;
   illustration: Illustration3DVariant;
+  /** @default true — set false to hide the left 3D illustration. */
+  showIllustration?: boolean;
   size?: LinkCardSize;
   /** When set, overrides title font size from `size` (Figma mobile-open cards). */
   titleSize?: LinkCardTitleSize;

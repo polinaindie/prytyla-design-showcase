@@ -6,6 +6,8 @@ type IconFigmaSvgProps = IconProps & {
   figmaSvg: string;
   /** Unique prefix for clipPath ids (e.g. `icon-menu`). */
   idPrefix: string;
+  /** When set, SVG height differs from `size` width (e.g. 10×5 caret). */
+  height?: number;
 };
 
 /**
@@ -17,14 +19,16 @@ export function IconFigmaSvg({
   idPrefix,
   className,
   size = 24,
+  height,
   "aria-hidden": ariaHidden = true,
 }: IconFigmaSvgProps) {
   const normalized = normalizeFigmaIconSvg(figmaSvg, idPrefix);
-  const html = applyIconSvgAttrs(normalized, className, size);
+  const html = applyIconSvgAttrs(normalized, undefined, size, height);
 
   return (
     <span
-      style={{ display: "inline-flex", lineHeight: 0, color: "currentColor" }}
+      className={className}
+      style={{ display: "inline-flex", lineHeight: 0 }}
       aria-hidden={ariaHidden}
       dangerouslySetInnerHTML={{ __html: html }}
     />

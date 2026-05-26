@@ -2,12 +2,13 @@ import { QuickAmount } from "../../design-system/QuickAmount";
 import {
   ShowcaseCodeBlock,
   ShowcaseDoDont,
+  ShowcaseMatrix,
   ShowcasePageLayout,
+  ShowcasePreview,
   ShowcasePropsTable,
   ShowcaseSection,
   ShowcaseThemeProvider,
   ShowcaseTokensList,
-  ShowcaseToolbar,
   type TokenUsage,
   useShowcaseTheme,
 } from "../primitives";
@@ -61,7 +62,7 @@ const TOKENS_USED: TokenUsage[] = [
   { category: "Text", name: "--text-default, --text-muted", usedIn: "«+» і сума / валюта" },
   {
     category: "Typography",
-    name: "--pryt-brand-font-size-300",
+    name: "--font-size-body-small",
     usedIn: "Body small 14px, line-height 1.4",
   },
   {
@@ -82,7 +83,6 @@ function QuickAmountShowcasePage() {
         title="Quick Amount"
         description={`Пілюля швидкого вибору суми донату (Figma Quick Amount 1407:37060). Figma: ${FIGMA_URL}`}
       >
-        <ShowcaseToolbar showSearch={false} />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock code={QUICK_EXAMPLE} language="tsx" />
@@ -92,27 +92,33 @@ function QuickAmountShowcasePage() {
           title="Live preview"
           description="Ряд типових сум — hover показує помаранчеву обводку та нейтральний сірий фон."
         >
-          <div className={styles.row}>
-            {DEMO_AMOUNTS.map((value) => (
-              <QuickAmount key={value} amount={value} />
-            ))}
-          </div>
+          <ShowcasePreview>
+            <div className={styles.row}>
+              {DEMO_AMOUNTS.map((value) => (
+                <QuickAmount key={value} amount={value} />
+              ))}
+            </div>
+          </ShowcasePreview>
         </ShowcaseSection>
 
         <ShowcaseSection
           title="Variants"
           description="Default і Hover — наведіть курсор на другу пілюлю (hover: помаранчева обводка)."
         >
-          <div className={styles.variantGrid}>
-            <div className={styles.cell}>
-              <QuickAmount amount={500} />
-              <p className={styles.cellLabel}>Default</p>
-            </div>
-            <div className={styles.cell}>
-              <QuickAmount amount={500} aria-label="500 гривень — наведіть для hover" />
-              <p className={styles.cellLabel}>Hover (наведіть курсор)</p>
-            </div>
-          </div>
+          <ShowcaseMatrix
+            columns={["Default", "Hover"]}
+            rows={[
+              {
+                cells: [
+                  <QuickAmount amount={500} />,
+                  <QuickAmount
+                    amount={500}
+                    aria-label="500 гривень — наведіть для hover"
+                  />,
+                ],
+              },
+            ]}
+          />
         </ShowcaseSection>
 
         <ShowcaseSection title="Tokens used">

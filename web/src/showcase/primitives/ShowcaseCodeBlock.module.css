@@ -20,7 +20,7 @@
   border: var(--border-width-small) solid var(--border-default);
   border-radius: var(--radius-round);
   background: var(--surface-default);
-  font-size: var(--pryt-brand-font-size-200);
+  font-size: var(--font-size-caption);
   color: var(--text-default);
   cursor: pointer;
 }
@@ -31,7 +31,7 @@
 
 .feedback {
   margin-right: var(--space-small);
-  font-size: var(--pryt-brand-font-size-200);
+  font-size: var(--font-size-caption);
   color: var(--text-muted);
 }
 
@@ -40,7 +40,7 @@
   padding: var(--space-large);
   overflow-x: auto;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
   line-height: 1.55;
   color: var(--text-default);
 }

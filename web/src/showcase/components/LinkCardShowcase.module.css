@@ -12,24 +12,5 @@
   border-radius: var(--radius-medium);
   background: var(--surface-inverse);
   color: var(--text-on-inverse);
-  font-size: var(--pryt-brand-font-size-300);
-}
-
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: var(--space-2xlarge);
-}
-
-.stack {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-large);
-}
-
-.hint {
-  margin: var(--space-small) 0 0;
-  font-size: var(--pryt-brand-font-size-200);
-  color: var(--text-muted);
+  font-size: var(--font-size-body-small);
 }

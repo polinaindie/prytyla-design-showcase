@@ -1,0 +1,68 @@
+.wrap {
+  overflow-x: auto;
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  background: var(--surface-page);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: var(--space-small) var(--space-medium);
+  border: var(--border-width-small) solid var(--border-default);
+  vertical-align: middle;
+}
+
+.colHeader {
+  background: var(--surface-subtle-neutral);
+  color: var(--text-muted);
+  font-size: var(--font-size-caption);
+  font-weight: 600;
+  text-align: left;
+}
+
+.previewCol {
+  width: 40%;
+}
+
+.tokenName {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--font-size-caption);
+  line-height: 1.3;
+  color: var(--text-default);
+  word-break: break-all;
+}
+
+.tokenValue {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--font-size-caption);
+  line-height: 1.3;
+  color: var(--text-muted);
+  word-break: break-all;
+}
+
+.tokenButton {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tokenButton:hover .tokenName {
+  color: var(--text-link);
+}
+
+.tokenButton:focus-visible {
+  outline: var(--border-width-small) solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-small);
+}

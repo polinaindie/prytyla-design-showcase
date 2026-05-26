@@ -1,12 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   ShowcaseCodeBlock,
   ShowcaseDoDont,
-  ShowcaseGrid,
   ShowcasePageLayout,
+  ShowcasePreview,
   ShowcaseSection,
   ShowcaseThemeProvider,
-  ShowcaseToolbar,
+  ShowcaseTokenTable,
   useShowcaseTheme,
 } from "../primitives";
 import styles from "./RadiusPage.module.css";
@@ -53,92 +53,35 @@ function sortByValueDesc(
     .sort((a, b) => sizePx(values[b]!) - sizePx(values[a]!));
 }
 
-type RadiusTileProps = {
-  token: string;
-  value: string;
-  onCopy: (token: string) => void;
-};
+function RadiusPreview({ value }: { value: string }) {
+  return <div className={styles.radiusTile} style={{ borderRadius: value }} />;
+}
 
-function RadiusTile({ token, value, onCopy }: RadiusTileProps) {
-  const handleClick = async () => {
-    try {
-      await navigator.clipboard.writeText(tokenVarRef(token));
-      onCopy(token);
-    } catch {
-      /* clipboard unavailable */
-    }
-  };
-
+function BorderWidthPreview({ value }: { value: string }) {
   return (
-    <button
-      type="button"
-      className={styles.radiusCard}
-      onClick={handleClick}
-      title={`Копіювати ${tokenVarRef(token)}`}
-    >
-      <div className={styles.radiusTile} style={{ borderRadius: value }} />
-      <span className={styles.tokenName}>{token}</span>
-      <span className={styles.tokenValue}>{value}</span>
-    </button>
+    <div className={styles.borderWidthTrack}>
+      <div className={styles.borderWidthLine} style={{ height: value }} />
+    </div>
   );
 }
 
-function RadiusGrid({
-  tokens,
-  values,
-  onCopy,
-}: {
-  tokens: readonly string[];
-  values: Record<string, string>;
-  onCopy: (token: string) => void;
-}) {
-  const sorted = sortByValueDesc(tokens, values);
-
-  if (sorted.length === 0) {
-    return null;
-  }
-
-  return (
-    <ShowcaseGrid columns={4}>
-      {sorted.map((token) => (
-        <RadiusTile key={token} token={token} value={values[token]!} onCopy={onCopy} />
-      ))}
-    </ShowcaseGrid>
-  );
-}
-
-type BorderWidthRowProps = {
-  token: string;
-  value: string;
-  onCopy: (token: string) => void;
-};
-
-function BorderWidthRow({ token, value, onCopy }: BorderWidthRowProps) {
-  const handleClick = async () => {
-    try {
-      await navigator.clipboard.writeText(tokenVarRef(token));
-      onCopy(token);
-    } catch {
-      /* clipboard unavailable */
-    }
-  };
-
-  return (
-    <button
-      type="button"
-      className={styles.borderWidthRow}
-      onClick={handleClick}
-      title={`Копіювати ${tokenVarRef(token)}`}
-    >
-      <div className={styles.borderWidthTrack}>
-        <div className={styles.borderWidthLine} style={{ height: value }} />
-      </div>
-      <div className={styles.borderWidthMeta}>
-        <span className={styles.tokenName}>{token}</span>
-        <span className={styles.tokenValue}>{value}</span>
-      </div>
-    </button>
-  );
+function buildTokenRows(
+  tokens: readonly string[],
+  values: Record<string, string>,
+  onCopy: (token: string) => void,
+  renderPreview: (value: string) => ReactNode,
+) {
+  return sortByValueDesc(tokens, values).map((token) => ({
+    token,
+    value: values[token]!,
+    preview: renderPreview(values[token]!),
+    onCopy: () => {
+      void navigator.clipboard.writeText(tokenVarRef(token)).then(
+        () => onCopy(token),
+        () => undefined,
+      );
+    },
+  }));
 }
 
 function RadiusPageContent() {
@@ -151,11 +94,6 @@ function RadiusPageContent() {
   );
   const { values } = useResolvedTokens(candidates);
 
-  const sortedBorderWidths = useMemo(
-    () => sortByValueDesc(ALIAS_BORDER_WIDTH, values),
-    [values],
-  );
-
   useEffect(() => {
     if (!copiedToken) return undefined;
     const timer = window.setTimeout(() => setCopiedToken(null), 2000);
@@ -165,6 +103,19 @@ function RadiusPageContent() {
   const handleCopy = (token: string) => {
     setCopiedToken(token);
   };
+
+  const radiusRows = useMemo(
+    () => buildTokenRows(ALIAS_RADIUS, values, handleCopy, (value) => <RadiusPreview value={value} />),
+    [values],
+  );
+
+  const borderWidthRows = useMemo(
+    () =>
+      buildTokenRows(ALIAS_BORDER_WIDTH, values, handleCopy, (value) => (
+        <BorderWidthPreview value={value} />
+      )),
+    [values],
+  );
 
   return (
     <div className={styles.pageRoot} data-showcase-theme={theme}>
@@ -178,7 +129,6 @@ function RadiusPageContent() {
         title="Radius"
         description="Заокруглення та товщина рамок Prytula DS. У компонентах — лише --radius-* і --border-width-*."
       >
-        <ShowcaseToolbar showSearch={false} />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock code={QUICK_EXAMPLE} language="css" />
@@ -188,35 +138,26 @@ function RadiusPageContent() {
           title="Live preview"
           description="Картка з --radius-medium і pill-кнопка з --radius-round."
         >
-          <div className={styles.livePreview}>
+          <ShowcasePreview>
             <div className={styles.previewCard}>
               <p className={styles.previewTitle}>Картка</p>
               <span className={styles.previewPill}>Дія</span>
             </div>
-          </div>
+          </ShowcasePreview>
         </ShowcaseSection>
 
         <ShowcaseSection
           title="Border radius"
-          description="Від найбільшого до найменшого. Клік по клітинці — копіює var(--token)."
+          description="Від найбільшого до найменшого. Клік по токену — копіює var(--token)."
         >
-          <RadiusGrid tokens={ALIAS_RADIUS} values={values} onCopy={handleCopy} />
+          <ShowcaseTokenTable rows={radiusRows} />
         </ShowcaseSection>
 
         <ShowcaseSection
           title="Border width"
-          description="Товщина лінії (computed value праворуч). Клік — копіює var(--token)."
+          description="Товщина лінії. Клік по токену — копіює var(--token)."
         >
-          <div className={styles.borderWidthList}>
-            {sortedBorderWidths.map((token) => (
-              <BorderWidthRow
-                key={token}
-                token={token}
-                value={values[token]!}
-                onCopy={handleCopy}
-              />
-            ))}
-          </div>
+          <ShowcaseTokenTable rows={borderWidthRows} />
         </ShowcaseSection>
 
         <ShowcaseSection title="Guidelines">

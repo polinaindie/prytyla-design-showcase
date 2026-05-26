@@ -8,7 +8,6 @@ import {
   ShowcaseSection,
   ShowcaseThemeProvider,
   ShowcaseTokensList,
-  ShowcaseToolbar,
   type TokenUsage,
   useShowcaseTheme,
 } from "../primitives";
@@ -66,7 +65,7 @@ const PROPS = [
 
 const TOKENS_USED: TokenUsage[] = [
   { category: "Typography", name: "--text-muted, --text-default", usedIn: "Label / value" },
-  { category: "Typography", name: "--pryt-brand-font-size-400", usedIn: "16px type" },
+  { category: "Typography", name: "--font-size-body-medium", usedIn: "16px type" },
   { category: "Layout", name: "--space-small, --space-xsmall", usedIn: "Gaps" },
   { category: "Surface", name: "--surface-default", usedIn: "Dropdown panel" },
   { category: "Border", name: "--border-default", usedIn: "Panel border" },
@@ -100,7 +99,6 @@ function SortControlShowcasePage() {
         title="Sort Control"
         description="Сортування з dropdown. Figma Sorting (473:6498) + DropdownItem."
       >
-        <ShowcaseToolbar showThemeToggle />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock code={QUICK_EXAMPLE} />

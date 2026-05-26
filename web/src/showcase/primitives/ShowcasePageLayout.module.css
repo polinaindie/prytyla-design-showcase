@@ -15,7 +15,7 @@
 .title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--pryt-brand-font-size-900);
+  font-size: var(--font-size-heading-h1);
   font-weight: 400;
   line-height: 1.1;
   color: var(--text-default);
@@ -23,7 +23,7 @@
 
 .description {
   margin: 0;
-  font-size: var(--pryt-brand-font-size-400);
+  font-size: var(--font-size-body-medium);
   line-height: 1.5;
   color: var(--text-muted);
   max-width: 48rem;

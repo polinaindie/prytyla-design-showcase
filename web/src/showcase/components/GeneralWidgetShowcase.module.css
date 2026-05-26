@@ -4,24 +4,10 @@
   gap: var(--space-2xlarge);
 }
 
-.previewRow {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2xlarge);
-  align-items: flex-start;
-}
-
 .previewCell {
   display: flex;
   flex-direction: column;
   gap: var(--space-small);
-}
-
-.cellLabel {
-  margin: 0;
-  font-family: Inter, system-ui, sans-serif;
-  font-size: var(--pryt-brand-font-size-300);
-  color: var(--text-muted);
 }
 
 .heroPlaceholder {

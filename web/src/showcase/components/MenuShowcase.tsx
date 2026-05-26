@@ -4,12 +4,13 @@ import type { MenuNavConfig } from "../../design-system/Menu";
 import {
   ShowcaseCodeBlock,
   ShowcaseDoDont,
+  ShowcaseMatrix,
   ShowcasePageLayout,
+  ShowcasePreview,
   ShowcasePropsTable,
   ShowcaseSection,
   ShowcaseThemeProvider,
   ShowcaseTokensList,
-  ShowcaseToolbar,
   type TokenUsage,
   useShowcaseTheme,
 } from "../primitives";
@@ -132,7 +133,6 @@ function MenuShowcasePage() {
         title="Menu"
         description="Хедер Prytula (Figma Menu 3:7160, Prytula-Responsive): glass bar; open desktop — один shell #e9f7ff; tablet/mobile drawer."
       >
-        <ShowcaseToolbar showThemeToggle />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock code={QUICK_EXAMPLE} />
@@ -145,102 +145,124 @@ function MenuShowcasePage() {
           title="Desktop — open states"
           description="Клік «Про фонд» або «Інші напрями»; панелі взаємовиключні."
         >
-          <div className={styles.stack}>
-            <div>
-              <p className={styles.cellLabel}>Default</p>
-              <div className={styles.preview}>
-                <Menu
-                  size="desktop"
-                  navItems={navItems.map((item) =>
-                    item.type === "dropdown" ? { ...item, open: false } : item,
-                  )}
-                  otherDirectionsOpen={directionsOpen}
-                  onOtherDirectionsClick={toggleDirections}
-                  donateHref="#donate"
-                  onLanguageClick={() => {}}
-                />
-              </div>
-            </div>
-            <div>
-              <p className={styles.cellLabel}>About Open (3:7188)</p>
-              <div className={styles.preview}>
-                <Menu
-                  size="desktop"
-                  navItems={navItems.map((item) =>
-                    item.type === "dropdown" ? { ...item, open: true } : item,
-                  )}
-                  otherDirectionsOpen={false}
-                  onOtherDirectionsClick={toggleDirections}
-                  donateHref="#donate"
-                />
-              </div>
-            </div>
-            <div>
-              <p className={styles.cellLabel}>Other directions Open (3:7270)</p>
-              <div className={styles.preview}>
-                <Menu
-                  size="desktop"
-                  navItems={navItems}
-                  otherDirectionsOpen
-                  onOtherDirectionsClick={toggleDirections}
-                  donateHref="#donate"
-                />
-              </div>
-            </div>
-          </div>
+          <ShowcaseMatrix
+            rows={[
+              {
+                rowLabel: "Default",
+                cells: [
+                  <ShowcasePreview className={styles.preview}>
+                    <Menu
+                      size="desktop"
+                      navItems={navItems.map((item) =>
+                        item.type === "dropdown" ? { ...item, open: false } : item,
+                      )}
+                      otherDirectionsOpen={directionsOpen}
+                      onOtherDirectionsClick={toggleDirections}
+                      donateHref="#donate"
+                      onLanguageClick={() => {}}
+                    />
+                  </ShowcasePreview>,
+                ],
+              },
+              {
+                rowLabel: "About Open (3:7188)",
+                cells: [
+                  <ShowcasePreview className={styles.preview}>
+                    <Menu
+                      size="desktop"
+                      navItems={navItems.map((item) =>
+                        item.type === "dropdown" ? { ...item, open: true } : item,
+                      )}
+                      otherDirectionsOpen={false}
+                      onOtherDirectionsClick={toggleDirections}
+                      donateHref="#donate"
+                    />
+                  </ShowcasePreview>,
+                ],
+              },
+              {
+                rowLabel: "Other directions Open (3:7270)",
+                cells: [
+                  <ShowcasePreview className={styles.preview}>
+                    <Menu
+                      size="desktop"
+                      navItems={navItems}
+                      otherDirectionsOpen
+                      onOtherDirectionsClick={toggleDirections}
+                      donateHref="#donate"
+                    />
+                  </ShowcasePreview>,
+                ],
+              },
+            ]}
+          />
         </ShowcaseSection>
 
         <ShowcaseSection title="Tablet / Mobile">
-          <div className={styles.stack}>
-            <div>
-              <p className={styles.cellLabel}>Tablet — Default (127:9886)</p>
-              <div className={`${styles.preview} ${styles.previewTablet}`}>
-                <Menu size="tablet" donateHref="#donate" onLanguageClick={() => {}} />
-              </div>
-            </div>
-            <div>
-              <p className={styles.cellLabel}>Mobile — Default (125:7776)</p>
-              <div className={`${styles.preview} ${styles.previewMobile}`}>
-                <Menu size="mobile" onMobileMenuToggle={() => {}} />
-              </div>
-            </div>
-            <div>
-              <p className={styles.cellLabel}>Tablet — Menu Open (1150:24953)</p>
-              <div className={`${styles.preview} ${styles.previewTablet}`}>
-                <Menu
-                  size="tablet"
-                  mobileMenuOpen={tabletOpen}
-                  onMobileMenuToggle={() => setTabletOpen((v) => !v)}
-                  donateHref="#donate"
-                />
-              </div>
-              <button
-                type="button"
-                className={styles.toggleHint}
-                onClick={() => setTabletOpen((v) => !v)}
-              >
-                Toggle drawer ({tabletOpen ? "open" : "closed"})
-              </button>
-            </div>
-            <div>
-              <p className={styles.cellLabel}>Mobile — Menu Open (1149:24142)</p>
-              <div className={`${styles.preview} ${styles.previewMobile}`}>
-                <Menu
-                  size="mobile"
-                  mobileMenuOpen={mobileOpen}
-                  onMobileMenuToggle={() => setMobileOpen((v) => !v)}
-                  donateHref="#donate"
-                />
-              </div>
-              <button
-                type="button"
-                className={styles.toggleHint}
-                onClick={() => setMobileOpen((v) => !v)}
-              >
-                Toggle drawer ({mobileOpen ? "open" : "closed"})
-              </button>
-            </div>
-          </div>
+          <ShowcaseMatrix
+            rows={[
+              {
+                rowLabel: "Tablet — Default (127:9886)",
+                cells: [
+                  <ShowcasePreview className={`${styles.preview} ${styles.previewTablet}`}>
+                    <Menu size="tablet" donateHref="#donate" onLanguageClick={() => {}} />
+                  </ShowcasePreview>,
+                ],
+              },
+              {
+                rowLabel: "Mobile — Default (125:7776)",
+                cells: [
+                  <ShowcasePreview className={`${styles.preview} ${styles.previewMobile}`}>
+                    <Menu size="mobile" onMobileMenuToggle={() => {}} />
+                  </ShowcasePreview>,
+                ],
+              },
+              {
+                rowLabel: "Tablet — Menu Open (1150:24953)",
+                cells: [
+                  <>
+                    <ShowcasePreview className={`${styles.preview} ${styles.previewTablet}`}>
+                      <Menu
+                        size="tablet"
+                        mobileMenuOpen={tabletOpen}
+                        onMobileMenuToggle={() => setTabletOpen((v) => !v)}
+                        donateHref="#donate"
+                      />
+                    </ShowcasePreview>
+                    <button
+                      type="button"
+                      className={styles.toggleHint}
+                      onClick={() => setTabletOpen((v) => !v)}
+                    >
+                      Toggle drawer ({tabletOpen ? "open" : "closed"})
+                    </button>
+                  </>,
+                ],
+              },
+              {
+                rowLabel: "Mobile — Menu Open (1149:24142)",
+                cells: [
+                  <>
+                    <ShowcasePreview className={`${styles.preview} ${styles.previewMobile}`}>
+                      <Menu
+                        size="mobile"
+                        mobileMenuOpen={mobileOpen}
+                        onMobileMenuToggle={() => setMobileOpen((v) => !v)}
+                        donateHref="#donate"
+                      />
+                    </ShowcasePreview>
+                    <button
+                      type="button"
+                      className={styles.toggleHint}
+                      onClick={() => setMobileOpen((v) => !v)}
+                    >
+                      Toggle drawer ({mobileOpen ? "open" : "closed"})
+                    </button>
+                  </>,
+                ],
+              },
+            ]}
+          />
         </ShowcaseSection>
 
         <ShowcaseSection title="Props">

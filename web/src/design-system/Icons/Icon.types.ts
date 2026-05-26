@@ -7,4 +7,6 @@ export type IconProps = Omit<
 > & {
   /** @default 24 */
   size?: number;
+  /** Payment icons: прибрати сіру плитку 36×36, лишити glyph. */
+  glyphOnly?: boolean;
 };

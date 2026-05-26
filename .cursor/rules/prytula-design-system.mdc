@@ -45,7 +45,7 @@ alwaysApply: true
 
 ## Token pipeline (generated CSS)
 
-1. **Source:** `design-tokens/data/figma-variables.tsv` (export from Figma)
+1. **Source:** `design-tokens/data/figma-variables.tsv` (Brand → Alias → Mapped) and `design-tokens/data/figma-semantic-typography.tsv` (Figma **Semantic** `font-size/*`, Mobile / Tablet / Desktop px)
 2. **Build:** `npm run build:tokens` → runs `design-tokens/scripts/build.mjs`
 3. **Outputs (identical content):**
    - `design-tokens/dist/tokens.css` + `tokens.ts`
@@ -83,6 +83,8 @@ Five Mapped tokens share the **same CSS variable name** as their Alias target. `
    - **Then:** Alias (`--space-medium`, `--radius-round`, `--action-donate`, …) when no Mapped exists
    - **Last resort:** Brand only with an inline comment explaining why
 4. **App font:** `var(--font-display)` — defined in `web/src/index.css`, not from Figma export
+
+**Responsive semantic font sizes (prefer in UI):** Figma Semantic `font-size/heading-h1` → `--font-size-heading-h1` (mobile-first; tablet `768px+`, desktop `1024px+`). Examples: `--font-size-body-medium`, `--font-size-heading-h2`, `--font-size-caption`. Source: `figma-semantic-typography.tsv`. Legacy primitives `--pryt-brand-font-size-*` remain for older CSS — do not use for new components when a semantic token exists.
 
 ---
 

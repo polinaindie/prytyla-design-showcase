@@ -4,8 +4,13 @@ import type {
   PaymentInfoType,
 } from "../PaymentInfo/PaymentInfo.types";
 
-/** Figma GeneralWidget — ітерація 1: once | paymentInfo | veryShort */
-export type GeneralWidgetLayout = "full" | "veryShort";
+/**
+ * - full — hero + форма (статичний)
+ * - veryShort — статичний compact (embed)
+ * - sidebar — click expand/collapse (desktop sticky peek)
+ * - article — window.scrollY morph hero → compact (mobile article page)
+ */
+export type GeneralWidgetLayout = "full" | "veryShort" | "sidebar" | "article";
 
 export type GeneralWidgetPaymentTab = "once" | "subscription" | "paymentInfo";
 
@@ -40,8 +45,22 @@ export type GeneralWidgetHero = {
 
 export type GeneralWidgetProps = {
   className?: string;
-  /** full — hero + форма; veryShort — лише progress-картка */
   layout?: GeneralWidgetLayout;
+  /** layout=sidebar: початковий collapsed (default true) */
+  defaultCollapsed?: boolean;
+  /** layout=sidebar: controlled collapsed; без пропа — uncontrolled */
+  collapsed?: boolean;
+  onToggleCollapse?: (collapsed: boolean) => void;
+  /**
+   * layout=article: клік по compact progress (після скролу) — скрол сторінки до повного віджета.
+   * За замовчуванням `window.scrollTo({ top: 0 })`.
+   */
+  onScrollToFull?: () => void;
+  /**
+   * layout=article: фіксований scroll offset (px від верху віджета) замість window.scrollY.
+   * Для showcase / Storybook — напр. `GENERAL_WIDGET_SCROLL_RANGE` для compact-стану.
+   */
+  articleScrollOffset?: number;
   /** Прогрес зверху (Figma Progressbar=On) — лише layout=full */
   showProgress?: boolean;
   progress?: GeneralWidgetProgress;

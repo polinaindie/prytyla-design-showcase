@@ -1,0 +1,329 @@
+/* Figma Project Card 16:9982 — Desktop / Tablet / Mobile; Hover desktop only */
+
+.root {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  overflow: hidden;
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-large);
+  background: var(--surface-default);
+  color: var(--text-default);
+}
+
+.cardLink {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  text-decoration: none;
+}
+
+.cardLink:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.layout {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  pointer-events: none;
+}
+
+.imageWrap {
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.imageMotion {
+  width: 100%;
+  height: 100%;
+  transform: scale(1);
+  transform-origin: center center;
+  transition: transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (hover: hover) {
+  .desktop:hover .imageMotion,
+  .tablet:hover .imageMotion {
+    transform: scale(1.1);
+  }
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+.body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  min-width: 0;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  width: 100%;
+  min-width: 0;
+  font-family: var(--font-display);
+  font-size: var(--font-size-heading-h3);
+  font-weight: 900;
+  line-height: 1;
+  color: var(--text-default);
+  word-break: break-word;
+}
+
+.description {
+  margin: 0;
+  width: 100%;
+  min-width: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-medium);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-default);
+  word-break: break-word;
+}
+
+.progressSection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  gap: var(--spacing-card-progress-gap);
+}
+
+.progressBar {
+  max-width: none;
+}
+
+.stats {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+  gap: var(--space-medium);
+}
+
+.statBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.statBlockEnd {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.statLabel {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-caption);
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--text-muted);
+}
+
+.statValue {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-medium);
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text-default);
+}
+
+.statValueGoal {
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.donateBtn {
+  position: relative;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  height: var(--size-4xlarge);
+  padding: 0 var(--space-2xlarge);
+  border: none;
+  border-radius: var(--radius-round);
+  background: var(--surface-action);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-small);
+  font-weight: 600;
+  line-height: 1.43;
+  color: var(--text-on-action);
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background 0.2s ease;
+}
+
+.donateBtn:hover {
+  background: var(--surface-action-hover);
+}
+
+.donateBtn:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+/* ——— Desktop 684×360 ——— */
+
+.desktop {
+  max-width: 42.75rem;
+}
+
+.desktop .layout {
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.desktop .imageWrap {
+  flex: 0 0 39.4%;
+  max-width: 16.8449375rem;
+  align-self: stretch;
+}
+
+.desktop .body {
+  gap: var(--space-4xlarge);
+  padding: var(--space-3xlarge);
+}
+
+.desktop .content {
+  gap: var(--space-xlarge);
+}
+
+.desktop .info {
+  gap: var(--space-small);
+}
+
+.desktop .title {
+  max-height: 2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.desktop .description {
+  max-height: 7.5rem;
+  overflow: hidden;
+}
+
+@media (hover: hover) {
+  .desktop:hover .title {
+    text-decoration: underline;
+    text-underline-position: from-font;
+  }
+}
+
+/* ——— Tablet 541×306 ——— */
+
+.tablet {
+  max-width: 33.8125rem;
+}
+
+.tablet .layout {
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.tablet .imageWrap {
+  flex: 0 0 auto;
+  width: 17.5rem;
+  aspect-ratio: 280 / 374;
+  align-self: stretch;
+}
+
+.tablet .body {
+  gap: var(--space-xlarge);
+  padding: var(--space-large);
+}
+
+.tablet .content {
+  gap: var(--space-xlarge);
+}
+
+.tablet .info {
+  gap: var(--space-3xsmall);
+}
+
+/* ——— Mobile 350×564 ——— */
+
+.mobile {
+  max-width: 21.875rem;
+}
+
+.mobile .layout {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.mobile .imageWrap {
+  width: 100%;
+  aspect-ratio: 305 / 228;
+}
+
+.mobile .body {
+  gap: var(--space-xlarge);
+  padding: var(--space-large);
+}
+
+.mobile .content {
+  gap: var(--space-xlarge);
+}
+
+.mobile .info {
+  gap: var(--space-3xsmall);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .imageMotion {
+    transition-duration: 0.2s;
+  }
+
+  @media (hover: hover) {
+    .desktop:hover .imageMotion,
+    .tablet:hover .imageMotion {
+      transform: scale(1.05);
+    }
+  }
+
+  .donateBtn {
+    transition-duration: 0.01ms;
+  }
+}

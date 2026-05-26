@@ -1,11 +1,12 @@
 import { Illustration3D } from "../Illustration3D";
-import { IconArrowLeft40 } from "../Icons";
+import { IconArrowUpRight40 } from "../Icons";
 import type { LinkCardProps } from "./LinkCard.types";
 import styles from "./LinkCard.module.css";
 
 export function LinkCard({
   title,
   illustration,
+  showIllustration = true,
   size = "desktop",
   titleSize,
   href,
@@ -17,6 +18,7 @@ export function LinkCard({
   const rootClass = [
     styles.root,
     size === "mobile" ? styles.mobile : styles.desktop,
+    !showIllustration && styles.noIllustration,
     className,
   ]
     .filter(Boolean)
@@ -31,12 +33,16 @@ export function LinkCard({
 
   return (
     <a href={href} className={rootClass} {...rest}>
-      <span className={styles.illustrationWrap}>
-        <Illustration3D variant={illustration} aria-hidden />
-      </span>
+      {showIllustration ? (
+        <span className={styles.illustrationWrap}>
+          <Illustration3D variant={illustration} aria-hidden />
+        </span>
+      ) : null}
       <span className={styles.body}>
         <span className={titleClass}>{title}</span>
-        <IconArrowLeft40 className={styles.arrow} size={40} aria-hidden />
+        {size !== "mobile" ? (
+          <IconArrowUpRight40 className={styles.arrow} size={40} aria-hidden />
+        ) : null}
       </span>
     </a>
   );

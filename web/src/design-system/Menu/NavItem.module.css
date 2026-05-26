@@ -9,7 +9,7 @@
   border: none;
   background: none;
   font-family: Inter, system-ui, sans-serif;
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
   font-weight: 600;
   line-height: 1.43;
   white-space: nowrap;

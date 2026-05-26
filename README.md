@@ -10,6 +10,7 @@ Monorepo for the Prytula Foundation site and design system.
 │   └── prytula-figma-to-showcase.mdc
 ├── design-tokens/              # Figma variable export → CSS/TS
 │   ├── data/figma-variables.tsv
+│   ├── data/figma-semantic-typography.tsv  # Semantic font-size (Mobile/Tablet/Desktop)
 │   ├── scripts/build.mjs
 │   └── dist/                   # tokens.css, tokens.ts (generated)
 └── web/                        # Vite + React app
@@ -32,7 +33,9 @@ npm run dev            # Vite dev server (web/)
 npm run build:web      # Production build
 ```
 
-After updating `design-tokens/data/figma-variables.tsv` from Figma, always run `npm run build:tokens`.
+After updating `design-tokens/data/figma-variables.tsv` or `figma-semantic-typography.tsv` from Figma, always run `npm run build:tokens`.
+
+**Responsive typography:** Figma *Semantic* collection exposes `font-size/*` per Desktop / Tablet / Mobile. The build emits `--font-size-heading-h1`, etc., with `@media (min-width: 768px)` and `1024px` (mobile-first). Prefer these over `--pryt-brand-font-size-*` in new components.
 
 ## Figma
 

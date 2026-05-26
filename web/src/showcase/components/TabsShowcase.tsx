@@ -4,11 +4,11 @@ import {
   ShowcaseCodeBlock,
   ShowcaseDoDont,
   ShowcasePageLayout,
+  ShowcasePreview,
   ShowcasePropsTable,
   ShowcaseSection,
   ShowcaseThemeProvider,
   ShowcaseTokensList,
-  ShowcaseToolbar,
   type TokenUsage,
   useShowcaseTheme,
 } from "../primitives";
@@ -63,7 +63,7 @@ const TAB_PROPS = [
 const TOKENS_USED: TokenUsage[] = [
   {
     category: "Typography",
-    name: "--pryt-brand-font-size-700",
+    name: "--font-size-tab-label",
     usedIn: "Tab label 28px",
   },
   {
@@ -104,7 +104,6 @@ function TabsShowcasePage() {
         title="Tabs"
         description="Текстові вкладки з індикатором. Figma Tabs (1161:28678)."
       >
-        <ShowcaseToolbar showThemeToggle />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock code={QUICK_EXAMPLE} />
@@ -117,17 +116,21 @@ function TabsShowcasePage() {
           title="Інтерактивно"
           description="Клік перемикає вкладку; неактивні — hover через CSS."
         >
-          <Tabs items={TAB_ITEMS} value={value} onChange={setValue} />
-          <p className={styles.hint}>Обрано: {value}</p>
+          <ShowcasePreview>
+            <Tabs items={TAB_ITEMS} value={value} onChange={setValue} />
+            <p className={styles.hint}>Обрано: {value}</p>
+          </ShowcasePreview>
         </ShowcaseSection>
 
         <ShowcaseSection
           title="Окремий Tab"
           description="Якщо потрібен кастомний layout — Tab окремо від Tabs."
         >
-          <Tab selected onClick={() => {}}>
-            Видача майна
-          </Tab>
+          <ShowcasePreview>
+            <Tab selected onClick={() => {}}>
+              Видача майна
+            </Tab>
+          </ShowcasePreview>
         </ShowcaseSection>
 
         <ShowcaseSection title="Props — Tabs">

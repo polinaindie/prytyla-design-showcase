@@ -1,0 +1,27 @@
+.pageRoot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xlarge);
+  color: var(--text-default);
+}
+
+.pageRoot[data-showcase-theme="dark"] {
+  color: var(--text-inverse);
+}
+
+.previewDesktop {
+  max-width: 28rem;
+}
+
+.previewTablet {
+  max-width: 50.6875rem;
+}
+
+.previewFeatured {
+  width: 100%;
+  max-width: 87rem;
+}
+
+.previewFeaturedMobile {
+  max-width: 21.4375rem;
+}

@@ -1,6 +1,6 @@
 .tab {
   --tab-heading-family: Mariupol, Inter, system-ui, sans-serif;
-  --tab-label-min-height: calc(var(--pryt-brand-font-size-700) * 1.29);
+  --tab-label-min-height: calc(var(--font-size-tab-label) * 1.29);
 
   display: flex;
   flex-direction: column;
@@ -46,7 +46,7 @@
   margin: 0;
   padding: 0;
   border: 0;
-  font-size: var(--pryt-brand-font-size-700);
+  font-size: var(--font-size-tab-label);
   line-height: 1.29;
   white-space: nowrap;
   text-box-trim: trim-both;

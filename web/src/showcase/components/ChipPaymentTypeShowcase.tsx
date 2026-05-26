@@ -3,12 +3,13 @@ import { ChipPaymentType } from "../../design-system/ChipPaymentType";
 import {
   ShowcaseCodeBlock,
   ShowcaseDoDont,
+  ShowcaseMatrix,
   ShowcasePageLayout,
+  ShowcasePreview,
   ShowcasePropsTable,
   ShowcaseSection,
   ShowcaseThemeProvider,
   ShowcaseTokensList,
-  ShowcaseToolbar,
   type TokenUsage,
   useShowcaseTheme,
 } from "../primitives";
@@ -76,7 +77,7 @@ const TOKENS_USED: TokenUsage[] = [
   },
   {
     category: "Typography",
-    name: "--pryt-brand-font-size-250, --pryt-brand-font-size-100",
+    name: "--font-size-caption-medium, --font-size-numbers-tiny",
     usedIn: "Label 13px / badge 10px",
   },
   {
@@ -97,7 +98,6 @@ function ChipPaymentTypeShowcasePage() {
         title="Chip Payment Type"
         description={`Чіп вибору типу платежу (Figma ChipPaymentType 284:14412). Figma: ${FIGMA_URL}`}
       >
-        <ShowcaseToolbar showSearch={false} />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock code={QUICK_EXAMPLE} language="tsx" />
@@ -107,31 +107,33 @@ function ChipPaymentTypeShowcasePage() {
           title="Variants"
           description="Сітка як у Figma: Default / Selected × без бейджа / з «Найдієвіше»."
         >
-          <div className={styles.variantGrid}>
-            <div className={styles.cell}>
-              <ChipPaymentType state="default">Щомісяця</ChipPaymentType>
-              <p className={styles.cellLabel}>Default</p>
-            </div>
-            <div className={styles.cell}>
-              <ChipPaymentType state="default" recommendBadge>
-                Щомісяця
-              </ChipPaymentType>
-              <p className={styles.cellLabel}>Default + badge</p>
-            </div>
-            <div className={styles.cell}>
-              <ChipPaymentType state="selected">Щомісяця</ChipPaymentType>
-              <p className={styles.cellLabel}>Selected</p>
-            </div>
-            <div className={styles.cell}>
-              <ChipPaymentType state="selected" recommendBadge>
-                Щомісяця
-              </ChipPaymentType>
-              <p className={styles.cellLabel}>Selected + badge</p>
-            </div>
-          </div>
+          <ShowcaseMatrix
+            columns={["Без бейджа", "З бейджем «Найдієвіше»"]}
+            rows={[
+              {
+                rowLabel: "Default",
+                cells: [
+                  <ChipPaymentType state="default">Щомісяця</ChipPaymentType>,
+                  <ChipPaymentType state="default" recommendBadge>
+                    Щомісяця
+                  </ChipPaymentType>,
+                ],
+              },
+              {
+                rowLabel: "Selected",
+                cells: [
+                  <ChipPaymentType state="selected">Щомісяця</ChipPaymentType>,
+                  <ChipPaymentType state="selected" recommendBadge>
+                    Щомісяця
+                  </ChipPaymentType>,
+                ],
+              },
+            ]}
+          />
         </ShowcaseSection>
 
         <ShowcaseSection title="Interactive" description="Група вибору — один selected, aria-pressed.">
+          <ShowcasePreview>
           <div className={styles.interactiveRow}>
             <ChipPaymentType
               state={selected === "monthly" ? "selected" : "default"}
@@ -147,6 +149,7 @@ function ChipPaymentTypeShowcasePage() {
               Одноразово
             </ChipPaymentType>
           </div>
+          </ShowcasePreview>
         </ShowcaseSection>
 
         <ShowcaseSection title="Tokens used">

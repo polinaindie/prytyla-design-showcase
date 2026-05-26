@@ -12,11 +12,11 @@
   border-radius: var(--radius-medium);
   background: var(--surface-inverse);
   color: var(--text-on-inverse);
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
 }
 
 .hint {
   margin: var(--space-medium) 0 0;
-  font-size: var(--pryt-brand-font-size-200);
+  font-size: var(--font-size-caption);
   color: var(--text-muted);
 }

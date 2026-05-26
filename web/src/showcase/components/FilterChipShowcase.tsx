@@ -3,12 +3,13 @@ import { FilterChip } from "../../design-system/FilterChip";
 import {
   ShowcaseCodeBlock,
   ShowcaseDoDont,
+  ShowcaseMatrix,
   ShowcasePageLayout,
+  ShowcasePreview,
   ShowcasePropsTable,
   ShowcaseSection,
   ShowcaseThemeProvider,
   ShowcaseTokensList,
-  ShowcaseToolbar,
   type TokenUsage,
   useShowcaseTheme,
 } from "../primitives";
@@ -43,7 +44,7 @@ const PROPS = [
 const TOKENS_USED: TokenUsage[] = [
   {
     category: "Typography",
-    name: "--pryt-brand-font-size-300",
+    name: "--font-size-body-small",
     usedIn: "Label 14px semibold",
   },
   {
@@ -98,40 +99,34 @@ function FilterChipShowcasePage() {
         title="Filter Chip"
         description="Pill-фільтр для списків і каталогів. Figma Filter Chip (node 459:10025)."
       >
-        <ShowcaseToolbar showThemeToggle />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock code={QUICK_EXAMPLE} />
           <button type="button" onClick={handleCopy}>
             Copy snippet
           </button>
-          <div className={styles.row}>
-            <FilterChip state="default">Назва</FilterChip>
-            <FilterChip state="active">Назва</FilterChip>
-            <FilterChip state="default" disabled>
-              Disabled
-            </FilterChip>
-          </div>
-        </ShowcaseSection>
-
-        <ShowcaseSection title="Стани">
-          <div className={styles.grid}>
-            <div className={styles.cell}>
-              <p className={styles.cellLabel}>default</p>
-              <FilterChip state="default">Назва</FilterChip>
-            </div>
-            <div className={styles.cell}>
-              <p className={styles.cellLabel}>active</p>
-              <FilterChip state="active">Назва</FilterChip>
-            </div>
-          </div>
+          <ShowcaseMatrix
+            columns={["default", "active", "disabled"]}
+            rows={[
+              {
+                cells: [
+                  <FilterChip state="default">Назва</FilterChip>,
+                  <FilterChip state="active">Назва</FilterChip>,
+                  <FilterChip state="default" disabled>
+                    Disabled
+                  </FilterChip>,
+                ],
+              },
+            ]}
+          />
         </ShowcaseSection>
 
         <ShowcaseSection
           title="Ряд фільтрів"
           description="Клік перемикає active; батьківський стан керує state."
         >
-          <div className={styles.filterDemo}>
+          <ShowcasePreview>
+            <div className={styles.filterDemo}>
             {DEMO_LABELS.map((label, index) => (
               <FilterChip
                 key={label}
@@ -141,7 +136,8 @@ function FilterChipShowcasePage() {
                 {label}
               </FilterChip>
             ))}
-          </div>
+            </div>
+          </ShowcasePreview>
         </ShowcaseSection>
 
         <ShowcaseSection title="Props">

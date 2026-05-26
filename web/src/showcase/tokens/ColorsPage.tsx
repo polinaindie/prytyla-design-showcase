@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { IconSearch } from "../../design-system/Icons";
 import {
   ShowcaseCodeBlock,
   ShowcaseDoDont,
   ShowcasePageLayout,
+  ShowcasePreview,
   ShowcaseSection,
   ShowcaseThemeProvider,
-  ShowcaseToolbar,
+  useShowcaseSearch,
   useShowcaseTheme,
 } from "../primitives";
 import { ColorSwatchGrid } from "./ColorSwatch";
@@ -186,7 +186,7 @@ function filterTokens(tokens: readonly string[], query: string): readonly string
 
 function ColorsPageContent() {
   const { theme } = useShowcaseTheme();
-  const [query, setQuery] = useState("");
+  const { query } = useShowcaseSearch();
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
 
   const tokens = useMemo(() => ALL_TOKENS, []);
@@ -255,13 +255,6 @@ function ColorsPageContent() {
         title="Colors"
         description="Усі кольорові токени Prytula DS. У компонентах першим вибором — Mapped, потім Alias; Brand — лише для збірки токенів."
       >
-        <ShowcaseToolbar
-          showSearch
-          searchPlaceholder="Пошук токена…"
-          searchValue={query}
-          onSearch={setQuery}
-          searchIcon={<IconSearch size={24} aria-hidden />}
-        />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock code={QUICK_EXAMPLE} language="css" />
@@ -271,9 +264,9 @@ function ColorsPageContent() {
           title="Live preview"
           description="Приклад primary-кнопки на Mapped-токенах; тема сторінки керує контрастом підписів."
         >
-          <div className={styles.livePreview}>
+          <ShowcasePreview>
             <span className={styles.previewButton}>Підтримати</span>
-          </div>
+          </ShowcasePreview>
         </ShowcaseSection>
 
         {searchActive ? (

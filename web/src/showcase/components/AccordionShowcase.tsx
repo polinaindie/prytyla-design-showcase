@@ -3,11 +3,11 @@ import {
   ShowcaseCodeBlock,
   ShowcaseDoDont,
   ShowcasePageLayout,
+  ShowcasePreview,
   ShowcasePropsTable,
   ShowcaseSection,
   ShowcaseThemeProvider,
   ShowcaseTokensList,
-  ShowcaseToolbar,
   type TokenUsage,
   useShowcaseTheme,
 } from "../primitives";
@@ -48,7 +48,7 @@ const TOKENS_USED: TokenUsage[] = [
   },
   {
     category: "Typography",
-    name: "--pryt-brand-font-size-600 / 400",
+    name: "--font-size-heading-h4, --font-size-body-medium",
     usedIn: "H4 question 24px, body 16px",
   },
   {
@@ -86,7 +86,6 @@ function AccordionShowcasePage() {
         title="Accordion"
         description="FAQ-акордеон (Figma Accordeon 292:5029): Default, Hover і Opened. Один відкритий пункт у групі Accordion."
       >
-        <ShowcaseToolbar showSearch={false} />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock code={QUICK_EXAMPLE} language="tsx" />
@@ -96,7 +95,7 @@ function AccordionShowcasePage() {
           title="FAQ list"
           description="Наведи на заголовок — Hover. Клік — Opened + контент."
         >
-          <div className={styles.list}>
+          <ShowcasePreview className={styles.list}>
             <Accordion>
               <AccordionItem
                 id="partnership"
@@ -122,7 +121,7 @@ function AccordionShowcasePage() {
                 </p>
               </AccordionItem>
             </Accordion>
-          </div>
+          </ShowcasePreview>
           <p className={styles.hint}>max-width 920px (Figma desktop)</p>
         </ShowcaseSection>
 

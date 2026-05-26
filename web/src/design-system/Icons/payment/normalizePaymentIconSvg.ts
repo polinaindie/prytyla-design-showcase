@@ -3,8 +3,22 @@
  * do not both inherit the same color (solid black square in showcase).
  * Preserves fill="white" in mask/clip defs only.
  */
-export function normalizePaymentIconSvg(svg: string, idPrefix: string): string {
+export function normalizePaymentIconSvg(
+  svg: string,
+  idPrefix: string,
+  options?: { glyphOnly?: boolean },
+): string {
   let out = svg.trim();
+
+  if (options?.glyphOnly) {
+    out = out.replace(
+      /<path d="M0 10C0 4\.47715[\s\S]*?<\/path>\s*/,
+      "",
+    );
+    // Figma tile: 36×36 with 8px inset → glyph artboard 20×20. Without this crop,
+    // size={20} still maps the full 36×36 viewBox and the glyph looks ~11px.
+    out = out.replace(/viewBox="0 0 36 36"/, 'viewBox="8 8 20 20"');
+  }
 
   out = out.replace(/fill="#F5F5F5"/gi, 'fill="none"');
   out = out.replace(/fill="#1F1F1F"/gi, 'fill="currentColor"');

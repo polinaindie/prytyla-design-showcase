@@ -1,0 +1,33 @@
+.previewOuter {
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: var(--space-2xsmall);
+}
+
+.previewOuterScaled {
+  overflow-x: hidden;
+}
+
+.previewScaler {
+  overflow: hidden;
+}
+
+.preview {
+  box-sizing: border-box;
+  margin-inline: 0;
+  padding: var(--space-large);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  background: var(--surface-page);
+}
+
+.previewFlush {
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+.previewInverse {
+  background: var(--surface-primary);
+}

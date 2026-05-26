@@ -65,11 +65,11 @@
 }
 
 .desktop .index {
-  font-size: var(--pryt-brand-font-size-1000);
+  font-size: var(--font-size-numbers-section);
 }
 
 .desktop .title {
-  font-size: var(--pryt-brand-font-size-800);
+  font-size: var(--font-size-heading-h3);
 }
 
 /* Figma Size=Mobile — 343×64 */
@@ -78,10 +78,10 @@
 }
 
 .mobile .index {
-  font-size: var(--pryt-brand-font-size-800);
+  font-size: var(--font-size-numbers-section);
 }
 
 .mobile .title {
-  font-size: var(--pryt-brand-font-size-450);
+  font-size: var(--font-size-heading-h4);
   line-height: 1.2;
 }

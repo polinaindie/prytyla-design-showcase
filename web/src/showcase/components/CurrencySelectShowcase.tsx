@@ -8,7 +8,6 @@ import {
   ShowcaseSection,
   ShowcaseThemeProvider,
   ShowcaseTokensList,
-  ShowcaseToolbar,
   type TokenUsage,
   useShowcaseTheme,
 } from "../primitives";
@@ -57,7 +56,7 @@ const PROPS = [
 const TOKENS_USED: TokenUsage[] = [
   {
     category: "Typography",
-    name: "--pryt-brand-font-size-200",
+    name: "--font-size-caption",
     usedIn: "Caption 12px",
   },
   { category: "Color", name: "--text-default", usedIn: "Код валюти" },
@@ -99,7 +98,6 @@ function CurrencySelectShowcasePage() {
         title="Currency Select"
         description="Вибір валюти (pill + dropdown). Figma Currency Picker / Currency / CurrencyDropdown."
       >
-        <ShowcaseToolbar showThemeToggle />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock code={QUICK_EXAMPLE} />

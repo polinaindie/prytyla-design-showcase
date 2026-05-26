@@ -8,11 +8,11 @@ import {
   ShowcaseCodeBlock,
   ShowcaseDoDont,
   ShowcasePageLayout,
+  ShowcasePreview,
   ShowcasePropsTable,
   ShowcaseSection,
   ShowcaseThemeProvider,
   ShowcaseTokensList,
-  ShowcaseToolbar,
   type TokenUsage,
   useShowcaseTheme,
 } from "../primitives";
@@ -164,7 +164,6 @@ function PaymentInfoShowcasePage() {
         title="Payment Info"
         description="Спосіб оплати / FAQ-акордеон (Figma PaymentInfo 284:13904): Default, Hover, OnClick з реквізитами та copy."
       >
-        <ShowcaseToolbar showSearch={false} />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock code={QUICK_EXAMPLE} language="tsx" />
@@ -174,7 +173,7 @@ function PaymentInfoShowcasePage() {
           title="Payment methods"
           description="Один відкритий блок. Hover — сірий фон; OnClick — жовтий header."
         >
-          <div className={styles.list}>
+          <ShowcasePreview className={styles.list}>
             <PaymentInfoGroup>
               <PaymentInfo
                 id="card"
@@ -227,7 +226,7 @@ function PaymentInfoShowcasePage() {
                 fields={swiftFields}
               />
             </PaymentInfoGroup>
-          </div>
+          </ShowcasePreview>
           <p className={styles.hint}>max-width 293px (Figma desktop)</p>
         </ShowcaseSection>
 

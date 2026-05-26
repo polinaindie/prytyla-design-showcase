@@ -1,4 +1,4 @@
-/* Figma GeneralWidget 287:14741 — ітерація 1 (once, paymentInfo, veryShort) */
+/* Figma GeneralWidget 287:14741 — full, veryShort, sidebar collapse */
 
 .root {
   box-sizing: border-box;
@@ -12,6 +12,106 @@
 .rootVeryShort {
   border: var(--border-width-medium) solid var(--accent-secondary);
   border-radius: var(--radius-medium);
+}
+
+.rootSidebar {
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  transition: background-color 0.3s ease;
+}
+
+.rootSidebar.collapsed {
+  border: var(--border-width-medium) solid var(--accent-secondary);
+}
+
+.rootSidebar.collapsed:hover {
+  background: var(--surface-subtle-neutral);
+}
+
+.sidebarProgressToggle {
+  cursor: pointer;
+  outline: none;
+}
+
+.sidebarProgressToggle:focus-visible {
+  outline: var(--border-width-small) solid var(--border-focus);
+  outline-offset: var(--space-3xsmall);
+}
+
+.expandedContent {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-large);
+  padding: var(--space-2xlarge) var(--space-large) var(--space-3xlarge);
+  max-height: 50rem;
+  opacity: 1;
+  overflow: hidden;
+  transition:
+    max-height 0.3s ease,
+    opacity 0.3s ease,
+    padding 0.3s ease;
+}
+
+.rootSidebar.collapsed .expandedContent {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  pointer-events: none;
+}
+
+/* layout=article — scroll-driven collapse (window.scrollY) */
+.rootArticle {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.rootArticlePaymentInfo {
+  max-height: calc(100vh - 10rem);
+}
+
+.rootArticle .hero {
+  border-radius: var(--radius-large) var(--radius-large) 0 0;
+}
+
+.rootArticle .progressSectionCompact.progressSectionScroll {
+  border-radius: var(--radius-large) var(--radius-large) 0 0;
+}
+
+.rootArticle .form {
+  flex: 1;
+  background: var(--surface-default);
+}
+
+.heroScroll {
+  overflow: hidden;
+  transition: none;
+}
+
+.heroScrollTransition {
+  transition: height 0.3s ease, opacity 0.3s ease;
+}
+
+.progressSectionScroll {
+  border: var(--border-width-small) solid var(--border-default);
+  background: var(--surface-subtle-neutral);
+}
+
+.progressThumbScroll {
+  overflow: hidden;
+  width: 0;
+  opacity: 0;
+  transition: none;
+}
+
+.progressTitleScroll {
+  margin: 0;
+  overflow: hidden;
+}
+
+.progressBarScroll {
+  position: relative;
 }
 
 .progressSection {
@@ -28,8 +128,56 @@
 }
 
 .progressSectionCompact {
+  /* Figma VeryShort 1107:24593 — padding 16px, thumb/content gap 14px */
+  gap: 0.875rem; /* TODO: space token for 14px when exported from Figma */
+  padding: var(--space-large);
   border: none;
-  background: var(--surface-default);
+  border-bottom: var(--border-width-small) solid var(--pryt-brand-neutral-100);
+  background: var(--surface-subtle-neutral);
+}
+
+.progressSectionCompact.progressSectionScroll {
+  border: var(--border-width-small) solid var(--border-default);
+  background: var(--surface-subtle-neutral);
+}
+
+.progressSectionCompact .progressBody {
+  gap: var(--space-small);
+}
+
+/* Short — sidebar / article scroll compact: h4 scale (24px desktop) */
+.progressSectionCompact .progressTitle {
+  font-size: var(--font-size-heading-h4);
+}
+
+/* VeryShort — mobile embed only: title 18px at every breakpoint */
+.rootVeryShort .progressTitle {
+  font-size: var(--font-size-heading-h4);
+}
+
+@media (min-width: 768px) {
+  .rootVeryShort .progressTitle {
+    font-size: var(--font-size-body-large);
+  }
+}
+
+@media (min-width: 1024px) {
+  .rootVeryShort .progressTitle {
+    font-size: var(--font-size-image-caption);
+  }
+}
+
+.progressSectionCompact .statLabel {
+  font-size: var(--font-size-caption);
+}
+
+.progressSectionCompact .statValue {
+  font-size: var(--font-size-body-small);
+  font-weight: 500;
+}
+
+.progressSectionCompact .statValueMuted {
+  color: var(--text-secondary);
 }
 
 .progressThumb {
@@ -52,7 +200,7 @@
 .progressTitle {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--pryt-brand-font-size-450);
+  font-size: var(--font-size-image-caption);
   font-weight: 900;
   line-height: 1.2;
   color: var(--text-default);
@@ -87,7 +235,7 @@
 .statLabel {
   margin: 0;
   font-family: Inter, system-ui, sans-serif;
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
   font-weight: 400;
   line-height: 1.3;
   color: var(--text-muted);
@@ -96,7 +244,7 @@
 .statValue {
   margin: 0;
   font-family: Inter, system-ui, sans-serif;
-  font-size: var(--pryt-brand-font-size-400);
+  font-size: var(--font-size-body-medium);
   font-weight: 600;
   line-height: 1.43;
   color: var(--text-default);
@@ -167,13 +315,14 @@
   gap: var(--space-small);
 }
 
+/* Amount + currency: Figma #757575; no Mapped/Alias between muted and subtle */
 .amountValue {
   margin: 0;
   font-family: "Mariupol", Inter, system-ui, sans-serif;
-  font-size: var(--pryt-brand-font-size-1000);
+  font-size: var(--font-size-numbers-section);
   font-weight: 400;
   line-height: 1;
-  color: var(--text-muted);
+  color: var(--pryt-brand-neutral-500);
 }
 
 .currencyDropdown {
@@ -186,16 +335,16 @@
 .currencyLabel {
   margin: 0;
   font-family: "Mariupol", Inter, system-ui, sans-serif;
-  font-size: var(--pryt-brand-font-size-700);
+  font-size: var(--font-size-tab-label);
   font-weight: 500;
   line-height: 1.29;
-  color: var(--text-muted);
+  color: var(--pryt-brand-neutral-500);
 }
 
 .currencyIcon {
   display: inline-flex;
   flex-shrink: 0;
-  color: var(--text-muted);
+  color: var(--pryt-brand-neutral-500);
   transform: scaleY(-1);
 }
 
@@ -233,7 +382,7 @@
 .sectionHeading {
   margin: 0;
   font-family: Inter, system-ui, sans-serif;
-  font-size: var(--pryt-brand-font-size-250);
+  font-size: var(--font-size-caption-medium);
   font-weight: 600;
   line-height: 1.5;
   color: var(--text-muted);
@@ -245,7 +394,7 @@
   border: var(--border-width-small) dashed var(--border-default);
   border-radius: var(--radius-large);
   font-family: Inter, system-ui, sans-serif;
-  font-size: var(--pryt-brand-font-size-400);
+  font-size: var(--font-size-body-medium);
   line-height: 1.43;
   color: var(--text-muted);
   text-align: center;

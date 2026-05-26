@@ -9,8 +9,13 @@ import { fileURLToPath } from "node:url";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 const TSV_PATH = path.join(ROOT, "data", "figma-variables.tsv");
+const SEMANTIC_TYPO_PATH = path.join(ROOT, "data", "figma-semantic-typography.tsv");
 const DIST = path.join(ROOT, "dist");
 const WEB_STYLES = path.join(ROOT, "..", "web", "src", "styles");
+
+/** Match SubPageHero / GridPage — Figma Semantic modes Mobile → Tablet → Desktop */
+const BP_TABLET_MIN = "768px";
+const BP_DESKTOP_MIN = "1024px";
 
 function slugPath(name) {
   return name
@@ -24,6 +29,11 @@ function brandVar(name) {
 }
 
 function aliasVar(name) {
+  return `--${slugPath(name)}`;
+}
+
+/** Semantic font-size/heading-h1 → --font-size-heading-h1 */
+function semanticFontVar(name) {
   return `--${slugPath(name)}`;
 }
 
@@ -55,6 +65,35 @@ function parseRows(tsv) {
       name,
       type,
       value: rest.join("\t"),
+    });
+  }
+  return rows;
+}
+
+function parseSemanticTypographyRows(tsv) {
+  const rows = [];
+  for (const line of tsv.split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) continue;
+    const parts = line.split("\t");
+    if (parts.length < 7) continue;
+    if (parts[0] === "VariableID" && parts[1] === "Collection") continue;
+    const [id, collection, name, type, mobile, tablet, desktop] = parts;
+    const m = Number(mobile);
+    const t = Number(tablet);
+    const d = Number(desktop);
+    if ([m, t, d].some((n) => Number.isNaN(n))) {
+      throw new Error(`Invalid px for ${name}: ${mobile}, ${tablet}, ${desktop}`);
+    }
+    rows.push({
+      id,
+      collection,
+      name,
+      type,
+      mobile: m,
+      tablet: t,
+      desktop: d,
+      responsive: m !== t || t !== d,
     });
   }
   return rows;
@@ -154,6 +193,47 @@ function main() {
   }
 
   cssBlocks.push(`}`);
+
+  const semanticTypoRows = parseSemanticTypographyRows(
+    fs.readFileSync(SEMANTIC_TYPO_PATH, "utf8"),
+  );
+
+  cssBlocks.push("");
+  cssBlocks.push(
+    `/* Semantic typography — responsive (Figma Semantic: Mobile default, Tablet ${BP_TABLET_MIN}+, Desktop ${BP_DESKTOP_MIN}+) */`,
+  );
+  cssBlocks.push(`/* Source: design-tokens/data/figma-semantic-typography.tsv */`);
+  cssBlocks.push(`:root {`);
+  cssBlocks.push(`  /* Mobile (< ${BP_TABLET_MIN}) */`);
+  for (const row of semanticTypoRows) {
+    cssBlocks.push(`  ${semanticFontVar(row.name)}: ${row.mobile}px;`);
+  }
+  cssBlocks.push(`}`);
+
+  const tabletDecls = semanticTypoRows
+    .filter((row) => row.tablet !== row.mobile)
+    .map((row) => `  ${semanticFontVar(row.name)}: ${row.tablet}px;`);
+  if (tabletDecls.length > 0) {
+    cssBlocks.push("");
+    cssBlocks.push(`@media (min-width: ${BP_TABLET_MIN}) {`);
+    cssBlocks.push(`  :root {`);
+    cssBlocks.push(...tabletDecls);
+    cssBlocks.push(`  }`);
+    cssBlocks.push(`}`);
+  }
+
+  const desktopDecls = semanticTypoRows
+    .filter((row) => row.desktop !== row.tablet)
+    .map((row) => `  ${semanticFontVar(row.name)}: ${row.desktop}px;`);
+  if (desktopDecls.length > 0) {
+    cssBlocks.push("");
+    cssBlocks.push(`@media (min-width: ${BP_DESKTOP_MIN}) {`);
+    cssBlocks.push(`  :root {`);
+    cssBlocks.push(...desktopDecls);
+    cssBlocks.push(`  }`);
+    cssBlocks.push(`}`);
+  }
+
   cssBlocks.push("");
   cssBlocks.push(`/* Grid system (hardcoded, pending Figma sync) */`);
   cssBlocks.push(`/* Grid system — hardcoded until Figma variables are added */`);
@@ -199,12 +279,39 @@ function main() {
   tsLines.push(`export type AliasToken = keyof typeof alias;`);
   tsLines.push(`export type MappedToken = keyof typeof mapped;`);
   tsLines.push("");
+  tsLines.push(`/** Figma Semantic font-size/* — responsive via CSS media queries */`);
+  tsLines.push(`export const semanticFontSize = {`);
+  for (const row of semanticTypoRows) {
+    tsLines.push(
+      `  ${JSON.stringify(row.name)}: ${JSON.stringify(`var(${semanticFontVar(row.name)})`)},`,
+    );
+  }
+  tsLines.push(`} as const;`);
+  tsLines.push("");
+  tsLines.push(`export type SemanticFontSizeToken = keyof typeof semanticFontSize;`);
+  tsLines.push("");
+  tsLines.push(`export const semanticFontSizeMeta = [`);
+  for (const row of semanticTypoRows) {
+    tsLines.push(
+      `  { figma: ${JSON.stringify(row.name)}, cssVar: ${JSON.stringify(semanticFontVar(row.name))}, mobile: ${row.mobile}, tablet: ${row.tablet}, desktop: ${row.desktop}, responsive: ${row.responsive} },`,
+    );
+  }
+  tsLines.push(`] as const;`);
+  tsLines.push("");
+  tsLines.push(`export const typographyBreakpoints = {`);
+  tsLines.push(`  tabletMin: ${JSON.stringify(BP_TABLET_MIN)},`);
+  tsLines.push(`  desktopMin: ${JSON.stringify(BP_DESKTOP_MIN)},`);
+  tsLines.push(`} as const;`);
+  tsLines.push("");
 
   fs.writeFileSync(path.join(DIST, "tokens.ts"), tsLines.join("\n"), "utf8");
 
   console.log(`Wrote ${path.join("design-tokens", "dist", "tokens.css")}`);
   console.log(`Wrote ${path.join("web", "src", "styles", "tokens.css")}`);
   console.log(`Wrote ${path.join("design-tokens", "dist", "tokens.ts")}`);
+  console.log(
+    `Semantic typography: ${semanticTypoRows.length} tokens (${semanticTypoRows.filter((r) => r.responsive).length} responsive)`,
+  );
   if (dedupedMapped.length > 0) {
     console.log(`Mapped deduped with Alias (${dedupedMapped.length}):`);
     for (const d of dedupedMapped) {

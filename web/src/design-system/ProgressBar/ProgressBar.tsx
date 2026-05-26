@@ -22,12 +22,13 @@ export function ProgressBar({
   const ariaLabel = label ?? `Прогрес: ${displayValue}%`;
 
   const rootClass = [styles.root, className].filter(Boolean).join(" ");
-  const trackClass = [styles.track, isDone ? styles.trackDone : ""]
-    .filter(Boolean)
-    .join(" ");
   const badgeClass = [styles.badge, isDone ? styles.badgeDone : ""]
     .filter(Boolean)
     .join(" ");
+
+  const badgeStyle = isDone
+    ? undefined
+    : { left: `${fillPercent}%` as const };
 
   return (
     <div
@@ -38,15 +39,17 @@ export function ProgressBar({
       aria-valuemax={100}
       aria-label={ariaLabel}
     >
-      <div className={trackClass}>
+      <div className={styles.track}>
         {!isDone ? (
           <div
             className={styles.fill}
             style={{ width: `${fillPercent}%` }}
           />
         ) : null}
-        <span className={badgeClass}>{displayValue}%</span>
       </div>
+      <span className={badgeClass} style={badgeStyle}>
+        {displayValue}%
+      </span>
     </div>
   );
 }

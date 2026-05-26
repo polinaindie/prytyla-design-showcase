@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
-import { IconSearch } from "../../design-system/Icons";
 import {
   ShowcaseCodeBlock,
   ShowcaseDoDont,
   ShowcasePageLayout,
+  ShowcasePreview,
   ShowcaseSection,
   ShowcaseThemeProvider,
-  ShowcaseToolbar,
+  ShowcaseTokenTable,
+  useShowcaseSearch,
   useShowcaseTheme,
 } from "../primitives";
 import styles from "./SpacingPage.module.css";
@@ -89,67 +90,35 @@ function sortByValueDesc(
     .sort((a, b) => spacingPx(values[b]!) - spacingPx(values[a]!));
 }
 
-type SpacingBarProps = {
-  token: string;
-  value: string;
-  onCopy: (token: string) => void;
-};
-
-function SpacingBar({ token, value, onCopy }: SpacingBarProps) {
-  const handleClick = async () => {
-    try {
-      await navigator.clipboard.writeText(tokenVarRef(token));
-      onCopy(token);
-    } catch {
-      /* clipboard unavailable */
-    }
-  };
-
+function SpacingBarPreview({ value }: { value: string }) {
   return (
-    <button
-      type="button"
-      className={styles.barRow}
-      onClick={handleClick}
-      title={`Копіювати ${tokenVarRef(token)}`}
-    >
-      <div className={styles.barTrack}>
-        <div className={styles.bar} style={{ width: value }} />
-      </div>
-      <div className={styles.barMeta}>
-        <span className={styles.tokenName}>{token}</span>
-        <span className={styles.tokenValue}>{value}</span>
-      </div>
-    </button>
-  );
-}
-
-function SpacingBarList({
-  tokens,
-  values,
-  onCopy,
-}: {
-  tokens: readonly string[];
-  values: Record<string, string>;
-  onCopy: (token: string) => void;
-}) {
-  const sorted = sortByValueDesc(tokens, values);
-
-  if (sorted.length === 0) {
-    return null;
-  }
-
-  return (
-    <div className={styles.barList}>
-      {sorted.map((token) => (
-        <SpacingBar key={token} token={token} value={values[token]!} onCopy={onCopy} />
-      ))}
+    <div className={styles.barTrack}>
+      <div className={styles.bar} style={{ width: value }} />
     </div>
   );
 }
 
+function buildSpacingRows(
+  tokens: readonly string[],
+  values: Record<string, string>,
+  onCopy: (token: string) => void,
+) {
+  return sortByValueDesc(tokens, values).map((token) => ({
+    token,
+    value: values[token]!,
+    preview: <SpacingBarPreview value={values[token]!} />,
+    onCopy: () => {
+      void navigator.clipboard.writeText(tokenVarRef(token)).then(
+        () => onCopy(token),
+        () => undefined,
+      );
+    },
+  }));
+}
+
 function SpacingPageContent() {
   const { theme } = useShowcaseTheme();
-  const [query, setQuery] = useState("");
+  const { query } = useShowcaseSearch();
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
 
   const candidates = useMemo(() => [...ALIAS_SPACE, ...BRAND_SCALE], []);
@@ -177,6 +146,16 @@ function SpacingPageContent() {
   const aliasVisible = filterTokens(ALIAS_SPACE, query);
   const brandVisible = filterTokens(BRAND_SCALE, query);
 
+  const aliasRows = useMemo(
+    () => buildSpacingRows(aliasVisible, values, handleCopy),
+    [aliasVisible, values],
+  );
+
+  const brandRows = useMemo(
+    () => buildSpacingRows(brandVisible, values, handleCopy),
+    [brandVisible, values],
+  );
+
   return (
     <div className={styles.pageRoot} data-showcase-theme={theme}>
       {copiedToken ? (
@@ -189,13 +168,6 @@ function SpacingPageContent() {
         title="Spacing"
         description="Відступи Prytula DS. У компонентах — Alias --space-*; Brand scale лише для збірки токенів."
       >
-        <ShowcaseToolbar
-          showSearch
-          searchPlaceholder="Пошук токена…"
-          searchValue={query}
-          onSearch={setQuery}
-          searchIcon={<IconSearch size={24} aria-hidden />}
-        />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock code={QUICK_EXAMPLE} language="css" />
@@ -205,14 +177,14 @@ function SpacingPageContent() {
           title="Live preview"
           description="Padding картки та сторінки на --space-large / --space-medium."
         >
-          <div className={styles.livePreview}>
+          <ShowcasePreview>
             <div className={styles.previewPage}>
               <div className={styles.previewCard}>
                 <p className={styles.previewTitle}>Картка проєкту</p>
                 <p className={styles.previewText}>Внутрішні відступи на spacing-токенах.</p>
               </div>
             </div>
-          </div>
+          </ShowcasePreview>
         </ShowcaseSection>
 
         {searchActive ? (
@@ -221,27 +193,27 @@ function SpacingPageContent() {
           </p>
         ) : null}
 
-        {aliasVisible.length > 0 ? (
+        {aliasRows.length > 0 ? (
           <ShowcaseSection
             id="alias-spacing"
             title="Alias spacing — public API"
-            description="Від найбільшого до найменшого. Клік — копіює var(--token); поруч — computed value."
+            description="Від найбільшого до найменшого. Клік по токену — копіює var(--token)."
           >
-            <SpacingBarList tokens={aliasVisible} values={values} onCopy={handleCopy} />
+            <ShowcaseTokenTable rows={aliasRows} />
           </ShowcaseSection>
         ) : null}
 
-        {brandVisible.length > 0 ? (
+        {brandRows.length > 0 ? (
           <ShowcaseSection
             id="brand-scale"
             title="Brand scale primitives"
-            description="Low-level. Клік — копіює var(--token). У компонентах — --space-*."
+            description="Low-level. У компонентах — --space-*."
           >
             <p className={styles.lowLevelNote}>
               Low-level. Не використовуй --pryt-brand-scale-* у компонентах — лише
               --space-*.
             </p>
-            <SpacingBarList tokens={brandVisible} values={values} onCopy={handleCopy} />
+            <ShowcaseTokenTable rows={brandRows} />
           </ShowcaseSection>
         ) : null}
 

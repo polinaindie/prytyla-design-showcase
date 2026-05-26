@@ -6,7 +6,6 @@ import {
   ShowcaseSection,
   ShowcaseThemeProvider,
   ShowcaseTokensList,
-  ShowcaseToolbar,
   useShowcaseTheme,
   type TokenUsage,
 } from "../primitives";
@@ -218,7 +217,6 @@ function GridPageContent() {
         title="Grid System"
         description="Центрований контейнер і 4 / 8 / 12 колонки з gutter 24px. Breakpoints 768 / 1024 / 1920px — у @media (hardcoded); решта — CSS variables з tokens.css."
       >
-        <ShowcaseToolbar showSearch={false} />
 
         <p className={styles.viewportBanner} aria-live="polite">
           Current viewport: <strong>{viewportWidth}px</strong> → {activeBp.label} (

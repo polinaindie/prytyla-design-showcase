@@ -28,6 +28,7 @@ export {
   IconPhone20,
   IconEmail20,
   IconArrowDown20,
+  IconChevronRight20,
   IconClose20,
   IconCopy20,
 } from "./small";

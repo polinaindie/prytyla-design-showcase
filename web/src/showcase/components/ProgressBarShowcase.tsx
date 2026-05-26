@@ -3,12 +3,13 @@ import { ProgressBar } from "../../design-system/ProgressBar";
 import {
   ShowcaseCodeBlock,
   ShowcaseDoDont,
+  ShowcaseMatrix,
   ShowcasePageLayout,
+  ShowcasePreview,
   ShowcasePropsTable,
   ShowcaseSection,
   ShowcaseThemeProvider,
   ShowcaseTokensList,
-  ShowcaseToolbar,
   type TokenUsage,
   useShowcaseTheme,
 } from "../primitives";
@@ -61,7 +62,7 @@ const TOKENS_USED: TokenUsage[] = [
   },
   {
     category: "Typography",
-    name: "--pryt-brand-font-size-200",
+    name: "--font-size-caption",
     usedIn: "Caption 12px",
   },
   {
@@ -81,7 +82,6 @@ function ProgressBarShowcasePage() {
         title="Progress bar"
         description="Лінійний індикатор збору (Figma 728:13566, Prytula-Responsive): In progress з синім fill і сірим badge; Done — повний track і navy badge (101%)."
       >
-        <ShowcaseToolbar showSearch={false} />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock code={QUICK_EXAMPLE} language="tsx" />
@@ -91,21 +91,21 @@ function ProgressBarShowcasePage() {
           title="Variants"
           description="Figma Property 1: InProgres | Done. Ширина за замовчуванням до 340px (21.25rem), 100% у вужчому контейнері."
         >
-          <div className={styles.preview}>
-            <div className={styles.variantRow}>
-              <div>
-                <p className={styles.variantLabel}>In progress (69%)</p>
-                <ProgressBar value={69} variant="inProgress" />
-              </div>
-              <div>
-                <p className={styles.variantLabel}>Done (101%)</p>
-                <ProgressBar value={101} variant="done" />
-              </div>
-            </div>
-          </div>
+          <ShowcaseMatrix
+            columns={["In progress (69%)", "Done (101%)"]}
+            rows={[
+              {
+                cells: [
+                  <ProgressBar value={69} variant="inProgress" />,
+                  <ProgressBar value={101} variant="done" />,
+                ],
+              },
+            ]}
+          />
         </ShowcaseSection>
 
         <ShowcaseSection title="Live preview">
+          <ShowcasePreview>
           <div className={styles.liveRow}>
             <label className={styles.rangeMeta} htmlFor="progress-demo-range">
               value: {Math.round(sliderValue)}
@@ -124,6 +124,7 @@ function ProgressBarShowcasePage() {
             />
             <ProgressBar value={sliderValue} />
           </div>
+          </ShowcasePreview>
         </ShowcaseSection>
 
         <ShowcaseSection title="Tokens used">

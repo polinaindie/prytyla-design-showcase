@@ -1,0 +1,482 @@
+/* Figma SubPageHero 408:3881 / desktop links 1634:40752 */
+
+.shell {
+  width: 100%;
+  overflow: visible;
+  container-type: inline-size;
+  container-name: subpage-hero;
+}
+
+.root {
+  box-sizing: border-box;
+  display: flex;
+  width: 100%;
+  border-radius: var(--radius-large);
+  color: var(--text-default);
+}
+
+.root[data-background="orange"] {
+  background: var(--accent-secondary);
+}
+
+.root[data-background="amber"] {
+  background: var(--pryt-brand-orange-300);
+}
+
+.root[data-background="sky"] {
+  background: var(--surface-subtle-info);
+}
+
+.root[data-background="blue"] {
+  background: var(--surface-info);
+}
+
+.root[data-background="gray"] {
+  background: var(--bg-badge);
+}
+
+.root[data-background="warm"] {
+  background: var(--accent-highlight);
+}
+
+/* ——— Mobile (< 768px container) ——— */
+
+.root {
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-large);
+  padding: var(--space-large);
+}
+
+/* Figma links mobile 629:17166 — gap 16px, padding 16px */
+.root[data-variant="links"] {
+  gap: var(--space-large);
+  padding: var(--space-large);
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-small);
+  min-width: 0;
+}
+
+.root[data-variant="links"] .copy {
+  gap: var(--space-small);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--font-size-heading-h0);
+  font-weight: 900;
+  line-height: 1;
+  word-break: break-word;
+}
+
+.description {
+  margin: 0;
+  min-width: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-large);
+  font-weight: 400;
+  line-height: 1.5;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.links {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: var(--space-small);
+  width: 100%;
+}
+
+.linksMobile {
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+}
+
+.linksDesktop {
+  display: none;
+}
+
+.linksMobile .linkCard {
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto !important;
+  max-width: none;
+  height: 91px !important;
+}
+
+.description a {
+  font-size: var(--font-size-body-small);
+  font-weight: 700;
+  line-height: 1.5;
+  text-decoration: underline;
+  color: inherit;
+}
+
+/* Image variant — mobile: title + illustration in one row */
+.imageTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-large);
+  width: 100%;
+}
+
+.imageTitleRow .title {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.illustrationInline {
+  display: flex;
+  flex-shrink: 0;
+  width: var(--size-6xlarge);
+  height: var(--size-6xlarge);
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.illustrationInline > span {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.illustrationAside {
+  display: none;
+}
+
+.root[data-variant="image"] .copy {
+  gap: var(--space-large);
+}
+
+/* ——— Tablet (768px+ container) ——— */
+
+@container subpage-hero (min-width: 48rem) {
+  .root {
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-large);
+    padding: var(--space-3xlarge) var(--space-large);
+  }
+
+  .root[data-variant="links"] {
+    padding-block: var(--space-3xlarge);
+  }
+
+  .root[data-variant="links"] .copy {
+    gap: var(--space-2xlarge);
+  }
+
+  /* Figma image tablet 997:26225 — pl 32, pr 0, py 8, gap 24, h 320 */
+  .root[data-variant="image"] {
+    min-height: 20rem;
+    padding-block: var(--space-small);
+    padding-inline-start: var(--space-3xlarge);
+    padding-inline-end: var(--space-none);
+  }
+
+  .copy {
+    flex: 1 1 18.75rem;
+    gap: var(--space-large);
+    min-width: 18.75rem;
+  }
+
+  .linksMobile {
+    display: none;
+  }
+
+  .linksDesktop {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: flex-end;
+    gap: var(--space-small);
+    min-width: 0;
+  }
+
+  .linksDesktop .linkCard {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto !important;
+    max-width: none;
+    height: 7.75rem !important;
+  }
+
+  /* Figma links tablet 629:17141 — copy full width, cards in a row */
+  .root[data-variant="links"] {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-large);
+  }
+
+  .root[data-variant="links"] .copy {
+    width: 100%;
+    flex: 1 1 auto;
+    max-width: none;
+  }
+
+  .root[data-variant="links"] .linksDesktop {
+    width: 100%;
+    flex: 1 1 auto;
+    justify-content: stretch;
+  }
+
+  .root[data-variant="image"] .imageTitleRow {
+    display: block;
+  }
+
+  .root[data-variant="image"] .imageTitleRow .title {
+    width: 100%;
+  }
+
+  .illustrationInline {
+    display: none;
+  }
+
+  .root[data-variant="image"] .illustrationAside {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: flex-end;
+    justify-content: flex-end;
+    align-self: center;
+    margin-inline-start: auto;
+    width: 10.625rem;
+    height: 10.625rem;
+  }
+
+  .root[data-variant="image"] .illustrationAside > span {
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+
+/* ——— Desktop (1024px+ container) — Figma 1634:40752 ——— */
+
+@container subpage-hero (min-width: 64rem) {
+  .root {
+    gap: var(--space-2xlarge);
+    padding: var(--space-3xlarge);
+  }
+
+  /* Figma image desktop 473:12529 — pl 32, pr 0, py 8, gap 64, h 320 */
+  .root[data-variant="image"] {
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--space-6xlarge);
+    padding-block: var(--space-small);
+    padding-inline-start: var(--space-3xlarge);
+    padding-inline-end: var(--space-none);
+  }
+
+  .copy {
+    flex: 1 1 18.75rem;
+    max-width: 56rem;
+  }
+
+  .root[data-variant="image"] .copy {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 56rem;
+  }
+
+  .root[data-variant="image"] .illustrationAside {
+    flex: 0 0 auto;
+    align-items: flex-end;
+    justify-content: flex-end;
+    align-self: center;
+    margin-inline-start: auto;
+    width: 18.875rem;
+    height: 18.875rem;
+  }
+
+  /* Text block grows; link column 407px stacked, aligned end (Figma Link Cards) */
+  .root[data-variant="links"] {
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--space-2xlarge);
+    max-width: 100%;
+  }
+
+  .root[data-variant="links"] .copy {
+    flex: 1 1 0;
+    gap: var(--space-2xlarge);
+    width: auto;
+    min-width: 0;
+    max-width: 56rem;
+  }
+
+  .root[data-variant="links"] .linksDesktop {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    align-items: flex-end;
+    align-self: center;
+    gap: var(--space-small);
+    width: 25.4375rem;
+    max-width: 100%;
+    margin-inline-start: auto;
+    overflow: visible;
+  }
+
+  .root[data-variant="links"] .linksDesktop .linkCard {
+    flex: 0 0 auto;
+    width: 100% !important;
+    max-width: 25.5rem;
+    height: 7.75rem !important;
+  }
+}
+
+/* Showcase: layout tied to viewport toggle (Figma), not squeezed main column width */
+
+:global([data-showcase-typography="desktop"]) .shell .root[data-variant="image"] {
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-6xlarge);
+  padding-block: var(--space-small);
+  padding-inline-start: var(--space-3xlarge);
+  padding-inline-end: var(--space-none);
+}
+
+:global([data-showcase-typography="desktop"]) .shell .root[data-variant="image"] .copy {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 56rem;
+}
+
+:global([data-showcase-typography="desktop"]) .shell .root[data-variant="image"] .illustrationAside {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: flex-end;
+  justify-content: flex-end;
+  align-self: center;
+  margin-inline-start: auto;
+  width: 18.875rem;
+  height: 18.875rem;
+}
+
+:global([data-showcase-typography="tablet"]) .shell .root[data-variant="image"] {
+  flex-flow: row wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-large);
+  padding-block: var(--space-small);
+  padding-inline-start: var(--space-3xlarge);
+  padding-inline-end: var(--space-none);
+}
+
+:global([data-showcase-typography="tablet"]) .shell .root[data-variant="image"] .illustrationAside {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: flex-end;
+  justify-content: flex-end;
+  align-self: center;
+  margin-inline-start: auto;
+  width: 10.625rem;
+  height: 10.625rem;
+}
+
+:global([data-showcase-typography="desktop"]) .shell .root[data-variant="links"] {
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-2xlarge);
+  padding: var(--space-3xlarge);
+}
+
+:global([data-showcase-typography="desktop"]) .shell .root[data-variant="links"] .copy {
+  flex: 1 1 0;
+  gap: var(--space-2xlarge);
+  width: auto;
+  min-width: 0;
+  max-width: 56rem;
+}
+
+:global([data-showcase-typography="desktop"]) .shell .root[data-variant="links"] .linksMobile {
+  display: none;
+}
+
+:global([data-showcase-typography="desktop"]) .shell .root[data-variant="links"] .linksDesktop {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: flex-end;
+  align-self: center;
+  gap: var(--space-small);
+  width: 25.4375rem;
+  max-width: none;
+  margin-inline-start: auto;
+  overflow: visible;
+}
+
+:global([data-showcase-typography="desktop"]) .shell .root[data-variant="links"] .linksDesktop .linkCard {
+  flex: 0 0 auto;
+  width: 100% !important;
+  max-width: 25.5rem;
+  height: 7.75rem !important;
+}
+
+:global([data-showcase-typography="tablet"]) .shell .root[data-variant="links"] {
+  flex-flow: column nowrap;
+  align-items: stretch;
+  gap: var(--space-large);
+  padding: var(--space-3xlarge) var(--space-large);
+}
+
+:global([data-showcase-typography="tablet"]) .shell .root[data-variant="links"] .copy {
+  width: 100%;
+  flex: 1 1 auto;
+  max-width: none;
+  gap: var(--space-2xlarge);
+}
+
+:global([data-showcase-typography="tablet"]) .shell .root[data-variant="links"] .linksMobile {
+  display: none;
+}
+
+:global([data-showcase-typography="tablet"]) .shell .root[data-variant="links"] .linksDesktop {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: stretch;
+  gap: var(--space-small);
+  width: 100%;
+  max-width: none;
+}
+
+:global([data-showcase-typography="tablet"]) .shell .root[data-variant="links"] .linksDesktop .linkCard {
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto !important;
+  max-width: none;
+  height: 7.75rem !important;
+}
+
+:global([data-showcase-typography="mobile"]) .shell .root[data-variant="links"] {
+  flex-flow: column nowrap;
+  gap: var(--space-large);
+  padding: var(--space-large);
+}
+
+:global([data-showcase-typography="mobile"]) .shell .root[data-variant="links"] .copy {
+  gap: var(--space-small);
+}
+
+:global([data-showcase-typography="mobile"]) .shell .root[data-variant="links"] .linksMobile {
+  display: flex;
+}
+
+:global([data-showcase-typography="mobile"]) .shell .root[data-variant="links"] .linksDesktop {
+  display: none;
+}

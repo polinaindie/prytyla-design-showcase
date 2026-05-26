@@ -1,0 +1,78 @@
+/* Figma Main News — Button 292:5078, Icon 292:5079, nav on hover */
+
+.mainNews {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-large);
+  width: 100%;
+}
+
+.slideRow {
+  position: relative;
+  width: 100%;
+  max-width: 87rem;
+}
+
+/* Figma Button 292:5078 — 40×40, 1px padding, surface + border subtle, icon 20px */
+.navButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--pryt-brand-scale-1000);
+  height: var(--pryt-brand-scale-1000);
+  padding: var(--border-width-small);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-round);
+  background: var(--surface-default);
+  color: var(--text-default);
+  cursor: pointer;
+  transition:
+    opacity 0.25s ease,
+    background 0.15s ease;
+}
+
+.navButton:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.navButton:hover {
+  background: var(--surface-page);
+}
+
+.navSlot {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%);
+  transition: opacity 0.25s ease;
+}
+
+.navPrev {
+  /* Figma wrapper rotate-180 + left -21px */
+  left: calc(-1 * var(--pryt-brand-scale-700));
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.navNext {
+  right: calc(-1 * var(--pryt-brand-scale-600));
+}
+
+@media (hover: hover) {
+  .mainNews:hover .navSlot,
+  .mainNews:focus-within .navSlot {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navSlot,
+  .navButton {
+    transition-duration: 0.01ms;
+  }
+}

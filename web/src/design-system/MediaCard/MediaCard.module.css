@@ -1,0 +1,313 @@
+/* Figma Media 292:6431 — Desktop: Hover; Mobile: OnClick; touch — :active (no :hover) */
+
+.root {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: var(--text-on-inverse);
+  cursor: pointer;
+  border: var(--border-width-small) solid var(--border-dark);
+  border-radius: var(--radius-large);
+  background: var(--surface-section-dark);
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.root:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  width: 100%;
+}
+
+.expandedBlock {
+  display: none;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+  min-width: 0;
+}
+
+.logoDefault {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.logoCompact {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  overflow: hidden;
+}
+
+.logoImage {
+  display: block;
+  object-fit: contain;
+  object-position: left center;
+  pointer-events: none;
+  user-select: none;
+}
+
+.divider {
+  flex-shrink: 0;
+  width: 100%;
+  height: var(--border-width-small);
+  background: var(--border-default-on-dark);
+}
+
+.title {
+  margin: 0;
+  width: 100%;
+  min-width: 0;
+  word-break: break-word;
+}
+
+.arrowDesktop,
+.arrowMobile {
+  position: absolute;
+  display: none;
+  flex-shrink: 0;
+  color: var(--text-on-inverse);
+}
+
+/* ——— Desktop 330×257.5 (Figma 292:6443 / 292:6432) ——— */
+
+.desktop {
+  width: 100%;
+  max-width: 20.625rem;
+  min-height: 16.09375rem;
+  /* Figma spacing/card-medium 25px */
+  padding: 1.5625rem;
+}
+
+/* Figma default Thumbnail 280×207 */
+.desktop .logoDefault {
+  height: 12.9375rem;
+}
+
+.desktop .logoDefault .logoImage {
+  width: 17.5rem;
+  max-width: 100%;
+  height: auto;
+  object-position: center;
+}
+
+/* Figma hover Thumbnail row 46px, image 201×25 */
+.desktop .logoCompact {
+  height: 2.875rem;
+}
+
+.desktop .logoCompact .logoImage {
+  width: 12.5625rem;
+  height: 1.5625rem;
+  max-width: 100%;
+}
+
+.desktop .title {
+  font-family: var(--font-display);
+  font-size: var(--font-size-heading-h4);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* Figma Icon/32 at left 273px, top 31px (card 330px) */
+.desktop .arrowDesktop {
+  top: 1.9375rem;
+  left: 17.0625rem;
+}
+
+@media (hover: hover) {
+  .desktop:hover,
+  .desktop:focus-visible {
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 1.5625rem;
+    border-color: var(--border-muted);
+    background: var(--surface-card-dark-elevated);
+  }
+
+  .desktop:hover .expandedBlock,
+  .desktop:focus-visible .expandedBlock {
+    display: flex;
+    gap: var(--space-large);
+  }
+
+  .desktop:hover .logoDefault,
+  .desktop:focus-visible .logoDefault {
+    display: none;
+  }
+
+  .desktop:hover .arrowDesktop,
+  .desktop:focus-visible .arrowDesktop {
+    display: flex;
+  }
+}
+
+@media (hover: none) {
+  .desktop:active,
+  .desktop:focus-visible {
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 1.5625rem;
+    border-color: var(--border-muted);
+    background: var(--surface-card-dark-elevated);
+  }
+
+  .desktop:active .expandedBlock,
+  .desktop:focus-visible .expandedBlock {
+    display: flex;
+    gap: var(--space-large);
+  }
+
+  .desktop:active .logoDefault,
+  .desktop:focus-visible .logoDefault {
+    display: none;
+  }
+
+  .desktop:active .arrowDesktop,
+  .desktop:focus-visible .arrowDesktop {
+    display: flex;
+  }
+}
+
+/* ——— Mobile 156×122 (Figma 1162:29230 / 1162:29128 OnClick) ——— */
+
+.mobile {
+  width: 100%;
+  max-width: 9.75rem;
+  height: 7.625rem;
+  padding: 1.5625rem;
+  border-radius: var(--radius-medium);
+}
+
+.mobile .logoDefault {
+  width: 100%;
+}
+
+.mobile .logoDefault .logoImage {
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-position: center;
+}
+
+/* Figma OnClick Thumbnail 18px row, image 71×9 */
+.mobile .logoCompact {
+  height: 1.125rem;
+}
+
+.mobile .logoCompact .logoImage {
+  width: 4.4375rem;
+  height: 0.5625rem;
+  max-width: none;
+}
+
+/* Figma body-small 14px semibold */
+.mobile .title {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-small);
+  font-weight: 600;
+  line-height: 1.43;
+}
+
+/* Figma Icon/10 at left 133px, top 14px (card 156px) */
+.mobile .arrowMobile {
+  top: 0.875rem;
+  left: 8.3125rem;
+}
+
+.mobile:active,
+.mobile:focus-visible {
+  align-items: flex-start;
+  justify-content: space-between;
+  /* Figma spacing/gap-sm 9px */
+  padding: 0.5625rem;
+  border-color: var(--border-muted);
+  background: var(--surface-card-dark-elevated);
+}
+
+.mobile:active .expandedBlock,
+.mobile:focus-visible .expandedBlock {
+  display: flex;
+  flex: 1 1 auto;
+  gap: var(--space-small);
+  min-height: 0;
+  width: calc(100% - 0.625rem);
+}
+
+.mobile:active .logoDefault,
+.mobile:focus-visible .logoDefault {
+  display: none;
+}
+
+.mobile:active .title,
+.mobile:focus-visible .title {
+  height: 4.3125rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
+.mobile:active .arrowMobile,
+.mobile:focus-visible .arrowMobile {
+  display: flex;
+}
+
+@media (hover: hover) {
+  .mobile:hover {
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 0.5625rem;
+    border-color: var(--border-muted);
+    background: var(--surface-card-dark-elevated);
+  }
+
+  .mobile:hover .expandedBlock {
+    display: flex;
+    flex: 1 1 auto;
+    gap: var(--space-small);
+    min-height: 0;
+    width: calc(100% - 0.625rem);
+  }
+
+  .mobile:hover .logoDefault {
+    display: none;
+  }
+
+  .mobile:hover .title {
+    height: 4.3125rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+  }
+
+  .mobile:hover .arrowMobile {
+    display: flex;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .root {
+    transition-duration: 0.01ms;
+  }
+}

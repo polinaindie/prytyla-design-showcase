@@ -3,12 +3,13 @@ import { Badge } from "../../design-system/Badge";
 import {
   ShowcaseCodeBlock,
   ShowcaseDoDont,
+  ShowcaseMatrix,
   ShowcasePageLayout,
+  ShowcasePreview,
   ShowcasePropsTable,
   ShowcaseSection,
   ShowcaseThemeProvider,
   ShowcaseTokensList,
-  ShowcaseToolbar,
   type TokenUsage,
   useShowcaseTheme,
 } from "../primitives";
@@ -75,7 +76,7 @@ const TOKENS_USED: TokenUsage[] = [
   { category: "Color", name: "--text-default", usedIn: "Label + іконка" },
   {
     category: "Typography",
-    name: "--pryt-brand-font-size-300",
+    name: "--font-size-body-small",
     usedIn: "Body small 14px",
   },
   {
@@ -123,7 +124,6 @@ function BadgeShowcasePage() {
         title="Badge"
         description="Тег із закриттям. Figma Badge (1318:54208). Окремо від Filter Chip — пізніше можна уніфікувати патерни."
       >
-        <ShowcaseToolbar showThemeToggle />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock code={QUICK_EXAMPLE} />
@@ -136,7 +136,7 @@ function BadgeShowcasePage() {
           title="Категорія з ієрархією"
           description="Наведи на тег — tooltip з шляхом вищих категорій (Figma Tooltip 1318:54224)."
         >
-          <div className={styles.row}>
+          <ShowcasePreview>
             <Badge
               categoryPath={NESTED_TAG.path}
               onDismiss={() => {}}
@@ -144,28 +144,39 @@ function BadgeShowcasePage() {
             >
               {NESTED_TAG.label}
             </Badge>
-          </div>
+          </ShowcasePreview>
         </ShowcaseSection>
 
         <ShowcaseSection
           title="Інтерактивно"
           description="Плоскі теги без categoryPath. × знімає пункт."
         >
-          <div className={styles.row}>
-            {tags.map((label) => (
-              <Badge
-                key={label}
-                onDismiss={() => removeTag(label)}
-                dismissLabel={`Зняти «${label}»`}
-              >
-                {label}
-              </Badge>
-            ))}
-          </div>
-          {tags.length === 0 ? (
-            <p className={styles.hint}>Усі теги знято — перезавантаж сторінку showcase.</p>
+          {tags.length > 0 ? (
+            <>
+              <ShowcaseMatrix
+                columns={tags}
+                rows={[
+                  {
+                    cells: tags.map((label) => (
+                      <Badge
+                        key={label}
+                        onDismiss={() => removeTag(label)}
+                        dismissLabel={`Зняти «${label}»`}
+                      >
+                        {label}
+                      </Badge>
+                    )),
+                  },
+                ]}
+              />
+              <p className={styles.hint}>Активні: {tags.join(", ")}</p>
+            </>
           ) : (
-            <p className={styles.hint}>Активні: {tags.join(", ")}</p>
+            <ShowcasePreview>
+              <p className={styles.hint}>
+                Усі теги знято — перезавантаж сторінку showcase.
+              </p>
+            </ShowcasePreview>
           )}
         </ShowcaseSection>
 

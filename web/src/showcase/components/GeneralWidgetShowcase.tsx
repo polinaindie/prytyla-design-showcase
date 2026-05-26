@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { GeneralWidget } from "../../design-system/GeneralWidget";
+import { GENERAL_WIDGET_SCROLL_RANGE } from "../../design-system/GeneralWidget/generalWidgetScroll";
 import type {
   GeneralWidgetPaymentInfoSection,
   GeneralWidgetPaymentTab,
@@ -8,13 +9,13 @@ import type { PaymentInfoField } from "../../design-system/PaymentInfo";
 import {
   ShowcaseCodeBlock,
   ShowcaseDoDont,
-  ShowcaseGrid,
+  ShowcaseMatrix,
   ShowcasePageLayout,
+  ShowcasePreview,
   ShowcasePropsTable,
   ShowcaseSection,
   ShowcaseThemeProvider,
   ShowcaseTokensList,
-  ShowcaseToolbar,
   type TokenUsage,
   useShowcaseTheme,
 } from "../primitives";
@@ -93,9 +94,15 @@ const PAYMENT_INFO_SECTIONS: GeneralWidgetPaymentInfoSection[] = [
 const PROPS = [
   {
     name: "layout",
-    type: '"full" | "veryShort"',
+    type: '"full" | "veryShort" | "sidebar" | "article"',
     default: '"full"',
-    description: "Повна картка з hero/формою або компактний progress (VeryShort).",
+    description:
+      "full / veryShort / sidebar (click) / article (window.scrollY morph).",
+  },
+  {
+    name: "defaultCollapsed / collapsed / onToggleCollapse",
+    type: "boolean + callback",
+    description: "layout=sidebar: collapsed за замовчуванням true; controlled toggle.",
   },
   {
     name: "showProgress",
@@ -132,7 +139,7 @@ const TOKENS_USED: TokenUsage[] = [
   { category: "Accent", name: "--accent-secondary", usedIn: "VeryShort border, chip selected" },
   {
     category: "Typography",
-    name: "--pryt-brand-font-size-1000, --pryt-brand-font-size-700, --pryt-brand-font-size-450",
+    name: "--font-size-numbers-section, --font-size-tab-label, --font-size-image-caption",
     usedIn: "Сума 52px, UAH 28px, заголовок progress 18px",
   },
   {
@@ -145,6 +152,8 @@ const TOKENS_USED: TokenUsage[] = [
 const DEMO_PROGRESS = {
   value: 69,
   title: "Чисте небо",
+  thumbnailSrc: "/images/general-widget-chyste-nebo-thumb.png",
+  thumbnailAlt: "Чисте небо — збір на перехоплювачі ворожих БПЛА",
   collectedAmount: "48 388 780 ₴",
   goalAmount: "20 000 000 ₴",
 };
@@ -158,9 +167,8 @@ function GeneralWidgetShowcasePage() {
     <div className={styles.pageRoot} data-showcase-theme={theme}>
       <ShowcasePageLayout
         title="General Widget"
-        description={`Віджет донату (Figma GeneralWidget 287:14741). Ітерація 1: Once, PaymentInfo, VeryShort. Figma: ${FIGMA_URL}`}
+        description={`Віджет донату (Figma GeneralWidget 287:14741). Ітерація 1–2: Once, PaymentInfo, VeryShort, sidebar collapse. Figma: ${FIGMA_URL}`}
       >
-        <ShowcaseToolbar showSearch={false} />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock code={QUICK_EXAMPLE} language="tsx" />
@@ -170,7 +178,7 @@ function GeneralWidgetShowcasePage() {
           title="Live preview"
           description="Once — сума + quick amounts + CTA. Hero — placeholder без градієнта."
         >
-          <div className={styles.previewCell}>
+          <ShowcasePreview className={styles.previewCell}>
             <GeneralWidget
               hero={{
                 src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='329' height='374' viewBox='0 0 329 374'%3E%3Crect fill='%23e7e7e7' width='329' height='374'/%3E%3C/svg%3E",
@@ -182,51 +190,97 @@ function GeneralWidgetShowcasePage() {
               onQuickAmountClick={(value) => setAmount(String(value))}
               onPrimaryAction={() => setAmount(amount === "0" ? "500" : amount)}
             />
-          </div>
+          </ShowcasePreview>
         </ShowcaseSection>
 
         <ShowcaseSection title="Variants" description="Ітерація 1 — три режими з Figma.">
-          <ShowcaseGrid columns={1}>
-            <div className={styles.previewRow}>
-              <div className={styles.previewCell}>
-                <GeneralWidget
-                  defaultPaymentTab="once"
-                  hero={{
-                    src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='329' height='374'%3E%3Crect fill='%23d1d1d1' width='329' height='374'/%3E%3C/svg%3E",
-                    alt: "Hero",
-                  }}
-                />
-                <p className={styles.cellLabel}>Once (Progressbar=Off)</p>
-              </div>
-              <div className={styles.previewCell}>
-                <GeneralWidget
-                  defaultPaymentTab="paymentInfo"
-                  paymentInfoSections={PAYMENT_INFO_SECTIONS}
-                  hero={{
-                    src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='329' height='374'%3E%3Crect fill='%23d1d1d1' width='329' height='374'/%3E%3C/svg%3E",
-                    alt: "Hero",
-                  }}
-                />
-                <p className={styles.cellLabel}>PaymentInfo</p>
-              </div>
-              <div className={styles.previewCell}>
-                <GeneralWidget layout="veryShort" progress={DEMO_PROGRESS} />
-                <p className={styles.cellLabel}>VeryShort + Progressbar</p>
-              </div>
-            </div>
-          </ShowcaseGrid>
+          <ShowcaseMatrix
+            columns={["Once (Progressbar=Off)", "PaymentInfo", "VeryShort + Progressbar"]}
+            rows={[
+              {
+                cells: [
+                  <div key="once" className={styles.previewCell}>
+                    <GeneralWidget
+                      defaultPaymentTab="once"
+                      hero={{
+                        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='329' height='374'%3E%3Crect fill='%23d1d1d1' width='329' height='374'/%3E%3C/svg%3E",
+                        alt: "Hero",
+                      }}
+                    />
+                  </div>,
+                  <div key="payment" className={styles.previewCell}>
+                    <GeneralWidget
+                      defaultPaymentTab="paymentInfo"
+                      paymentInfoSections={PAYMENT_INFO_SECTIONS}
+                      hero={{
+                        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='329' height='374'%3E%3Crect fill='%23d1d1d1' width='329' height='374'/%3E%3C/svg%3E",
+                        alt: "Hero",
+                      }}
+                    />
+                  </div>,
+                  <div key="short" className={styles.previewCell}>
+                    <GeneralWidget layout="veryShort" progress={DEMO_PROGRESS} />
+                  </div>,
+                ],
+              },
+            ]}
+          />
+        </ShowcaseSection>
+
+        <ShowcaseSection
+          title="Article layout"
+          description="Сторінка статті після scroll: compact progress + форма. На продукті collapse від scroll відносно верху віджета (0…260px)."
+        >
+          <ShowcaseCodeBlock
+            language="text"
+            code={`layout="article" + progress + hero
+
+• Діапазон: 0…260px scroll від верху віджета → t = 0…1
+• Hero → 0; thumbnail + заголовок progress; форма знизу
+• Showcase: articleScrollOffset={GENERAL_WIDGET_SCROLL_RANGE} для статичного compact`}
+          />
+          <ShowcasePreview className={styles.previewCell}>
+            <GeneralWidget
+              layout="article"
+              progress={DEMO_PROGRESS}
+              hero={{
+                src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='329' height='374'%3E%3Crect fill='%23c5d4e8' width='329' height='374'/%3E%3C/svg%3E",
+                alt: "Hero",
+              }}
+              articleScrollOffset={GENERAL_WIDGET_SCROLL_RANGE}
+              amount={amount}
+              onQuickAmountClick={(value) => setAmount(String(value))}
+            />
+          </ShowcasePreview>
+        </ShowcaseSection>
+
+        <ShowcaseSection
+          title="Sidebar (interactive)"
+          description="Desktop: клік по progress — expand/collapse. Окремо від scroll-анімації article."
+        >
+          <ShowcasePreview className={styles.previewCell}>
+            <GeneralWidget
+              layout="sidebar"
+              progress={DEMO_PROGRESS}
+              amount={amount}
+              onQuickAmountClick={(value) => setAmount(String(value))}
+              onPrimaryAction={() => setAmount(amount === "0" ? "500" : amount)}
+            />
+          </ShowcasePreview>
         </ShowcaseSection>
 
         <ShowcaseSection title="With progress" description="Figma Once + Progressbar=On.">
-          <GeneralWidget
-            showProgress
-            progress={DEMO_PROGRESS}
-            defaultPaymentTab="once"
-            hero={{
-              src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='329' height='374'%3E%3Crect fill='%23d1d1d1' width='329' height='374'/%3E%3C/svg%3E",
-              alt: "Hero",
-            }}
-          />
+          <ShowcasePreview>
+            <GeneralWidget
+              showProgress
+              progress={DEMO_PROGRESS}
+              defaultPaymentTab="once"
+              hero={{
+                src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='329' height='374'%3E%3Crect fill='%23d1d1d1' width='329' height='374'/%3E%3C/svg%3E",
+                alt: "Hero",
+              }}
+            />
+          </ShowcasePreview>
         </ShowcaseSection>
 
         <ShowcaseSection title="Tokens used">

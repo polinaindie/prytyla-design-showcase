@@ -78,7 +78,7 @@
 
 .logo {
   font-family: var(--font-display);
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
   font-weight: 700;
   letter-spacing: -0.02em;
   white-space: nowrap;
@@ -95,7 +95,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
   font-weight: 600;
   line-height: 1.43;
   color: var(--pryt-brand-neutral-900);
@@ -118,7 +118,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
   color: var(--text-muted);
 }
 
@@ -155,7 +155,7 @@
   border: var(--border-width-small) solid var(--border-strong);
   border-radius: var(--radius-round);
   background: transparent;
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
   font-weight: 600;
   cursor: pointer;
   color: var(--text-default);
@@ -197,7 +197,7 @@
   border-radius: var(--radius-round);
   background: var(--surface-primary);
   color: var(--text-on-primary);
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
   font-weight: 600;
   cursor: pointer;
 }
@@ -218,7 +218,7 @@
   border-radius: var(--radius-round);
   background: var(--surface-primary);
   color: var(--text-on-primary);
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
@@ -324,7 +324,7 @@
 .heroTitle {
   margin: 0;
   font-family: var(--font-display);
-  font-size: clamp(var(--pryt-brand-font-size-900), 6vw, var(--pryt-brand-font-size-1200));
+  font-size: clamp(var(--font-size-heading-h1), 6vw, var(--font-size-heading-h0));
   font-weight: 900;
   line-height: 1;
   color: var(--pryt-brand-neutral-900);
@@ -425,7 +425,7 @@
 .sectionTitle {
   margin: 0 0 var(--space-3xlarge);
   font-family: var(--font-display);
-  font-size: var(--pryt-brand-font-size-900);
+  font-size: var(--font-size-heading-h1);
   font-weight: 900;
   line-height: 1;
 }
@@ -449,7 +449,7 @@
 
 .howStepNum {
   font-family: var(--font-display);
-  font-size: var(--pryt-brand-font-size-1200);
+  font-size: var(--font-size-heading-h0);
   font-weight: 900;
   line-height: 1;
   color: var(--accent-secondary);
@@ -464,14 +464,14 @@
 .howStepTitle {
   margin: 0 0 var(--space-small);
   font-family: var(--font-display);
-  font-size: var(--pryt-brand-font-size-600);
+  font-size: var(--font-size-heading-h4);
   font-weight: 900;
   line-height: 1.2;
 }
 
 .howStepDesc {
   margin: 0;
-  font-size: var(--pryt-brand-font-size-400);
+  font-size: var(--font-size-body-medium);
   line-height: 1.5;
   color: var(--text-muted);
 }
@@ -485,7 +485,7 @@
 
 .howStepIntro {
   margin: 0;
-  font-size: var(--pryt-brand-font-size-400);
+  font-size: var(--font-size-body-medium);
   font-weight: 600;
   line-height: 1.5;
   color: var(--text-default);
@@ -494,7 +494,7 @@
 .howStepList {
   margin: 0;
   padding-left: 1.5em;
-  font-size: var(--pryt-brand-font-size-400);
+  font-size: var(--font-size-body-medium);
   line-height: 1.5;
   color: var(--text-muted);
 }
@@ -565,7 +565,7 @@
   display: flex;
   justify-content: space-between;
   gap: var(--space-small);
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
   line-height: 1.4;
 }
 
@@ -662,7 +662,7 @@
 
 .directionsIntro p {
   margin: 0;
-  font-size: var(--pryt-brand-font-size-400);
+  font-size: var(--font-size-body-medium);
   line-height: 1.5;
   color: var(--pryt-brand-neutral-900);
 }
@@ -705,14 +705,14 @@
 .dirCardTitle {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--pryt-brand-font-size-800);
+  font-size: var(--font-size-heading-h3);
   font-weight: 700;
   line-height: 1.2;
 }
 
 .dirCardDesc {
   margin: 0;
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
   line-height: 1.4;
   color: var(--text-muted);
 }
@@ -780,7 +780,7 @@
 
 .faqAsideIntro p {
   margin: 0;
-  font-size: var(--pryt-brand-font-size-400);
+  font-size: var(--font-size-body-medium);
   line-height: 1.5;
 }
 
@@ -803,7 +803,7 @@
   border: var(--border-width-small) solid var(--border-strong);
   border-radius: 22px;
   background: transparent;
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
   color: var(--text-default);
   text-decoration: none;
 }
@@ -847,7 +847,7 @@
 .faqQuestion {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--pryt-brand-font-size-600);
+  font-size: var(--font-size-heading-h4);
   font-weight: 900;
   line-height: 1.2;
   flex: 1;
@@ -876,7 +876,7 @@
 .footerCtaTitle {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--pryt-brand-font-size-800);
+  font-size: var(--font-size-heading-h3);
   font-weight: 900;
   line-height: 1;
 }
@@ -892,7 +892,7 @@
   margin: 0;
   flex: 1 1 240px;
   min-width: min(100%, 280px);
-  font-size: var(--pryt-brand-font-size-400);
+  font-size: var(--font-size-body-medium);
   line-height: 1.5;
 }
 
@@ -907,7 +907,7 @@
   border-radius: var(--radius-round);
   background: var(--surface-action);
   color: var(--text-on-action);
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
   font-weight: 600;
   cursor: pointer;
 }
@@ -936,7 +936,7 @@
 
 .footerLogo {
   font-family: var(--font-display);
-  font-size: var(--pryt-brand-font-size-250);
+  font-size: var(--font-size-caption-medium);
   font-weight: 700;
   line-height: 1.2;
   max-width: 14rem;
@@ -982,7 +982,7 @@
 .footerLinks {
   display: flex;
   gap: var(--space-6xlarge);
-  font-size: var(--pryt-brand-font-size-500);
+  font-size: var(--font-size-body-large);
   font-weight: 500;
   line-height: 24px;
 }
@@ -1002,7 +1002,7 @@
   padding: 12px var(--space-xlarge);
   border-radius: 22px;
   background: rgba(255, 255, 255, 0.1);
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
   max-width: 304px;
 }
 
@@ -1030,7 +1030,7 @@
 
 .footerCopyright {
   margin: 0;
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
   color: var(--text-muted);
 }
 

@@ -1,0 +1,11 @@
+.pageRoot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xlarge);
+  color: var(--text-default);
+}
+
+.preview {
+  width: 100%;
+  max-width: 94.5rem;
+}

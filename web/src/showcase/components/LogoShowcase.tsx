@@ -3,10 +3,11 @@ import { LOGO_ASSETS, Logo, type LogoLanguage } from "../../design-system/Logo";
 import {
   ShowcaseCodeBlock,
   ShowcaseDoDont,
+  ShowcaseMatrix,
   ShowcasePageLayout,
+  ShowcasePreview,
   ShowcaseSection,
   ShowcaseThemeProvider,
-  ShowcaseToolbar,
   useShowcaseTheme,
 } from "../primitives";
 import styles from "./LogoShowcase.module.css";
@@ -44,36 +45,36 @@ function LogoShowcasePage() {
         title="Logo"
         description="Повний логотип фонду — українська та англійська версії (SVG з Figma)."
       >
-        <ShowcaseToolbar showThemeToggle />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock code={QUICK_EXAMPLE} />
-          <div className={styles.liveRow}>
-            <Logo language="uk" />
-            <Logo language="en" />
-          </div>
+          <ShowcasePreview>
+            <div className={styles.liveRow}>
+              <Logo language="uk" />
+              <Logo language="en" />
+            </div>
+          </ShowcasePreview>
         </ShowcaseSection>
 
         <ShowcaseSection title="Версії">
-          <div className={styles.grid}>
-            {LOGO_ASSETS.map((asset) => (
-              <article key={asset.language} className={styles.row}>
-                <p className={styles.rowLabel}>
-                  {asset.language === "uk" ? "Українська" : "English"} (
-                  {asset.language})
-                </p>
+          <ShowcaseMatrix
+            columns={["Preview", "Мета", "Дія"]}
+            rows={LOGO_ASSETS.map((asset) => ({
+              rowLabel:
+                asset.language === "uk"
+                  ? `Українська (${asset.language})`
+                  : `English (${asset.language})`,
+              cells: [
+                <Logo language={asset.language} />,
                 <p className={styles.rowMeta}>
                   {asset.figmaLabel} · {asset.src}
-                </p>
-                <div className={styles.preview}>
-                  <Logo language={asset.language} />
-                </div>
+                </p>,
                 <button type="button" onClick={() => handleCopy(asset.language)}>
                   Copy usage
-                </button>
-              </article>
-            ))}
-          </div>
+                </button>,
+              ],
+            }))}
+          />
         </ShowcaseSection>
 
         <ShowcaseSection title="Guidelines">

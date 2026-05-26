@@ -19,30 +19,18 @@
   border-radius: var(--radius-medium);
   background: var(--surface-inverse);
   color: var(--text-inverse);
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
   border: var(--border-width-small) solid var(--border-default);
 }
 
 .searchCount {
   margin: 0 0 var(--space-medium);
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
   color: var(--text-secondary);
 }
 
 .pageRoot[data-showcase-theme="dark"] .searchCount {
   color: var(--text-on-inverse-muted);
-}
-
-.livePreview {
-  padding: var(--space-large);
-  border: var(--border-width-small) solid var(--border-default);
-  border-radius: var(--radius-medium);
-  background: var(--surface-default);
-}
-
-.pageRoot[data-showcase-theme="dark"] .livePreview {
-  background: var(--surface-inverse);
-  border-color: var(--border-on-inverse);
 }
 
 .previewPage {
@@ -75,14 +63,14 @@
 .previewTitle {
   margin: 0;
   font-family: var(--font-display);
-  font-size: var(--pryt-brand-font-size-500);
+  font-size: var(--font-size-body-large);
   line-height: 1.2;
   color: inherit;
 }
 
 .previewText {
   margin: 0;
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
   line-height: 1.45;
   color: var(--text-muted);
 }
@@ -97,7 +85,7 @@
   border-radius: var(--radius-medium);
   border: var(--border-width-small) solid var(--border-default);
   background: var(--bg-subtle-info);
-  font-size: var(--pryt-brand-font-size-300);
+  font-size: var(--font-size-body-small);
   line-height: 1.45;
   color: var(--text-secondary);
 }
@@ -107,37 +95,6 @@
   color: var(--text-on-inverse-muted);
 }
 
-.barList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-medium);
-}
-
-.barRow {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: var(--space-medium);
-  width: 100%;
-  padding: var(--space-small) 0;
-  border: none;
-  background: transparent;
-  color: inherit;
-  text-align: left;
-  cursor: pointer;
-}
-
-.barRow:hover .tokenName {
-  text-decoration: underline;
-}
-
-.barRow:focus-visible {
-  outline: var(--border-width-medium) solid var(--border-focus);
-  outline-offset: var(--space-xsmall);
-  border-radius: var(--radius-small);
-}
-
-/* Bar track cap — layout chrome so --space-8xlarge не розтягує сітку */
 .barTrack {
   display: flex;
   align-items: center;
@@ -154,36 +111,4 @@
   border-radius: var(--radius-small);
   background: var(--surface-action);
   flex-shrink: 0;
-}
-
-.barMeta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: var(--space-2xsmall);
-  flex-shrink: 0;
-  min-width: 11rem;
-}
-
-.tokenName {
-  margin: 0;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: var(--pryt-brand-font-size-200);
-  line-height: 1.3;
-  color: inherit;
-  word-break: break-all;
-  text-align: right;
-}
-
-.tokenValue {
-  margin: 0;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: var(--pryt-brand-font-size-200);
-  line-height: 1.3;
-  color: var(--text-muted);
-  white-space: nowrap;
-}
-
-.pageRoot[data-showcase-theme="dark"] .tokenValue {
-  color: var(--text-on-inverse-muted);
 }

@@ -12,6 +12,11 @@ import { ChipPaymentTypeShowcase } from "./components/ChipPaymentTypeShowcase";
 import { QuickAmountShowcase } from "./components/QuickAmountShowcase";
 import { DirectionsExternalLinksShowcase } from "./components/DirectionsExternalLinksShowcase";
 import { LinkCardShowcase } from "./components/LinkCardShowcase";
+import { MediaCardShowcase } from "./components/MediaCardShowcase";
+import { FooterShowcase } from "./components/FooterShowcase";
+import { MainProjectShowcase } from "./components/MainProjectShowcase";
+import { ProjectCardShowcase } from "./components/ProjectCardShowcase";
+import { NewsCardShowcase } from "./components/NewsCardShowcase";
 import { VacancyCardShowcase } from "./components/VacancyCardShowcase";
 import { GeneralWidgetShowcase } from "./components/GeneralWidgetShowcase";
 import { SubPageHeroShowcase } from "./components/SubPageHeroShowcase";
@@ -244,6 +249,24 @@ export const showcaseRoutes: ShowcaseGroup[] = [
         label: "Cards",
         pages: [
           {
+            id: "media-card",
+            label: "Media Card",
+            path: "media-card",
+            Component: MediaCardShowcase,
+          },
+          {
+            id: "news-card",
+            label: "News Card",
+            path: "news-card",
+            Component: NewsCardShowcase,
+          },
+          {
+            id: "project-card",
+            label: "Project Card",
+            path: "project-card",
+            Component: ProjectCardShowcase,
+          },
+          {
             id: "vacancy-card",
             label: "Vacancy Card",
             path: "vacancy-card",
@@ -260,6 +283,12 @@ export const showcaseRoutes: ShowcaseGroup[] = [
             label: "General Widget",
             path: "general-widget",
             Component: GeneralWidgetShowcase,
+          },
+          {
+            id: "main-project",
+            label: "Main Project",
+            path: "main-project",
+            Component: MainProjectShowcase,
           },
         ],
       },
@@ -278,6 +307,12 @@ export const showcaseRoutes: ShowcaseGroup[] = [
             label: "Sub-page Hero",
             path: "sub-page-hero",
             Component: SubPageHeroShowcase,
+          },
+          {
+            id: "footer",
+            label: "Footer",
+            path: "footer",
+            Component: FooterShowcase,
           },
         ],
       },

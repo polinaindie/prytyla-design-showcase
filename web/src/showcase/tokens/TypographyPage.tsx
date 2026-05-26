@@ -1,12 +1,17 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
+  semanticFontSizeMeta,
+  typographyBreakpoints,
+} from "../../../../design-tokens/dist/tokens";
+import {
   ShowcaseCodeBlock,
   ShowcaseDoDont,
   ShowcaseGrid,
   ShowcasePageLayout,
+  ShowcasePreview,
   ShowcaseSection,
   ShowcaseThemeProvider,
-  ShowcaseToolbar,
+  ShowcaseTokenTable,
   useShowcaseTheme,
 } from "../primitives";
 import styles from "./TypographyPage.module.css";
@@ -29,14 +34,15 @@ const FONT_SIZE_CANDIDATES = [
   "--pryt-brand-font-size-1200",
 ] as const;
 
-const QUICK_EXAMPLE = `.heading {
+const QUICK_EXAMPLE = `/* Prefer semantic tokens (responsive) */
+.pageTitle {
   font-family: var(--font-display);
-  font-size: var(--pryt-brand-font-size-900);
+  font-size: var(--font-size-heading-h1);
   color: var(--text-default);
 }
 
 .body {
-  font-size: var(--pryt-brand-font-size-400);
+  font-size: var(--font-size-body-medium);
   color: var(--text-muted);
 }`;
 
@@ -47,53 +53,70 @@ function fontSizeStep(token: string): number {
 }
 
 function usesDisplayFont(token: string): boolean {
+  if (token.startsWith("--font-size-heading-") || token === "--font-size-tab-label") {
+    return true;
+  }
+  if (token.startsWith("--font-size-numbers-")) {
+    return true;
+  }
   return fontSizeStep(token) >= 600;
+}
+
+function useTypographyBreakpoint(): "Mobile" | "Tablet" | "Desktop" {
+  const [breakpoint, setBreakpoint] = useState<"Mobile" | "Tablet" | "Desktop">(
+    "Mobile",
+  );
+
+  useEffect(() => {
+    const mqTablet = window.matchMedia(
+      `(min-width: ${typographyBreakpoints.tabletMin})`,
+    );
+    const mqDesktop = window.matchMedia(
+      `(min-width: ${typographyBreakpoints.desktopMin})`,
+    );
+    const update = () => {
+      if (mqDesktop.matches) setBreakpoint("Desktop");
+      else if (mqTablet.matches) setBreakpoint("Tablet");
+      else setBreakpoint("Mobile");
+    };
+    update();
+    mqTablet.addEventListener("change", update);
+    mqDesktop.addEventListener("change", update);
+    return () => {
+      mqTablet.removeEventListener("change", update);
+      mqDesktop.removeEventListener("change", update);
+    };
+  }, []);
+
+  return breakpoint;
+}
+
+function semanticUsesDisplay(figmaName: string): boolean {
+  return (
+    figmaName.startsWith("font-size/heading-") ||
+    figmaName === "font-size/tab-label" ||
+    figmaName.startsWith("font-size/numbers-")
+  );
 }
 
 function tokenVarRef(token: string): string {
   return `var(${token})`;
 }
 
-async function copyTokenRef(token: string): Promise<boolean> {
-  try {
-    await navigator.clipboard.writeText(tokenVarRef(token));
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-type FontSizeRowProps = {
-  token: string;
-  value: string;
-  onCopy: (token: string) => void;
-};
-
-function FontSizeRow({ token, value, onCopy }: FontSizeRowProps) {
-  const display = usesDisplayFont(token);
-
-  const handleClick = async () => {
-    const ok = await copyTokenRef(token);
-    if (ok) onCopy(token);
-  };
-
+function TypeSample({
+  fontSize,
+  display,
+}: {
+  fontSize: string;
+  display: boolean;
+}) {
   return (
-    <button
-      type="button"
-      className={styles.sizeRow}
-      onClick={handleClick}
-      title={`Копіювати ${tokenVarRef(token)}`}
+    <p
+      className={`${styles.sizeSample} ${display ? styles.sizeSampleDisplay : styles.sizeSampleBody}`}
+      style={{ fontSize }}
     >
-      <p className={styles.sizeMeta}>
-        {token} / {value}
-      </p>
-      <p
-        className={`${styles.sizeSample} ${display ? styles.sizeSampleDisplay : styles.sizeSampleBody}`}
-        style={{ fontSize: value }}
-      >
-        {SIZE_SAMPLE}
-      </p>
-    </button>
+      {SIZE_SAMPLE}
+    </p>
   );
 }
 
@@ -106,8 +129,12 @@ type FamilyCopyProps = {
 
 function FamilyCopyBlock({ token, label, onCopy, children }: FamilyCopyProps) {
   const handleCopyMeta = async () => {
-    const ok = await copyTokenRef(token);
-    if (ok) onCopy(token);
+    try {
+      await navigator.clipboard.writeText(tokenVarRef(token));
+      onCopy(token);
+    } catch {
+      /* ignore */
+    }
   };
 
   return (
@@ -128,6 +155,13 @@ function FamilyCopyBlock({ token, label, onCopy, children }: FamilyCopyProps) {
 function TypographyPageContent() {
   const { theme } = useShowcaseTheme();
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
+  const activeBreakpoint = useTypographyBreakpoint();
+
+  const semanticCandidates = useMemo(
+    () => semanticFontSizeMeta.map((row) => row.cssVar),
+    [],
+  );
+  const { values: semanticValues } = useResolvedTokens(semanticCandidates);
 
   const candidates = useMemo(() => FONT_SIZE_CANDIDATES, []);
   const { values, resolved: fontSizes } = useResolvedTokens(candidates);
@@ -147,6 +181,53 @@ function TypographyPageContent() {
     setCopiedToken(token);
   };
 
+  const semanticRows = useMemo(
+    () =>
+      semanticFontSizeMeta.map((row) => {
+        const computed = semanticValues[row.cssVar] ?? "—";
+        const valueLabel = row.responsive
+          ? `${row.mobile}px · ${row.tablet}px · ${row.desktop}px (${activeBreakpoint}: ${computed})`
+          : `${row.mobile}px (${computed})`;
+
+        return {
+          token: row.cssVar,
+          value: valueLabel,
+          preview: (
+            <TypeSample
+              fontSize={computed}
+              display={semanticUsesDisplay(row.figma)}
+            />
+          ),
+          onCopy: () => {
+            void navigator.clipboard.writeText(tokenVarRef(row.cssVar)).then(
+              () => handleCopy(row.cssVar),
+              () => undefined,
+            );
+          },
+          copyTitle: `${row.figma} → ${row.cssVar}`,
+        };
+      }),
+    [semanticValues, activeBreakpoint],
+  );
+
+  const brandRows = useMemo(
+    () =>
+      sortedSizes.map((token) => ({
+        token,
+        value: values[token]!,
+        preview: (
+          <TypeSample fontSize={values[token]!} display={usesDisplayFont(token)} />
+        ),
+        onCopy: () => {
+          void navigator.clipboard.writeText(tokenVarRef(token)).then(
+            () => handleCopy(token),
+            () => undefined,
+          );
+        },
+      })),
+    [sortedSizes, values],
+  );
+
   return (
     <div className={styles.pageRoot} data-showcase-theme={theme}>
       {copiedToken ? (
@@ -157,9 +238,8 @@ function TypographyPageContent() {
 
       <ShowcasePageLayout
         title="Typography"
-        description="Шрифти і шкала розмірів Prytula DS. --font-display — Mariupol Strong для заголовків; body — Mariupol / Inter."
+        description="Шрифти Prytula DS. Семантичні --font-size-* (Figma Semantic, responsive). Примітиви --pryt-brand-font-size-* — legacy шкала."
       >
-        <ShowcaseToolbar showSearch={false} />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock code={QUICK_EXAMPLE} language="css" />
@@ -169,12 +249,16 @@ function TypographyPageContent() {
           title="Live preview"
           description="Заголовок і body на токенах; тема сторінки керує кольором тексту."
         >
-          <div className={styles.livePreview}>
+          <ShowcasePreview>
             <h2 className={styles.previewHeading}>Подаруй спокій тим, хто захищає</h2>
+            <p className={styles.previewCaption}>
+              Breakpoint: {activeBreakpoint} ({typographyBreakpoints.tabletMin} /{" "}
+              {typographyBreakpoints.desktopMin})
+            </p>
             <p className={styles.previewBody}>
               Підтримка військових і цивільних — через прозорі проєкти фонду.
             </p>
-          </div>
+          </ShowcasePreview>
         </ShowcaseSection>
 
         <ShowcaseSection title="Font families">
@@ -226,29 +310,32 @@ function TypographyPageContent() {
         </ShowcaseSection>
 
         <ShowcaseSection
-          title="Font sizes"
-          description="Шкала --pryt-brand-font-size-* від найбільшого до найменшого. 600+ — --font-display; до 500 — Mariupol. Клік — копіює var(--token)."
+          title="Semantic font sizes (responsive)"
+          description={`Figma Semantic · Mobile &lt; ${typographyBreakpoints.tabletMin} · Tablet · Desktop ${typographyBreakpoints.desktopMin}+. Клік — копіює var(--token).`}
         >
-          <div className={styles.sizeList}>
-            {sortedSizes.map((token) => (
-              <FontSizeRow
-                key={token}
-                token={token}
-                value={values[token]!}
-                onCopy={handleCopy}
-              />
-            ))}
-          </div>
+          <p className={styles.breakpointHint}>
+            Активний режим: <strong>{activeBreakpoint}</strong> — змініть ширину вікна.
+          </p>
+          <ShowcaseTokenTable rows={semanticRows} />
+        </ShowcaseSection>
+
+        <ShowcaseSection
+          title="Brand font sizes (primitives)"
+          description="Legacy шкала --pryt-brand-font-size-* (Figma Primitives / старий Brand). Для нових екранів — semantic токени вище."
+        >
+          <ShowcaseTokenTable rows={brandRows} />
         </ShowcaseSection>
 
         <ShowcaseSection title="Guidelines">
           <ShowcaseDoDont
             do={[
-              "Використовуй --font-display для заголовків H1–H4",
-              "Бери шкалу --pryt-brand-font-size-* через CSS змінні",
+              "Використовуй --font-size-heading-h* / --font-size-body-* для UI тексту",
+              "Використовуй --font-display для display-заголовків",
+              "Довіряй responsive — не дублюй @media з іншими px без потреби",
             ]}
             dont={[
               "НЕ задавай font-size у px напряму",
+              "НЕ підбирай --pryt-brand-font-size-* для нових компонентів, якщо є semantic",
               "НЕ змішуй Mariupol з Inter у одному заголовку",
             ]}
           />

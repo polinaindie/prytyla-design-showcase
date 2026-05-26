@@ -4,11 +4,12 @@ VariableID:161:3640	Brand	neutral/100	COLOR	rgb(231,231,231)
 VariableID:161:3641	Brand	neutral/200	COLOR	rgb(209,209,209)
 VariableID:161:3674	Brand	neutral/300	COLOR	rgb(176,176,176)
 VariableID:161:3675	Brand	neutral/400	COLOR	rgb(136,136,136)
-VariableID:161:3676	Brand	neutral/500	COLOR	rgb(109,109,109)
+VariableID:161:3676	Brand	neutral/500	COLOR	rgb(117,117,117)
 VariableID:161:3677	Brand	neutral/600	COLOR	rgb(93,93,93)
 VariableID:161:3678	Brand	neutral/700	COLOR	rgb(79,79,79)
 VariableID:161:3679	Brand	neutral/800	COLOR	rgb(69,69,69)
 VariableID:161:3680	Brand	neutral/900	COLOR	rgb(31,31,31)
+VariableID:292:6440	Brand	neutral/850	COLOR	rgb(61,61,61)
 VariableID:161:3681	Brand	neutral/950	COLOR	rgb(0,0,0)
 VariableID:161:3682	Brand	blue/50	COLOR	rgb(233,247,255)
 VariableID:161:3683	Brand	blue/100	COLOR	rgb(206,236,255)
@@ -87,6 +88,12 @@ VariableID:208:3707	Alias	border/default	COLOR	alias:VariableID:161:3641
 VariableID:208:3708	Alias	border/strong	COLOR	alias:VariableID:161:3681
 VariableID:208:3709	Alias	border/focus	COLOR	alias:VariableID:161:3689
 VariableID:208:3710	Alias	border/inverse	COLOR	alias:VariableID:161:3639
+VariableID:292:6441	Alias	surface/section-dark	COLOR	alias:VariableID:161:3680
+VariableID:292:6442	Alias	surface/card-dark-elevated	COLOR	alias:VariableID:292:6440
+VariableID:292:6443	Alias	border/dark	COLOR	alias:VariableID:292:6440
+VariableID:292:6444	Alias	border/muted	COLOR	alias:VariableID:161:3674
+VariableID:292:6445	Alias	border/default-on-dark	COLOR	alias:VariableID:161:3677
+VariableID:3:7325	Alias	surface/glass-strong	COLOR	rgba(255,255,255,0.95)
 VariableID:208:3712	Alias	accent/primary	COLOR	alias:VariableID:161:3692
 VariableID:208:3713	Alias	accent/secondary	COLOR	alias:VariableID:161:3699
 VariableID:208:3714	Alias	accent/highlight	COLOR	alias:VariableID:161:3695
@@ -152,6 +159,7 @@ VariableID:219:3826	Alias	space/5xlarge	FLOAT	alias:VariableID:219:3769
 VariableID:219:3827	Alias	space/6xlarge	FLOAT	alias:VariableID:219:3771
 VariableID:219:3828	Alias	space/7xlarge	FLOAT	alias:VariableID:219:3772
 VariableID:219:3829	Alias	space/8xlarge	FLOAT	alias:VariableID:219:3773
+VariableID:16:9984	Alias	spacing/card-progress-gap	FLOAT	14
 VariableID:219:3831	Alias	size/xsmall	FLOAT	alias:VariableID:208:3757
 VariableID:299:0010	Alias	size/2xsmall	FLOAT	10
 VariableID:219:3832	Alias	size/small	FLOAT	alias:VariableID:208:3760

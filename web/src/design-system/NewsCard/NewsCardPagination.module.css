@@ -1,0 +1,20 @@
+/* Figma Carousel Dots 292:5062 — 25×4px, gap 5px */
+
+.root {
+  display: flex;
+  align-items: center;
+  gap: 0.3125rem;
+  height: 0.375rem;
+}
+
+.dot {
+  flex-shrink: 0;
+  width: 1.5625rem;
+  height: var(--space-xsmall);
+  border-radius: var(--radius-round);
+  background: var(--border-default);
+}
+
+.dot[data-active="true"] {
+  background: var(--text-default);
+}

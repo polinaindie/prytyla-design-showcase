@@ -2,12 +2,13 @@ import { SubTag, Tag } from "../../design-system/Tag";
 import {
   ShowcaseCodeBlock,
   ShowcaseDoDont,
+  ShowcaseMatrix,
   ShowcasePageLayout,
+  ShowcasePreview,
   ShowcasePropsTable,
   ShowcaseSection,
   ShowcaseThemeProvider,
   ShowcaseTokensList,
-  ShowcaseToolbar,
   type TokenUsage,
   useShowcaseTheme,
 } from "../primitives";
@@ -60,7 +61,7 @@ const TAG_TOKENS: TokenUsage[] = [
   { category: "Text", name: "--text-muted", usedIn: "Label (#5d5d5d)" },
   {
     category: "Typography",
-    name: "--pryt-brand-font-size-300",
+    name: "--font-size-body-small",
     usedIn: "Body small 14px",
   },
   {
@@ -83,7 +84,7 @@ const SUBTAG_TOKENS: TokenUsage[] = [
   },
   {
     category: "Typography",
-    name: "--pryt-brand-font-size-300",
+    name: "--font-size-body-small",
     usedIn: "Body small 14px",
   },
   {
@@ -104,26 +105,26 @@ function TagShowcasePage() {
         title="Tag"
         description="Tag (3:7429) — pill з hover. SubTag (3:7422) — текстова мітка, підкреслення на hover. Для toggle-фільтрів — Filter Chip."
       >
-        <ShowcaseToolbar showSearch={false} />
 
         <ShowcaseSection title="Quick example">
           <ShowcaseCodeBlock code={QUICK_EXAMPLE} language="tsx" />
         </ShowcaseSection>
 
         <ShowcaseSection title="Tag" description="Figma 3:7429 — Default · Hover.">
-          <div className={styles.preview}>
+          <ShowcasePreview>
             <Tag>Tag Label</Tag>
-          </div>
+          </ShowcasePreview>
         </ShowcaseSection>
 
         <ShowcaseSection title="Tag — examples">
-          <div className={styles.preview}>
-            <div className={styles.row}>
-              {TAG_EXAMPLES.map((label) => (
-                <Tag key={label}>{label}</Tag>
-              ))}
-            </div>
-          </div>
+          <ShowcaseMatrix
+            columns={TAG_EXAMPLES}
+            rows={[
+              {
+                cells: TAG_EXAMPLES.map((label) => <Tag key={label}>{label}</Tag>),
+              },
+            ]}
+          />
         </ShowcaseSection>
 
         <ShowcaseSection title="Tag — tokens">
@@ -138,9 +139,9 @@ function TagShowcasePage() {
           title="SubTag"
           description="Figma 3:7422 — Default · Hover (Variant2 у Figma, наведи курсор)."
         >
-          <div className={styles.preview}>
+          <ShowcasePreview>
             <SubTag>Проєкт</SubTag>
-          </div>
+          </ShowcasePreview>
         </ShowcaseSection>
 
         <ShowcaseSection title="SubTag — tokens">

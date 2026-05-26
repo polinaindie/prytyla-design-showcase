@@ -20,7 +20,7 @@
   background: var(--surface-default);
   color: var(--text-muted);
   font-family: Inter, system-ui, sans-serif;
-  font-size: var(--pryt-brand-font-size-250);
+  font-size: var(--font-size-caption-medium);
   font-weight: 600;
   line-height: 1.5;
   text-align: center;
@@ -91,7 +91,7 @@
   background: var(--accent-secondary);
   color: var(--text-default);
   font-family: Inter, system-ui, sans-serif;
-  font-size: var(--pryt-brand-font-size-100);
+  font-size: var(--font-size-numbers-tiny);
   font-weight: 600;
   line-height: 1.4;
   white-space: nowrap;

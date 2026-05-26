@@ -1,0 +1,94 @@
+.wrap {
+  overflow-x: auto;
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  background: var(--surface-page);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.table th,
+.table td {
+  padding: var(--space-medium);
+  border: var(--border-width-small) solid var(--border-default);
+  vertical-align: top;
+}
+
+.corner {
+  width: 1%;
+  background: var(--surface-subtle-neutral);
+}
+
+.colHeader {
+  background: var(--surface-subtle-neutral);
+  color: var(--text-muted);
+  font-size: var(--font-size-caption);
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.rowHeader {
+  background: var(--surface-subtle-neutral);
+  color: var(--text-muted);
+  font-size: var(--font-size-caption);
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  width: 1%;
+}
+
+.cell {
+  min-width: 7rem;
+}
+
+.cellViewport {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.cellInner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-small);
+}
+
+.cellInnerCenter {
+  align-items: center;
+}
+
+.cellInnerEnd {
+  align-items: flex-end;
+}
+
+.cellBody {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 2.5rem;
+}
+
+.cellBodyCenter {
+  justify-content: center;
+}
+
+.cellBodyEnd {
+  justify-content: flex-end;
+}
+
+.cellLabel {
+  margin: 0;
+  font-size: var(--font-size-caption);
+  color: var(--text-muted);
+}
+
+.compact th,
+.compact td {
+  padding: var(--space-small) var(--space-medium);
+}
