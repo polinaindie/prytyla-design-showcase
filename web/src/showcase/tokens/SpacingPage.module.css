@@ -33,82 +33,22 @@
   color: var(--text-on-inverse-muted);
 }
 
-.previewPage {
-  padding: var(--space-large);
-  border: var(--border-width-small) dashed var(--border-default);
-  border-radius: var(--radius-medium);
-  background: var(--surface-page);
-}
-
-.pageRoot[data-showcase-theme="dark"] .previewPage {
-  border-color: var(--border-on-inverse);
-  background: var(--surface-subtle-neutral);
-}
-
-.previewCard {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-medium);
-  padding: var(--space-large);
-  border-radius: var(--radius-medium);
-  background: var(--surface-default);
-  border: var(--border-width-small) solid var(--border-default);
-}
-
-.pageRoot[data-showcase-theme="dark"] .previewCard {
-  background: var(--surface-inverse);
-  border-color: var(--border-on-inverse);
-}
-
-.previewTitle {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: var(--font-size-body-large);
-  line-height: 1.2;
-  color: inherit;
-}
-
-.previewText {
+.searchEmpty {
   margin: 0;
   font-size: var(--font-size-body-small);
-  line-height: 1.45;
   color: var(--text-muted);
 }
 
-.pageRoot[data-showcase-theme="dark"] .previewText {
+.pageRoot[data-showcase-theme="dark"] .searchEmpty {
   color: var(--text-on-inverse-muted);
 }
 
-.lowLevelNote {
-  margin: 0 0 var(--space-medium);
-  padding: var(--space-small) var(--space-medium);
-  border-radius: var(--radius-medium);
-  border: var(--border-width-small) solid var(--border-default);
-  background: var(--bg-subtle-info);
-  font-size: var(--font-size-body-small);
-  line-height: 1.45;
-  color: var(--text-secondary);
-}
-
-.pageRoot[data-showcase-theme="dark"] .lowLevelNote {
-  border-color: var(--border-on-inverse);
-  color: var(--text-on-inverse-muted);
-}
-
-.barTrack {
+.galleryGroup {
   display: flex;
-  align-items: center;
-  min-height: var(--space-large);
-  max-width: 20rem;
-  width: 100%;
-  overflow: hidden;
+  flex-direction: column;
+  gap: var(--space-medium);
 }
 
-.bar {
-  height: var(--space-large);
-  min-width: var(--border-width-small);
-  max-width: 100%;
-  border-radius: var(--radius-small);
-  background: var(--surface-action);
-  flex-shrink: 0;
+.galleryGroup + .galleryGroup {
+  margin-top: var(--space-2xlarge);
 }

@@ -95,8 +95,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-2xsmall);
-  width: 100%;
-  margin: 0;
+margin: 0;
   padding: var(--space-2xsmall) var(--space-xsmall);
   border: none;
   border-radius: var(--radius-small);
@@ -121,8 +120,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-2xsmall);
-  width: 100%;
-  margin: 0;
+margin: 0;
   padding: var(--space-3xsmall) var(--space-xsmall);
   padding-left: var(--space-medium);
   border: none;

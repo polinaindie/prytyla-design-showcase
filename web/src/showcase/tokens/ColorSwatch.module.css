@@ -1,0 +1,106 @@
+/* Swatch card — chip left, label right, left-aligned */
+.card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: var(--space-small);
+  padding: var(--space-xsmall) 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  min-width: 0;
+  width: 100%;
+}
+
+.card:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: var(--space-3xsmall);
+  border-radius: var(--radius-small);
+}
+
+.card:hover .swatch,
+.card:focus-visible .swatch {
+  outline: var(--border-width-small) solid var(--border-strong);
+  outline-offset: var(--space-3xsmall);
+}
+
+.cardCopied .swatch {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: var(--space-3xsmall);
+}
+
+.swatchWrap {
+  flex: 0 0 auto;
+}
+
+.swatch {
+  width: var(--size-xlarge);
+  height: var(--size-xlarge);
+  border-radius: var(--radius-medium);
+}
+
+.cardFeatured .swatch {
+  width: var(--size-2xlarge);
+  height: var(--size-2xlarge);
+}
+
+.swatchLight {
+  box-shadow: inset 0 0 0 var(--border-width-small) var(--border-default);
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3xsmall);
+  min-width: 0;
+  flex: 1;
+}
+
+.tokenName {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--font-size-caption);
+  line-height: 1.35;
+  font-weight: 600;
+  word-break: break-all;
+}
+
+.tokenValue {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--font-size-caption);
+  line-height: 1.35;
+  color: var(--text-muted);
+  word-break: break-all;
+}
+
+/* Завжди 4 доріжки; при columns: 3 четверта лишається порожньою */
+.gridTracks {
+  display: grid;
+  gap: var(--space-medium);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.gridCell {
+  min-width: 0;
+}
+
+.gridPad {
+  min-width: 0;
+}
+
+@media (max-width: 48rem) {
+  .gridTracks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 28rem) {
+  .gridTracks {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,32 @@
+.root {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 8.875rem; /* Figma 142px */
+  height: 4.9375rem; /* Figma 78.765px */
+  line-height: 0;
+}
+
+.media {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Figma Fest white — додатковий текстовий шар */
+.festOverlay {
+  position: absolute;
+  top: 27.94%;
+  right: 0;
+  width: 40.85%;
+  height: 27.94%;
+  object-fit: contain;
+  object-position: bottom;
+  pointer-events: none;
+}

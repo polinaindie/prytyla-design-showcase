@@ -1,0 +1,25 @@
+.pageRoot {
+}
+
+.galleryCaption {
+  margin: var(--space-2xlarge) 0 var(--space-small);
+  font-size: var(--font-size-body-small);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.note {
+  margin: var(--space-medium) 0 0;
+  font-size: var(--font-size-body-small);
+  color: var(--text-muted);
+}
+
+.preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3xlarge);
+  align-items: flex-start;
+  padding: var(--space-3xlarge);
+  background: var(--surface-subtle-neutral);
+  border-radius: var(--radius-large);
+}

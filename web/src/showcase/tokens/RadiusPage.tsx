@@ -1,16 +1,22 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
-  ShowcaseCodeBlock,
+  ShowcaseDocBulletList,
+  ShowcaseDocPage,
+  ShowcaseDocPropertiesTable,
+  ShowcaseDocRelated,
+  ShowcaseDocSection,
+  ShowcaseDocTokenUsageTable,
   ShowcaseDoDont,
-  ShowcasePageLayout,
-  ShowcasePreview,
-  ShowcaseSection,
+  ShowcaseTablesRow,
   ShowcaseThemeProvider,
   ShowcaseTokenTable,
   useShowcaseTheme,
 } from "../primitives";
 import styles from "./RadiusPage.module.css";
-import { useResolvedTokens } from "./useCssVarValues";
+import { useCssVarValues, useResolvedTokens } from "./useCssVarValues";
+
+const FIGMA_FILE_URL =
+  "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive";
 
 const ALIAS_RADIUS = [
   "--radius-small",
@@ -26,14 +32,41 @@ const ALIAS_BORDER_WIDTH = [
   "--border-width-medium",
 ] as const;
 
-const QUICK_EXAMPLE = `.card {
-  border-radius: var(--radius-medium);
-  border: var(--border-width-small) solid var(--border-default);
-}
+const TOKEN_USAGE_SAMPLE = [
+  { element: "Card", property: "border-radius", token: "--radius-large" },
+  { element: "Pill / chip", property: "border-radius", token: "--radius-round" },
+  { element: "Input", property: "border-radius", token: "--radius-medium" },
+  { element: "Subtle surface", property: "border-radius", token: "--radius-small" },
+  { element: "Card border", property: "border-width", token: "--border-width-small" },
+  { element: "Focus ring", property: "outline-width", token: "--border-width-medium" },
+] as const;
 
-.pillButton {
-  border-radius: var(--radius-round);
-}`;
+const RADIUS_PROPERTIES = [
+  {
+    property: "Border radius",
+    type: "alias",
+    optionsDefault: "--radius-small … --radius-round",
+    description: "Публічні токени заокруглення; --radius-round — literal 9999px у Figma.",
+  },
+  {
+    property: "Border width",
+    type: "alias",
+    optionsDefault: "--border-width-small | medium",
+    description: "Товщина рамок і outline; не плутати з spacing scale.",
+  },
+  {
+    property: "CSS variable",
+    type: "string",
+    optionsDefault: "var(--radius-medium)",
+    description: "Клік по рядку таблиці копіює var(--token).",
+  },
+  {
+    property: "Sort order",
+    type: "display",
+    optionsDefault: "desc by px",
+    description: "У галереї — від найбільшого resolved значення до найменшого.",
+  },
+];
 
 function tokenVarRef(token: string): string {
   return `var(${token})`;
@@ -94,6 +127,12 @@ function RadiusPageContent() {
   );
   const { values } = useResolvedTokens(candidates);
 
+  const usageTokens = useMemo(
+    () => TOKEN_USAGE_SAMPLE.map((row) => row.token),
+    [],
+  );
+  const usageValues = useCssVarValues(usageTokens);
+
   useEffect(() => {
     if (!copiedToken) return undefined;
     const timer = window.setTimeout(() => setCopiedToken(null), 2000);
@@ -105,7 +144,10 @@ function RadiusPageContent() {
   };
 
   const radiusRows = useMemo(
-    () => buildTokenRows(ALIAS_RADIUS, values, handleCopy, (value) => <RadiusPreview value={value} />),
+    () =>
+      buildTokenRows(ALIAS_RADIUS, values, handleCopy, (value) => (
+        <RadiusPreview value={value} />
+      )),
     [values],
   );
 
@@ -117,62 +159,111 @@ function RadiusPageContent() {
     [values],
   );
 
+  const tokenUsageRows = TOKEN_USAGE_SAMPLE.map((row) => ({
+    ...row,
+    value: usageValues[row.token] ?? "—",
+  }));
+
   return (
     <div className={styles.pageRoot} data-showcase-theme={theme}>
       {copiedToken ? (
         <p className={styles.toast} aria-live="polite">
-          Copied!
+          Copied var({copiedToken})
         </p>
       ) : null}
 
-      <ShowcasePageLayout
+      <ShowcaseDocPage
         title="Radius"
         description="Заокруглення та товщина рамок Prytula DS. У компонентах — лише --radius-* і --border-width-*."
+        status="stable"
+        updatedAt="2026-05-22"
+        figmaUrl={FIGMA_FILE_URL}
+        showViewportBar={false}
       >
-
-        <ShowcaseSection title="Quick example">
-          <ShowcaseCodeBlock code={QUICK_EXAMPLE} language="css" />
-        </ShowcaseSection>
-
-        <ShowcaseSection
-          title="Live preview"
-          description="Картка з --radius-medium і pill-кнопка з --radius-round."
-        >
-          <ShowcasePreview>
-            <div className={styles.previewCard}>
-              <p className={styles.previewTitle}>Картка</p>
-              <span className={styles.previewPill}>Дія</span>
-            </div>
-          </ShowcasePreview>
-        </ShowcaseSection>
-
-        <ShowcaseSection
-          title="Border radius"
+        <ShowcaseDocSection
+          section="variants-gallery"
+          title="Radius & border width"
           description="Від найбільшого до найменшого. Клік по токену — копіює var(--token)."
         >
-          <ShowcaseTokenTable rows={radiusRows} />
-        </ShowcaseSection>
+          <ShowcaseTablesRow
+            tables={[
+              {
+                key: "radius",
+                caption: "Border radius",
+                children: <ShowcaseTokenTable rows={radiusRows} showPreview />,
+              },
+              {
+                key: "border-width",
+                caption: "Border width",
+                children: <ShowcaseTokenTable rows={borderWidthRows} showPreview />,
+              },
+            ]}
+          />
+        </ShowcaseDocSection>
 
-        <ShowcaseSection
-          title="Border width"
-          description="Товщина лінії. Клік по токену — копіює var(--token)."
+        <ShowcaseDocSection
+          section="properties"
+          title="Properties & token usage"
+          description="Alias-токени та типові прив'язки в UI."
         >
-          <ShowcaseTokenTable rows={borderWidthRows} />
-        </ShowcaseSection>
+          <ShowcaseTablesRow
+            tables={[
+              {
+                key: "properties",
+                caption: "Properties",
+                children: <ShowcaseDocPropertiesTable rows={RADIUS_PROPERTIES} />,
+              },
+              {
+                key: "token-usage",
+                caption: "Token usage",
+                children: <ShowcaseDocTokenUsageTable rows={tokenUsageRows} />,
+              },
+            ]}
+          />
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Guidelines">
+        <ShowcaseDocSection
+          section="accessibility"
+          description="Радіуси впливають на сприйняття клікабельних зон і контраст країв."
+        >
+          <ShowcaseDocBulletList
+            items={[
+              "Достатній border-radius на кнопках полегшує розпізнавання інтерактивних елементів.",
+              "Focus outline: --border-width-medium + --border-focus — не зменшуй товщину нижче токена.",
+              "Дуже малі радіуси на великих картках можуть виглядати різко — узгоджуй з дизайном.",
+              "Контраст border на light surfaces: --border-width-small з --border-default.",
+            ]}
+          />
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="usage-guidelines">
           <ShowcaseDoDont
             do={[
               "--radius-medium для карток",
               "--radius-round для pill-кнопок",
+              "--border-width-small для звичайних рамок",
             ]}
             dont={[
               "НЕ задавай border-radius у px напряму",
               "НЕ змішуй довільні px для border-width — лише --border-width-*",
             ]}
           />
-        </ShowcaseSection>
-      </ShowcasePageLayout>
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection
+          section="related-components"
+          description="Інші foundation-сторінки."
+        >
+          <ShowcaseDocRelated
+            links={[
+              { label: "Colors", path: "colors" },
+              { label: "Spacing", path: "spacing" },
+              { label: "Typography", path: "typography" },
+              { label: "Grid", path: "grid" },
+            ]}
+          />
+        </ShowcaseDocSection>
+      </ShowcaseDocPage>
     </div>
   );
 }

@@ -1,0 +1,146 @@
+.root {
+  --partner-corner: var(--space-medium);
+  --partner-border-width: var(--border-width-small);
+  --partner-frame-radius: 6px; /* Figma Partner Card — TODO: radius token if exported */
+  --partner-frame-bg: var(--surface-section-dark);
+  --partner-border-color: var(--border-dark);
+
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  box-sizing: border-box;
+  width: 13.25rem; /* Figma 212px */
+  height: 7.25rem; /* Figma 116px */
+  border: none;
+  border-radius: var(--partner-frame-radius);
+  background: var(--partner-frame-bg);
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.root:focus-visible {
+  outline: var(--border-width-small) solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.frameSide {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  width: var(--partner-corner);
+}
+
+.frameCorner {
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: var(--partner-corner);
+  border-color: var(--partner-border-color);
+  border-style: solid;
+  transition:
+    border-color 0.15s ease,
+    border-width 0.15s ease;
+}
+
+.frameSide:first-child .frameCorner:first-child {
+  border-width: var(--partner-border-width) 0 0 var(--partner-border-width);
+  border-top-left-radius: var(--partner-frame-radius);
+}
+
+.frameSide:first-child .frameCorner:last-child {
+  border-width: 0 0 var(--partner-border-width) var(--partner-border-width);
+  border-bottom-left-radius: var(--partner-frame-radius);
+}
+
+.frameSide:last-child .frameCorner:first-child {
+  border-width: var(--partner-border-width) var(--partner-border-width) 0 0;
+  border-top-right-radius: var(--partner-frame-radius);
+}
+
+.frameSide:last-child .frameCorner:last-child {
+  border-width: 0 var(--partner-border-width) var(--partner-border-width) 0;
+  border-bottom-right-radius: var(--partner-frame-radius);
+}
+
+.frameEdge {
+  flex: 1;
+  min-height: 0;
+  background: var(--partner-frame-bg);
+  transition: background 0.15s ease;
+}
+
+.center {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: var(--space-small);
+}
+
+.logo {
+  display: block;
+  width: auto;
+  max-width: 8.875rem; /* Figma 142px */
+  height: auto;
+  max-height: 4.9375rem; /* Figma ~79px */
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* —— Figma type=Info —— */
+.typeInfo {
+  --partner-frame-bg: var(--surface-section-dark);
+  --partner-border-color: var(--border-dark);
+}
+
+.selected.typeInfo,
+.typeInfo.selected {
+  --partner-corner: var(--space-medium);
+  --partner-frame-bg: var(--surface-card-dark-elevated);
+  --partner-border-color: var(--border-muted);
+}
+
+@media (hover: hover) {
+  .typeInfo:hover {
+    --partner-corner: var(--space-large);
+    --partner-frame-bg: var(--surface-card-dark-elevated);
+    --partner-border-color: var(--border-muted);
+  }
+}
+
+/* —— Figma type=Main —— */
+.typeMain {
+  --partner-frame-bg: var(--bg-subtle-accent);
+  --partner-border-color: var(--accent-secondary);
+}
+
+@media (hover: hover) {
+  .typeMain:hover {
+    --partner-border-width: 3px; /* Figma border-3 — TODO: token if added */
+  }
+}
+
+/* —— Figma type=Project | Projects (warm panel) —— */
+.typeProject,
+.typeProjects {
+  --partner-frame-bg: var(--surface-page);
+  --partner-border-color: var(--border-default);
+}
+
+.typeProject {
+  --partner-border-color: var(--border-dark);
+}
+
+@media (hover: hover) {
+  .typeProject:hover,
+  .typeProjects:hover {
+    --partner-frame-bg: var(--surface-page);
+    --partner-border-color: var(--border-dark);
+  }
+}

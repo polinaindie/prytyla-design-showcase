@@ -1,0 +1,95 @@
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
+}
+
+.wrap {
+  overflow-x: auto;
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  background: var(--surface-page);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-body-small);
+}
+
+.th {
+  padding: var(--space-small) var(--space-medium);
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-secondary);
+  background: var(--surface-subtle-neutral);
+  border-bottom: var(--border-width-medium) solid var(--border-strong);
+}
+
+.td {
+  padding: var(--space-small) var(--space-medium);
+  vertical-align: top;
+  color: var(--text-primary);
+  border-bottom: var(--border-width-small) solid var(--border-default);
+}
+
+.mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--font-size-caption);
+  line-height: 1.35;
+  color: var(--text-secondary);
+  word-break: break-all;
+}
+
+.typeCell {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xsmall);
+}
+
+.chip {
+  display: inline-block;
+  padding: var(--space-3xsmall) var(--space-xsmall);
+  border-radius: var(--radius-small);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--font-size-caption);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--accent-primary);
+  background: var(--surface-subtle-info);
+}
+
+.tokenButton {
+  display: block;
+  padding: 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tokenButton:hover .mono {
+  color: var(--text-link);
+}
+
+.tokenButton:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: var(--space-3xsmall);
+  border-radius: var(--radius-small);
+}
+
+.required {
+  margin-left: var(--space-xsmall);
+  font-size: var(--font-size-caption);
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.previewCol {
+  width: 6rem;
+}
+
+.previewCell {
+  vertical-align: middle;
+}

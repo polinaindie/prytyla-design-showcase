@@ -1,23 +1,27 @@
+import { useMemo } from "react";
 import { VacancyCard } from "../../design-system/VacancyCard";
 import {
-  ShowcaseCodeBlock,
-  ShowcaseDoDont,
+  ShowcaseDocBulletList,
+  ShowcaseDocLivePreview,
+  ShowcaseDocPage,
+  ShowcaseDocPropertiesTable,
+  ShowcaseDocRelated,
+  ShowcaseDocSection,
+  ShowcaseDocTokenUsageTable,
+  ShowcaseDocUsageGuidelines,
   ShowcaseMatrix,
-  ShowcasePageLayout,
   ShowcasePreview,
-  ShowcasePropsTable,
-  ShowcaseSection,
   ShowcaseThemeProvider,
-  ShowcaseTokensList,
-  type TokenUsage,
+  type DocPropertyRow,
   useShowcaseTheme,
 } from "../primitives";
+import { useCssVarValues } from "../tokens/useCssVarValues";
 import styles from "./VacancyCardShowcase.module.css";
 
 const FIGMA_URL =
   "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=1162-31929";
 
-const QUICK_EXAMPLE = `import { VacancyCard } from '@/design-system/VacancyCard';
+const LIVE_PREVIEW_CODE = `import { VacancyCard } from "@/design-system/VacancyCard";
 
 <VacancyCard
   href="/careers/financial-analyst"
@@ -25,117 +29,150 @@ const QUICK_EXAMPLE = `import { VacancyCard } from '@/design-system/VacancyCard'
   description="Аналіз фінансових звітів та прогнозування бюджету."
 />`;
 
-const PROPS = [
-  { name: "title", type: "string", required: true, description: "Назва вакансії (Figma H3)." },
-  {
-    name: "description",
-    type: "string",
-    required: true,
-    description: "Короткий опис (Figma body medium).",
-  },
-  { name: "href", type: "string", required: true, description: "URL сторінки вакансії." },
-];
-
-const TOKENS_USED: TokenUsage[] = [
-  {
-    category: "Surface",
-    name: "--surface-default, --surface-subtle-neutral",
-    usedIn: "Білий default / світло-сірий hover (neutral-50)",
-  },
-  {
-    category: "Border",
-    name: "--border-default, --border-width-small",
-    usedIn: "Обводка картки",
-  },
-  { category: "Text", name: "--text-default", usedIn: "Заголовок, опис, іконка" },
-  {
-    category: "Typography",
-    name: "--font-display, --font-size-heading-h3, --font-size-body-medium",
-    usedIn: "H3 32px / body 16px",
-  },
-  {
-    category: "Layout",
-    name: "--space-3xlarge, --space-medium, --radius-large",
-    usedIn: "Padding 32px, gap 12px, radius 12px",
-  },
-  { category: "Icon", name: "IconArrowUpRight32", usedIn: "Figma Icon/32/Arrow-Up-Right" },
-];
-
 const DEMO = {
   href: "/careers/financial-analyst",
   title: "Фінансовий аналітик",
   description: "Аналіз фінансових звітів та прогнозування бюджету.",
 } as const;
 
+const PROPERTY_ROWS: DocPropertyRow[] = [
+  {
+    property: "title",
+    type: "string",
+    typeKind: "TEXT",
+    optionsDefault: "required",
+    description: "Назва вакансії (H3).",
+  },
+  {
+    property: "description",
+    type: "string",
+    typeKind: "TEXT",
+    optionsDefault: "required",
+    description: "Короткий опис (body medium).",
+  },
+  {
+    property: "href",
+    type: "string",
+    typeKind: "TEXT",
+    optionsDefault: "required",
+    description: "URL сторінки вакансії.",
+  },
+];
+
+const TOKEN_USAGE_SAMPLE = [
+  { element: "Root", property: "background", token: "--surface-default" },
+  { element: "Hover", property: "background", token: "--surface-subtle-neutral" },
+  { element: "Root", property: "border", token: "--border-default" },
+  { element: "Title", property: "font-size", token: "--font-size-heading-h3" },
+  { element: "Description", property: "font-size", token: "--font-size-body-medium" },
+  { element: "Text", property: "color", token: "--text-default" },
+  { element: "Root", property: "padding", token: "--space-3xlarge" },
+  { element: "Root", property: "border-radius", token: "--radius-large" },
+  { element: "Focus", property: "outline", token: "--border-focus" },
+] as const;
+
 function VacancyCardShowcasePage() {
   const { theme } = useShowcaseTheme();
 
+  const usageValues = useCssVarValues(
+    useMemo(() => TOKEN_USAGE_SAMPLE.map((row) => row.token), []),
+  );
+
+  const tokenUsageRows = TOKEN_USAGE_SAMPLE.map((row) => ({
+    element: row.element,
+    property: row.property,
+    token: row.token,
+    value: usageValues[row.token] ?? "—",
+  }));
+
   return (
     <div className={styles.pageRoot} data-showcase-theme={theme}>
-      <ShowcasePageLayout
+      <ShowcaseDocPage
         title="Vacancy Card"
-        description={`Картка-лінк вакансії (Figma Vacancy Card 1162:31929). Figma: ${FIGMA_URL}`}
+        description="Картка-лінк вакансії: H3, опис, стрілка; hover — сірий фон."
+        status="stable"
+        version="1.0"
+        updatedAt="2026-05-22"
+        figmaUrl={FIGMA_URL}
+        showViewportBar={false}
       >
-
-        <ShowcaseSection title="Quick example">
-          <ShowcaseCodeBlock code={QUICK_EXAMPLE} language="tsx" />
-        </ShowcaseSection>
-
-        <ShowcaseSection
-          title="Live preview"
-          description="Ширина 100% у контейнері (max 684px як у Figma)."
+        <ShowcaseDocSection
+          section="live-preview"
+          description="max-width 684px у Figma; width 100% у сітці."
         >
-          <ShowcasePreview className={styles.preview}>
-            <VacancyCard {...DEMO} />
-          </ShowcasePreview>
-        </ShowcaseSection>
+          <ShowcaseDocLivePreview
+            caption="Default state · hover — наведи курсор."
+            code={LIVE_PREVIEW_CODE}
+          >
+            <ShowcasePreview className={styles.preview}>
+              <VacancyCard {...DEMO} />
+            </ShowcasePreview>
+          </ShowcaseDocLivePreview>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection
-          title="Variants"
-          description="Default і Hover — наведіть курсор на картку нижче."
+        <ShowcaseDocSection
+          section="variants-gallery"
+          description="Default vs Hover (CSS)."
         >
           <ShowcaseMatrix
             columns={["Default", "Hover (наведіть курсор)"]}
             rows={[
               {
                 cells: [
-                  <VacancyCard {...DEMO} />,
-                  <VacancyCard {...DEMO} aria-label={`${DEMO.title} — наведіть для hover`} />,
+                  <VacancyCard key="d" {...DEMO} />,
+                  <VacancyCard
+                    key="h"
+                    {...DEMO}
+                    aria-label={`${DEMO.title} — наведіть для hover`}
+                  />,
                 ],
               },
             ]}
           />
-        </ShowcaseSection>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Tokens used">
-          <ShowcaseTokensList tokens={TOKENS_USED} />
-        </ShowcaseSection>
+        <ShowcaseDocSection section="properties">
+          <ShowcaseDocPropertiesTable rows={PROPERTY_ROWS} />
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Guidelines">
-          <ShowcaseDoDont
-            do={[
-              "Завжди використовуйте як <a href> з осмисленим title і description",
-              "Тримайте hover лише в CSS — фон --surface-subtle-neutral",
-            ]}
-            dont={[
-              "Не замінюйте на <button> без href — це навігаційна картка",
-              "Не фіксуйте жорстко 684px у продукті — width: 100% у сітці",
+        <ShowcaseDocSection section="token-usage">
+          <ShowcaseDocTokenUsageTable rows={tokenUsageRows} />
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="accessibility">
+          <ShowcaseDocBulletList
+            items={[
+              "Семантичний <a href> з <h3> всередині.",
+              "Focus-visible: --border-focus.",
+              "aria-label на <a> якщо контекст неочевидний.",
             ]}
           />
-        </ShowcaseSection>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Props API">
-          <ShowcasePropsTable props={PROPS} />
-        </ShowcaseSection>
+        <ShowcaseDocSection section="usage-guidelines">
+          <ShowcaseDocUsageGuidelines
+            do={[
+              "Завжди href + title + description",
+              "Hover лише CSS — --surface-subtle-neutral",
+              "width 100% у списку вакансій",
+            ]}
+            dont={[
+              "Не <button> без href",
+              "Не фіксуйте 684px у продукті",
+            ]}
+            alternatives={[
+              { label: "Link Card", path: "link-card", note: "pill + illustration" },
+            ]}
+          />
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Accessibility">
-          <p>
-            Семантичний заголовок <code>&lt;h3&gt;</code> всередині посилання. Focus ring —{" "}
-            <code>--border-focus</code>. За потреби додайте <code>aria-label</code> на{" "}
-            <code>&lt;a&gt;</code>, якщо контекст сторінки неочевидний.
-          </p>
-        </ShowcaseSection>
-      </ShowcasePageLayout>
+        <ShowcaseDocSection section="related-components">
+          <ShowcaseDocRelated
+            related={[{ label: "Directions External Links", path: "directions-external-links" }]}
+            usedWith={[{ label: "Tabs", path: "tabs" }]}
+          />
+        </ShowcaseDocSection>
+      </ShowcaseDocPage>
     </div>
   );
 }

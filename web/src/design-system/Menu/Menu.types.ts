@@ -6,7 +6,7 @@ import type { LogoLanguage } from "../Logo/Logo.types";
  * Variants: Default / About Open / Other directions Open (desktop);
  * Default / Menu Open (tablet 127:9886, 1150:24953; mobile 125:7776, 1149:24142).
  */
-export type MenuSize = "desktop" | "tablet" | "mobile";
+export type MenuSize = "desktop" | "laptop" | "tablet" | "mobile";
 
 export type MenuNavLink = {
   type?: "link";
@@ -54,6 +54,7 @@ export type MenuProps = {
   logoLanguage?: LogoLanguage;
   homeHref?: string;
   navItems?: readonly MenuNavConfig[];
+  /** Bar lang toggle label; defaults to Eng/Ukr from logoLanguage. */
   languageLabel?: string;
   onLanguageClick?: () => void;
   /** Drawer lang switcher (Figma 1149:24151) — called with the newly selected language. */

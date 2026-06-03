@@ -1,7 +1,4 @@
 .pageRoot {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2xlarge);
   color: var(--text-default);
 }
 
@@ -9,11 +6,27 @@
   color: var(--text-inverse);
 }
 
-.variantGrid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-medium);
-  padding-top: var(--space-large);
+.preview {
+  padding: var(--space-3xlarge);
+  background: var(--surface-subtle-neutral);
+  border-radius: var(--radius-large);
+}
+
+.galleryCaption {
+  margin: 0 0 var(--space-small);
+  font-size: var(--font-size-body-small);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.galleryCaption:not(:first-child) {
+  margin-top: var(--space-2xlarge);
+}
+
+.note {
+  margin: var(--space-medium) 0 0;
+  font-size: var(--font-size-body-small);
+  color: var(--text-muted);
 }
 
 .row {

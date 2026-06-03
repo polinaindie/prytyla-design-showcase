@@ -1,153 +1,193 @@
-import { useState } from "react";
-import { GeneralWidget } from "../../design-system/GeneralWidget";
-import { GENERAL_WIDGET_SCROLL_RANGE } from "../../design-system/GeneralWidget/generalWidgetScroll";
-import type {
-  GeneralWidgetPaymentInfoSection,
-  GeneralWidgetPaymentTab,
-} from "../../design-system/GeneralWidget";
-import type { PaymentInfoField } from "../../design-system/PaymentInfo";
+import { useEffect, useMemo, useRef, useState, type RefObject } from "react";
 import {
-  ShowcaseCodeBlock,
-  ShowcaseDoDont,
+  DEFAULT_PAYMENT_INFO_SECTIONS,
+  GeneralWidget,
+} from "../../design-system/GeneralWidget";
+import type { GeneralWidgetPaymentTab } from "../../design-system/GeneralWidget";
+import {
+  GENERAL_WIDGET_ARTICLE_DESKTOP_WIDTH_PX,
+  GENERAL_WIDGET_ARTICLE_MOBILE_WIDTH_PX,
+  GENERAL_WIDGET_SCROLL_RANGE,
+} from "../../design-system/GeneralWidget/generalWidgetScroll";
+import { useArticleMorphDemo } from "./useArticleMorphDemo";
+import {
+  ShowcaseDocBulletList,
+  ShowcaseDocLivePreview,
+  ShowcaseDocPage,
+  ShowcaseDocPropertiesTable,
+  ShowcaseDocRelated,
+  ShowcaseDocSection,
+  ShowcaseDocTokenUsageTable,
+  ShowcaseDocUsageGuidelines,
   ShowcaseMatrix,
-  ShowcasePageLayout,
   ShowcasePreview,
-  ShowcasePropsTable,
-  ShowcaseSection,
   ShowcaseThemeProvider,
-  ShowcaseTokensList,
-  type TokenUsage,
+  figmaComponentSizeForViewportWidth,
+  showcaseViewportName,
+  showcaseViewportWidth,
+  type DocPropertyRow,
+  type ShowcaseViewportId,
   useShowcaseTheme,
 } from "../primitives";
+import { useCssVarValues } from "../tokens/useCssVarValues";
 import styles from "./GeneralWidgetShowcase.module.css";
 
 const FIGMA_URL =
   "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=287-14741";
 
-const QUICK_EXAMPLE = `import { GeneralWidget } from '@/design-system/GeneralWidget';
+const FIGMA_DESKTOP_ARTICLE_URL =
+  "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=915-14314";
+
+const FIGMA_TABLET_FULL_URL =
+  "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=947-14263";
+
+const FIGMA_TABLET_COLLAPSED_URL =
+  "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=1107-26075";
+
+const FIGMA_MOBILE_FULL_URL =
+  "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=947-19185";
+
+const FIGMA_MOBILE_COLLAPSED_URL =
+  "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=1107-24593";
+
+/** Figma tablet article width (px) — 46rem */
+const FIGMA_TABLET_ARTICLE_WIDTH_PX = 736;
+
+function articleLivePreviewFrameWidth(previewWidth: number): number {
+  if (previewWidth >= 768 && previewWidth < 1024) {
+    return FIGMA_TABLET_ARTICLE_WIDTH_PX;
+  }
+  if (previewWidth < 768) {
+    return GENERAL_WIDGET_ARTICLE_MOBILE_WIDTH_PX;
+  }
+  return GENERAL_WIDGET_ARTICLE_DESKTOP_WIDTH_PX;
+}
+
+const HERO_VARIANT =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='329' height='374'%3E%3Crect fill='%23d1d1d1' width='329' height='374'/%3E%3C/svg%3E";
+
+/** Той самий кадр, що з’являється в compact thumbnail при scroll (layout=article). */
+const HERO_ARTICLE = "/images/general-widget-chyste-nebo-thumb.png";
+
+const LIVE_PREVIEW_CODE = `import { GeneralWidget } from "@/design-system/GeneralWidget";
 
 <GeneralWidget
-  layout="full"
-  hero={{ src: "/hero.jpg", alt: "Проєкт" }}
-  defaultPaymentTab="once"
-  quickAmounts={[200, 500, 1000]}
+  layout="article"
+  progress={progress}
+  hero={{ src: "/hero.jpg", alt: "Збір" }}
+  paymentTab={tab}
+  onPaymentTabChange={setTab}
+  amount={amount}
+  onAmountChange={setAmount}
+  onQuickAmountClick={(v) => setAmount(String(v))}
+  onPrimaryAction={submit}
 />`;
 
-const CARD_FIELDS: PaymentInfoField[] = [
-  { label: "Одержувач", value: "Сергій Притула", copyValue: "Сергій Притула" },
+const PROPERTY_ROWS: DocPropertyRow[] = [
   {
-    label: "IBAN",
-    value: "UA8430529900000026200681993072",
-    copyValue: "UA8430529900000026200681993072",
-  },
-];
-
-const PAYMENT_INFO_SECTIONS: GeneralWidgetPaymentInfoSection[] = [
-  {
-    title: "Перекази по Україні",
-    items: [
-      {
-        id: "gw-card",
-        paymentType: "card",
-        title: "Переказ на карту",
-        fields: CARD_FIELDS,
-      },
-      {
-        id: "gw-bank",
-        paymentType: "bank",
-        title: "Банківський переказ",
-        fields: [
-          {
-            label: "Одержувач",
-            value: "БО Фонд Сергія Притули",
-            copyValue: "БО Фонд Сергія Притули",
-          },
-        ],
-      },
-    ],
+    property: "layout",
+    type: '"full" | "wide" | "veryShort" | "sidebar" | "article"',
+    typeKind: "VARIANT",
+    optionsDefault: '"full"',
+    description: "full sidebar card · wide donate page (582px) · veryShort / sidebar / article.",
   },
   {
-    title: "Перекази з-закордону",
-    items: [
-      {
-        id: "gw-paypal",
-        paymentType: "paypal",
-        title: "Paypal",
-        fields: [
-          {
-            label: "Email",
-            value: "serhiy.prytula.kyiv@gmail.com",
-            copyValue: "serhiy.prytula.kyiv@gmail.com",
-          },
-        ],
-      },
-      {
-        id: "gw-swift",
-        paymentType: "swift",
-        title: "SWIFT перекази",
-        fields: [{ label: "SWIFT code", value: "PBANUA2X", copyValue: "PBANUA2X" }],
-      },
-    ],
-  },
-];
-
-const PROPS = [
-  {
-    name: "layout",
-    type: '"full" | "veryShort" | "sidebar" | "article"',
-    default: '"full"',
-    description:
-      "full / veryShort / sidebar (click) / article (window.scrollY morph).",
-  },
-  {
-    name: "defaultCollapsed / collapsed / onToggleCollapse",
+    property: "defaultCollapsed / collapsed / onToggleCollapse",
     type: "boolean + callback",
-    description: "layout=sidebar: collapsed за замовчуванням true; controlled toggle.",
+    typeKind: "BOOLEAN",
+    optionsDefault: "sidebar: true",
+    description: "layout=sidebar — expand/collapse progress.",
   },
   {
-    name: "showProgress",
+    property: "showProgress",
     type: "boolean",
-    default: "false",
-    description: "Блок прогресу зверху (Figma Progressbar=On).",
+    typeKind: "BOOLEAN",
+    optionsDefault: "false",
+    description: "Блок прогресу зверху (Progressbar=On).",
   },
   {
-    name: "progress",
+    property: "progress",
     type: "GeneralWidgetProgress",
-    description: "Дані прогресу + thumbnail для veryShort / showProgress.",
+    typeKind: "INSTANCE_SWAP",
+    optionsDefault: "—",
+    description: "Дані прогресу + thumbnail для veryShort / progress.",
   },
   {
-    name: "hero",
+    property: "hero",
     type: "{ src, alt }",
-    description: "Hero-зображення без градієнта (до токена overlay).",
+    typeKind: "INSTANCE_SWAP",
+    optionsDefault: "—",
+    description: "Hero без градієнта (до токена overlay).",
   },
   {
-    name: "paymentTab / defaultPaymentTab",
-    type: "GeneralWidgetPaymentTab",
-    description: "Контрольований / початковий таб: once | subscription | paymentInfo.",
+    property: "paymentType",
+    type: '"active" | "done"',
+    typeKind: "VARIANT",
+    optionsDefault: '"active"',
+    description: "done — завершений збір: progress 101% + звіт/новини (Figma 287:14857).",
   },
   {
-    name: "paymentInfoSections",
+    property: "showSubscriptionTab",
+    type: "boolean",
+    typeKind: "BOOLEAN",
+    optionsDefault: "true",
+    description: "false — збори: лише Разово + Реквізити; true — + Щомісяця.",
+  },
+  {
+    property: "donatePageCategory + hrefs",
+    type: "military | foundation",
+    typeKind: "VARIANT",
+    optionsDefault: "—",
+    description: "layout=wide — Tabs «Допомогти війську» / «Підтримати фонд» (1384:38290).",
+  },
+  {
+    property: "showNewsletterOptIn / newsletterOptIn",
+    type: "boolean + callback",
+    typeKind: "BOOLEAN",
+    optionsDefault: "wide: true",
+    description: "Checkbox новин на wide once (1407:37355).",
+  },
+  {
+    property: "paymentTab / defaultPaymentTab",
+    type: "once | subscription | paymentInfo",
+    typeKind: "VARIANT",
+    optionsDefault: '"once"',
+    description: "Controlled / початковий таб.",
+  },
+  {
+    property: "currency / currencyOptions / onCurrencyChange",
+    type: "string + CurrencyCode[] + callback",
+    typeKind: "TEXT",
+    optionsDefault: '"UAH" · UAH/USD/EUR',
+    description: "Валюта в AmountBlock — CurrencySelect з вибором.",
+  },
+  {
+    property: "paymentInfoSections",
     type: "GeneralWidgetPaymentInfoSection[]",
-    description: "Групи PaymentInfo для табу «Реквізити».",
+    typeKind: "INSTANCE_SWAP",
+    optionsDefault: "DEFAULT_PAYMENT_INFO_SECTIONS",
+    description: "Групи PaymentInfo для «Реквізити» (Figma 287:15037).",
+  },
+  {
+    property: "articleScrollOffset",
+    type: "number",
+    typeKind: "TEXT",
+    optionsDefault: "—",
+    description: "Опційно: фіксований scroll (Storybook); live preview — window.scrollY.",
   },
 ];
 
-const TOKENS_USED: TokenUsage[] = [
-  { category: "Surface", name: "--surface-default", usedIn: "Картка, форма" },
-  { category: "Surface", name: "--surface-inverse", usedIn: "Кнопка «На банку»" },
-  { category: "Border", name: "--border-default, --border-strong", usedIn: "Form, underline" },
-  { category: "Accent", name: "--accent-secondary", usedIn: "VeryShort border, chip selected" },
-  {
-    category: "Typography",
-    name: "--font-size-numbers-section, --font-size-tab-label, --font-size-image-caption",
-    usedIn: "Сума 52px, UAH 28px, заголовок progress 18px",
-  },
-  {
-    category: "Layout",
-    name: "--space-large, --space-2xlarge, --radius-large",
-    usedIn: "Form padding/gap (18px → --space-large), radius 12px",
-  },
-];
+const TOKEN_USAGE_SAMPLE = [
+  { element: "Card", property: "background", token: "--surface-default" },
+  { element: "Bank CTA", property: "background", token: "--surface-inverse" },
+  { element: "Form", property: "border", token: "--border-default" },
+  { element: "VeryShort", property: "border", token: "--accent-secondary" },
+  { element: "Amount", property: "font-size", token: "--font-size-numbers-section" },
+  { element: "Tab", property: "font-size", token: "--font-size-tab-label" },
+  { element: "Progress title", property: "font-size", token: "--font-size-image-caption" },
+  { element: "Form", property: "padding", token: "--space-large" },
+  { element: "Card", property: "border-radius", token: "--radius-large" },
+] as const;
 
 const DEMO_PROGRESS = {
   value: 69,
@@ -158,64 +198,228 @@ const DEMO_PROGRESS = {
   goalAmount: "20 000 000 ₴",
 };
 
+/** Figma GeneralWidget Done — node 287:14857 */
+const DEMO_DONE_PROGRESS = {
+  value: 101,
+  title: "Чисте небо",
+  collectedAmount: "35 337 495 ₴",
+  goalAmount: "35 000 000 ₴",
+};
+
+type ArticleMorphPreviewProps = {
+  scrollY: number;
+  paymentTab: GeneralWidgetPaymentTab;
+  onPaymentTabChange: (tab: GeneralWidgetPaymentTab) => void;
+  amount: string;
+  onAmountChange: (amount: string) => void;
+  currency: string;
+  onCurrencyChange: (code: string) => void;
+  onQuickAmountClick: (value: number) => void;
+  onPrimaryAction: () => void;
+  showSubscriptionTab?: boolean;
+  articleScrollContainerRef?: RefObject<HTMLDivElement | null>;
+  onScrollToFull?: () => void;
+};
+
+function ArticleMorphPreview({
+  scrollY,
+  paymentTab,
+  onPaymentTabChange,
+  amount,
+  onAmountChange,
+  currency,
+  onCurrencyChange,
+  onQuickAmountClick,
+  onPrimaryAction,
+  showSubscriptionTab = true,
+  articleScrollContainerRef,
+  onScrollToFull,
+}: ArticleMorphPreviewProps) {
+  return (
+    <GeneralWidget
+      layout="article"
+      progress={DEMO_PROGRESS}
+      hero={{ src: HERO_ARTICLE, alt: "Hero" }}
+      articleScrollOffset={scrollY}
+      articleScrollNaturalLayout
+      articleScrollContainerRef={articleScrollContainerRef}
+      onScrollToFull={onScrollToFull}
+      showSubscriptionTab={showSubscriptionTab}
+      paymentTab={paymentTab}
+      onPaymentTabChange={onPaymentTabChange}
+      amount={amount}
+      onAmountChange={onAmountChange}
+      currency={currency}
+      onCurrencyChange={onCurrencyChange}
+      onQuickAmountClick={onQuickAmountClick}
+      onPrimaryAction={onPrimaryAction}
+    />
+  );
+}
+
 function GeneralWidgetShowcasePage() {
   const { theme } = useShowcaseTheme();
-  const [tab, setTab] = useState<GeneralWidgetPaymentTab>("once");
+  const livePreviewScrollRef = useRef<HTMLDivElement>(null);
+  const { scrollY, isCollapsed, playCollapse, playExpand } = useArticleMorphDemo();
+  const [previewViewportId, setPreviewViewportId] =
+    useState<ShowcaseViewportId>("1440");
+  const [tab, setTab] = useState<GeneralWidgetPaymentTab>("subscription");
   const [amount, setAmount] = useState("0");
+  const [currency, setCurrency] = useState("UAH");
+  const [donateCategory, setDonateCategory] = useState<"military" | "foundation">(
+    "military",
+  );
+  const [newsletterOptIn, setNewsletterOptIn] = useState(false);
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+
+  const usageValues = useCssVarValues(
+    useMemo(() => TOKEN_USAGE_SAMPLE.map((row) => row.token), []),
+  );
+
+  const tokenUsageRows = TOKEN_USAGE_SAMPLE.map((row) => ({
+    element: row.element,
+    property: row.property,
+    token: row.token,
+    value: usageValues[row.token] ?? "—",
+  }));
+
+  const previewWidth = showcaseViewportWidth(previewViewportId);
+  const livePreviewFrameWidth = articleLivePreviewFrameWidth(previewWidth);
+  const componentSize = figmaComponentSizeForViewportWidth(previewWidth);
+
+  const handleMorphDemoClick = () => {
+    if (isCollapsed) {
+      playExpand();
+      return;
+    }
+    playCollapse();
+  };
+
+  const isTabletPreview = previewWidth >= 768 && previewWidth < 1024;
+  const isMobilePreview = previewWidth < 768;
+  const liveShowSubscriptionTab = !isTabletPreview;
+  const livePaymentTab =
+    isTabletPreview || isMobilePreview ? "once" : tab;
+
+  useEffect(() => {
+    if (livePaymentTab === "paymentInfo" && !isCollapsed) {
+      playCollapse();
+    }
+  }, [livePaymentTab, isCollapsed, playCollapse]);
+
+  const articlePreviewProps: ArticleMorphPreviewProps = {
+    scrollY,
+    paymentTab: livePaymentTab,
+    onPaymentTabChange: setTab,
+    amount,
+    onAmountChange: setAmount,
+    currency,
+    onCurrencyChange: setCurrency,
+    onQuickAmountClick: (value) => setAmount(String(value)),
+    onPrimaryAction: () => setAmount(amount === "0" ? "500" : amount),
+    showSubscriptionTab: liveShowSubscriptionTab,
+    articleScrollContainerRef: livePreviewScrollRef,
+    onScrollToFull: playExpand,
+  };
+
+  const articleSlotClass = [
+    styles.livePreviewArticleSlot,
+    previewWidth >= 1024
+      ? styles.livePreviewArticleSlotDesktop
+      : previewWidth >= 768
+        ? styles.livePreviewArticleSlotTablet
+        : styles.livePreviewArticleSlotMobile,
+  ].join(" ");
 
   return (
     <div className={styles.pageRoot} data-showcase-theme={theme}>
-      <ShowcasePageLayout
+      <ShowcaseDocPage
         title="General Widget"
-        description={`Віджет донату (Figma GeneralWidget 287:14741). Ітерація 1–2: Once, PaymentInfo, VeryShort, sidebar collapse. Figma: ${FIGMA_URL}`}
+        description="Віджет донату: hero, таби Once / Subscription / Реквізити, compact layouts для sidebar і статті."
+        status="stable"
+        version="1.0"
+        updatedAt="2026-05-22"
+        figmaUrl={FIGMA_URL}
+        showViewportBar={false}
       >
-
-        <ShowcaseSection title="Quick example">
-          <ShowcaseCodeBlock code={QUICK_EXAMPLE} language="tsx" />
-        </ShowcaseSection>
-
-        <ShowcaseSection
-          title="Live preview"
-          description="Once — сума + quick amounts + CTA. Hero — placeholder без градієнта."
+        <ShowcaseDocSection
+          section="live-preview"
+          description={`layout=article — scroll 0…${GENERAL_WIDGET_SCROLL_RANGE}px: hero → compact. Tablet full ${FIGMA_TABLET_FULL_URL.split("node-id=")[1]} · collapsed ${FIGMA_TABLET_COLLAPSED_URL.split("node-id=")[1]} · mobile full ${FIGMA_MOBILE_FULL_URL.split("node-id=")[1]} · collapsed ${FIGMA_MOBILE_COLLAPSED_URL.split("node-id=")[1]}.`}
         >
-          <ShowcasePreview className={styles.previewCell}>
-            <GeneralWidget
-              hero={{
-                src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='329' height='374' viewBox='0 0 329 374'%3E%3Crect fill='%23e7e7e7' width='329' height='374'/%3E%3C/svg%3E",
-                alt: "",
-              }}
-              paymentTab={tab}
-              onPaymentTabChange={setTab}
-              amount={amount}
-              onQuickAmountClick={(value) => setAmount(String(value))}
-              onPrimaryAction={() => setAmount(amount === "0" ? "500" : amount)}
-            />
-          </ShowcasePreview>
-        </ShowcaseSection>
+          <ShowcaseDocLivePreview
+            caption={`${showcaseViewportName(previewViewportId)} (${previewWidth}px) · size=${componentSize}${isTabletPreview ? " · tablet 736px (Figma 947:14263)" : isMobilePreview ? ` · article ${GENERAL_WIDGET_ARTICLE_MOBILE_WIDTH_PX}px (fluid container, Figma ${FIGMA_MOBILE_FULL_URL.split("node-id=")[1]})` : ` · desktop/laptop card ${GENERAL_WIDGET_ARTICLE_DESKTOP_WIDTH_PX}px (Figma ${FIGMA_DESKTOP_ARTICLE_URL.split("node-id=")[1]})`}.`}
+            code={LIVE_PREVIEW_CODE}
+            scrollablePreview
+            flush
+            previewRef={livePreviewScrollRef}
+            previewClassName={styles.livePreviewPreview}
+            previewViewport
+            previewViewportId={previewViewportId}
+            onPreviewViewportChange={setPreviewViewportId}
+            previewFrameWidth={livePreviewFrameWidth}
+            previewActions={
+              <button
+                type="button"
+                className={styles.morphDemoButton}
+                onClick={handleMorphDemoClick}
+              >
+                {isCollapsed ? "Повернути повний вигляд" : "Подивитися анімацію"}
+              </button>
+            }
+          >
+            <div className={articleSlotClass}>
+              <ArticleMorphPreview {...articlePreviewProps} />
+            </div>
+          </ShowcaseDocLivePreview>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Variants" description="Ітерація 1 — три режими з Figma.">
+        <ShowcaseDocSection
+          section="variants-gallery"
+          description="Once · Campaign (no sub) · Subscription · PaymentInfo · Done · VeryShort."
+        >
           <ShowcaseMatrix
-            columns={["Once (Progressbar=Off)", "PaymentInfo", "VeryShort + Progressbar"]}
+            columns={[
+              "Once",
+              "Campaign",
+              "Subscription",
+              "PaymentInfo",
+              "Done",
+              "VeryShort",
+            ]}
             rows={[
               {
                 cells: [
                   <div key="once" className={styles.previewCell}>
                     <GeneralWidget
                       defaultPaymentTab="once"
-                      hero={{
-                        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='329' height='374'%3E%3Crect fill='%23d1d1d1' width='329' height='374'/%3E%3C/svg%3E",
-                        alt: "Hero",
-                      }}
+                      hero={{ src: HERO_VARIANT, alt: "Hero" }}
+                    />
+                  </div>,
+                  <div key="campaign" className={styles.previewCell}>
+                    <GeneralWidget
+                      showSubscriptionTab={false}
+                      defaultPaymentTab="once"
+                      hero={{ src: HERO_VARIANT, alt: "Hero" }}
+                    />
+                  </div>,
+                  <div key="subscription" className={styles.previewCell}>
+                    <GeneralWidget
+                      defaultPaymentTab="subscription"
+                      hero={{ src: HERO_VARIANT, alt: "Hero" }}
                     />
                   </div>,
                   <div key="payment" className={styles.previewCell}>
                     <GeneralWidget
                       defaultPaymentTab="paymentInfo"
-                      paymentInfoSections={PAYMENT_INFO_SECTIONS}
-                      hero={{
-                        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='329' height='374'%3E%3Crect fill='%23d1d1d1' width='329' height='374'/%3E%3C/svg%3E",
-                        alt: "Hero",
-                      }}
+                      paymentInfoSections={DEFAULT_PAYMENT_INFO_SECTIONS}
+                      hero={{ src: HERO_VARIANT, alt: "Hero" }}
+                    />
+                  </div>,
+                  <div key="done" className={styles.previewCell}>
+                    <GeneralWidget
+                      paymentType="done"
+                      progress={DEMO_DONE_PROGRESS}
+                      hero={{ src: HERO_VARIANT, alt: "Hero" }}
                     />
                   </div>,
                   <div key="short" className={styles.previewCell}>
@@ -225,86 +429,214 @@ function GeneralWidgetShowcasePage() {
               },
             ]}
           />
-        </ShowcaseSection>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection
-          title="Article layout"
-          description="Сторінка статті після scroll: compact progress + форма. На продукті collapse від scroll відносно верху віджета (0…260px)."
-        >
-          <ShowcaseCodeBlock
-            language="text"
-            code={`layout="article" + progress + hero
-
-• Діапазон: 0…260px scroll від верху віджета → t = 0…1
-• Hero → 0; thumbnail + заголовок progress; форма знизу
-• Showcase: articleScrollOffset={GENERAL_WIDGET_SCROLL_RANGE} для статичного compact`}
+        <ShowcaseDocSection section="sizes" description="layout визначає габарити (Figma).">
+          <ShowcaseDocBulletList
+            items={[
+              "full — hero ~329×374 + форма (desktop donate).",
+              "veryShort — compact embed з progress thumbnail.",
+              "sidebar — sticky peek + click expand.",
+              `article — scroll morph 0…260px; desktop card ${GENERAL_WIDGET_ARTICLE_DESKTOP_WIDTH_PX}px (915:14314) · tablet 736px · mobile ${GENERAL_WIDGET_ARTICLE_MOBILE_WIDTH_PX}px (fluid container).`,
+              "article tablet full — hero + progress + форма в два стовпці (947:14263).",
+              "article tablet collapsed — compact strip + CTA (1107:26075).",
+              `article mobile ${GENERAL_WIDGET_ARTICLE_MOBILE_WIDTH_PX}px — scroll morph (fluid container).`,
+            ]}
           />
-          <ShowcasePreview className={styles.previewCell}>
-            <GeneralWidget
-              layout="article"
-              progress={DEMO_PROGRESS}
-              hero={{
-                src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='329' height='374'%3E%3Crect fill='%23c5d4e8' width='329' height='374'/%3E%3C/svg%3E",
-                alt: "Hero",
-              }}
-              articleScrollOffset={GENERAL_WIDGET_SCROLL_RANGE}
-              amount={amount}
-              onQuickAmountClick={(value) => setAmount(String(value))}
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="properties">
+          <ShowcaseDocPropertiesTable rows={PROPERTY_ROWS} />
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="token-usage">
+          <ShowcaseDocTokenUsageTable rows={tokenUsageRows} />
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="states-interactions">
+          <ShowcaseDocBulletList
+            items={[
+              "layout=wide — donate page 582px, category tabs, newsletter checkbox.",
+              "showSubscriptionTab=false — збори: Разово + Реквізити.",
+              "paymentType=done — ProgressBar Done 101%, «Переглянути звіт» + «Усі новини по проєкту».",
+              "Таби once | subscription | paymentInfo — controlled або default.",
+              "sidebar: клік progress → expand/collapse (окремо від article scroll).",
+              "article: scroll morph — hero зникає; thumbnail = той самий src, що hero.",
+              "article tablet (≥768px container): два стовпці; collapsed — CTA «Підтримати проєкт».",
+              `article mobile ${GENERAL_WIDGET_ARTICLE_MOBILE_WIDTH_PX}px collapsed — scroll morph (Figma 1107:24593).`,
+              "Live preview: viewport 1920…375 + «Подивитися анімацію» (morph 0…260px).",
+            ]}
+          />
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection
+          section="examples"
+          description="Sidebar, wide donate page, done, Once + Progressbar=On. Article morph — у Live preview; tablet/mobile — Figma refs нижче."
+        >
+          <p className={styles.galleryCaption}>
+            Tablet · повний (Figma 947:14263)
+          </p>
+          <ShowcasePreview
+            viewportWidth={736}
+            constrainWidth
+            flush
+            className={styles.livePreviewPreview}
+          >
+            <ArticleMorphPreview
+              {...articlePreviewProps}
+              scrollY={0}
+              showSubscriptionTab={false}
+              paymentTab="once"
+              onPaymentTabChange={setTab}
             />
           </ShowcasePreview>
-        </ShowcaseSection>
 
-        <ShowcaseSection
-          title="Sidebar (interactive)"
-          description="Desktop: клік по progress — expand/collapse. Окремо від scroll-анімації article."
-        >
+          <p className={styles.galleryCaption}>
+            Tablet · колапс на скрол (Figma 1107:26075)
+          </p>
+          <ShowcasePreview
+            viewportWidth={736}
+            constrainWidth
+            flush
+            className={styles.livePreviewPreview}
+          >
+            <ArticleMorphPreview
+              {...articlePreviewProps}
+              scrollY={GENERAL_WIDGET_SCROLL_RANGE}
+              showSubscriptionTab={false}
+              paymentTab="once"
+              onPaymentTabChange={setTab}
+            />
+          </ShowcasePreview>
+
+          <p className={styles.galleryCaption}>
+            Mobile · повний (Figma 947:19185 · {GENERAL_WIDGET_ARTICLE_MOBILE_WIDTH_PX}px)
+          </p>
+          <ShowcasePreview
+            viewportWidth={GENERAL_WIDGET_ARTICLE_MOBILE_WIDTH_PX}
+            constrainWidth
+            flush
+            className={styles.livePreviewPreview}
+          >
+            <ArticleMorphPreview {...articlePreviewProps} scrollY={0} />
+          </ShowcasePreview>
+
+          <p className={styles.galleryCaption}>
+            Mobile · колапс на скрол (Figma 1107:24593)
+          </p>
+          <ShowcasePreview
+            viewportWidth={GENERAL_WIDGET_ARTICLE_MOBILE_WIDTH_PX}
+            constrainWidth
+            flush
+            className={styles.livePreviewPreview}
+          >
+            <ArticleMorphPreview
+              {...articlePreviewProps}
+              scrollY={GENERAL_WIDGET_SCROLL_RANGE}
+            />
+          </ShowcasePreview>
+
+          <p className={styles.galleryCaption}>layout=sidebar (клік expand)</p>
           <ShowcasePreview className={styles.previewCell}>
             <GeneralWidget
               layout="sidebar"
               progress={DEMO_PROGRESS}
               amount={amount}
+              onAmountChange={setAmount}
               onQuickAmountClick={(value) => setAmount(String(value))}
               onPrimaryAction={() => setAmount(amount === "0" ? "500" : amount)}
             />
           </ShowcasePreview>
-        </ShowcaseSection>
 
-        <ShowcaseSection title="With progress" description="Figma Once + Progressbar=On.">
-          <ShowcasePreview>
+          <p className={styles.galleryCaption}>
+            layout=wide · donate page (Figma 1384:38288)
+          </p>
+          <ShowcasePreview className={styles.previewCellWide}>
+            <GeneralWidget
+              layout="wide"
+              donatePageCategory={donateCategory}
+              onDonatePageCategoryChange={setDonateCategory}
+              paymentTab={tab}
+              onPaymentTabChange={setTab}
+              amount={amount}
+              onAmountChange={setAmount}
+              currency={currency}
+              onCurrencyChange={setCurrency}
+              onQuickAmountClick={(value) => setAmount(String(value))}
+              newsletterOptIn={newsletterOptIn}
+              onNewsletterOptInChange={setNewsletterOptIn}
+              newsletterEmail={newsletterEmail}
+              onNewsletterEmailChange={setNewsletterEmail}
+            />
+          </ShowcasePreview>
+
+          <p className={styles.galleryCaption}>paymentType=done (Figma 287:14857)</p>
+          <ShowcasePreview className={styles.previewCell}>
+            <GeneralWidget
+              paymentType="done"
+              progress={DEMO_DONE_PROGRESS}
+              hero={{ src: HERO_VARIANT, alt: "Hero" }}
+            />
+          </ShowcasePreview>
+
+          <p className={styles.galleryCaption}>showProgress + Once</p>
+          <ShowcasePreview className={styles.previewCell}>
             <GeneralWidget
               showProgress
               progress={DEMO_PROGRESS}
               defaultPaymentTab="once"
-              hero={{
-                src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='329' height='374'%3E%3Crect fill='%23d1d1d1' width='329' height='374'/%3E%3C/svg%3E",
-                alt: "Hero",
-              }}
+              hero={{ src: HERO_VARIANT, alt: "Hero" }}
             />
           </ShowcasePreview>
-        </ShowcaseSection>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Tokens used">
-          <ShowcaseTokensList tokens={TOKENS_USED} />
-        </ShowcaseSection>
-
-        <ShowcaseSection title="Props API">
-          <ShowcasePropsTable props={PROPS} />
-        </ShowcaseSection>
-
-        <ShowcaseSection title="Guidelines">
-          <ShowcaseDoDont
-            do={[
-              "Компонуй з ChipPaymentType, QuickAmount, Button, PaymentInfo, ProgressBar.",
-              "Дані (суми, реквізити, hero) передавай пропсами — API пізніше.",
-              "Hero без градієнта до появи токена overlay.",
-            ]}
-            dont={[
-              "НЕ хардкодь #ffa400 / rgba gradient у GeneralWidget.",
-              "НЕ дублюй PaymentInfo-розмітку — використовуй PaymentInfoGroup.",
+        <ShowcaseDocSection section="accessibility">
+          <ShowcaseDocBulletList
+            items={[
+              "Таби — кнопки з aria-selected / panel visibility.",
+              "PaymentInfo всередині — accordion semantics з PaymentInfoGroup.",
+              "Copy buttons на реквізитах — aria-label.",
+              "Sidebar collapse — button на progress header.",
             ]}
           />
-        </ShowcaseSection>
-      </ShowcasePageLayout>
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="usage-guidelines">
+          <ShowcaseDocUsageGuidelines
+            do={[
+              "Компонуй ChipPaymentType, QuickAmount, Button, PaymentInfo, ProgressBar",
+              "Дані (суми, реквізити, hero) — пропсами",
+              "Hero без градієнта до токена overlay",
+            ]}
+            dont={[
+              "Не хардкодь #ffa400 / rgba gradient у віджеті",
+              "Не дублюй PaymentInfo-розмітку",
+              "Не state props для hover табів",
+            ]}
+            alternatives={[
+              { label: "Payment Info", path: "payment-info" },
+              { label: "Progress Bar", path: "progress-bar" },
+            ]}
+          />
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="related-components">
+          <ShowcaseDocRelated
+            related={[
+              { label: "Button", path: "button" },
+              { label: "Payment Info", path: "payment-info" },
+              { label: "Progress Bar", path: "progress-bar" },
+              { label: "Quick Amount", path: "quick-amount" },
+              { label: "Chip Payment Type", path: "chip-payment-type" },
+            ]}
+            usedWith={[
+              { label: "Currency Select", path: "currency-select" },
+              { label: "Text Field", path: "text-field" },
+              { label: "Department Select", path: "department-select" },
+            ]}
+          />
+        </ShowcaseDocSection>
+      </ShowcaseDocPage>
     </div>
   );
 }

@@ -2,40 +2,25 @@
   position: relative;
 }
 
-.toast {
-  position: fixed;
-  top: var(--space-large);
-  right: var(--space-large);
-  z-index: 100;
-  margin: 0;
-  padding: var(--space-small) var(--space-medium);
-  border-radius: var(--radius-medium);
-  background: var(--surface-inverse);
-  color: var(--text-on-inverse);
+.preview {
+  padding: var(--space-3xlarge);
+  background: var(--surface-subtle-neutral);
+  border-radius: var(--radius-large);
+}
+
+.galleryCaption {
+  margin: 0 0 var(--space-small);
   font-size: var(--font-size-body-small);
+  font-weight: 600;
+  color: var(--text-secondary);
 }
 
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: var(--space-2xlarge);
+.galleryCaption:not(:first-child) {
+  margin-top: var(--space-2xlarge);
 }
 
-.cell {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-small);
-}
-
-.cellLabel {
-  margin: 0;
-  font-size: var(--font-size-caption);
-  color: var(--text-muted);
-}
-
-.meta {
-  margin: 0;
-  font-size: var(--font-size-caption);
+.note {
+  margin: var(--space-medium) 0 0;
+  font-size: var(--font-size-body-small);
   color: var(--text-muted);
 }

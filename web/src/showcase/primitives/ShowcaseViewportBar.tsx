@@ -5,7 +5,11 @@ import {
 } from "../ShowcaseViewportContext";
 import styles from "./ShowcaseViewportBar.module.css";
 
-export function ShowcaseViewportBar() {
+type ShowcaseViewportBarProps = {
+  className?: string;
+};
+
+export function ShowcaseViewportBar({ className }: ShowcaseViewportBarProps = {}) {
   const { viewportId, viewportWidth, typographyMode, setViewportId } =
     useShowcaseViewport();
 
@@ -16,8 +20,10 @@ export function ShowcaseViewportBar() {
         ? "Tablet"
         : "Desktop";
 
+  const barClass = [styles.bar, className].filter(Boolean).join(" ");
+
   return (
-    <div className={styles.bar} role="group" aria-label="Ширина preview">
+    <div className={barClass} role="group" aria-label="Ширина preview">
       <span className={styles.label}>Ширина</span>
       <div className={styles.group}>
         {SHOWCASE_VIEWPORTS.map((item) => (

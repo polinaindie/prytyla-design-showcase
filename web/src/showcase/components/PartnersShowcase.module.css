@@ -1,0 +1,13 @@
+.pageRoot {
+  color: var(--text-default);
+}
+
+.preview {
+  overflow: hidden;
+  border-radius: var(--radius-large);
+}
+
+.sizeCell {
+  overflow: hidden;
+  border-radius: var(--radius-large);
+}

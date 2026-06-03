@@ -1,7 +1,4 @@
 .pageRoot {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2xlarge);
   color: var(--text-default);
 }
 
@@ -10,12 +7,22 @@
 }
 
 .list {
-  width: 100%;
   max-width: 57.5rem;
 }
 
-.hint {
-  margin: var(--space-small) 0 0;
-  font-size: var(--font-size-caption);
-  color: var(--text-muted);
+.singleList {
+  display: flex;
+  flex-direction: column;
+  max-width: 57.5rem;
+}
+
+.galleryCaption {
+  margin: 0 0 var(--space-small);
+  font-size: var(--font-size-body-small);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.galleryCaption:not(:first-child) {
+  margin-top: var(--space-2xlarge);
 }

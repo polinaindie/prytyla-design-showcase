@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Button } from "../Button";
 import { LinkCard } from "../LinkCard";
+import linkCardStyles from "../LinkCard/LinkCard.module.css";
 import { IconClose, IconGlobe20, IconMenu, IconMoreHorizontal } from "../Icons";
 import { Logo } from "../Logo";
 import { MenuFooter } from "./MenuFooter";
@@ -7,23 +9,22 @@ import {
   DEFAULT_ABOUT_PANEL_LINKS,
   DEFAULT_DIRECTION_PANEL_LINKS,
   DEFAULT_DRAWER_NAV_LINKS,
-  TABLET_DRAWER_NAV_LINKS,
   DEFAULT_EMAIL,
   DEFAULT_HOTLINE,
+  DEFAULT_NAV,
   DEFAULT_SOCIAL_LINKS,
+  getDefaultHotlineLabel,
+  menuCopy,
+  resolveAboutPanelLinks,
+  resolveDirectionPanelLinks,
+  resolveDrawerNavLinks,
+  resolveMenuNavItems,
+  resolveTabletDrawerNavLinks,
 } from "./menuDefaults";
 import { NavItem } from "./NavItem";
 import type { LogoLanguage } from "../Logo/Logo.types";
 import type { MenuNavConfig, MenuProps } from "./Menu.types";
 import styles from "./Menu.module.css";
-
-const DEFAULT_NAV: MenuNavConfig[] = [
-  { label: "Проєкти", href: "/projects" },
-  { label: "Звітність", href: "/reports" },
-  { type: "dropdown", label: "Про фонд" },
-  { label: "Новини", href: "/news" },
-  { label: "Партнерства", href: "/partnerships" },
-];
 
 function renderNavItem(item: MenuNavConfig, index: number) {
   if (item.type === "dropdown") {
@@ -51,7 +52,7 @@ export function Menu({
   logoLanguage = "uk",
   homeHref = "/",
   navItems = DEFAULT_NAV,
-  languageLabel = "Eng",
+  languageLabel,
   onLanguageClick,
   onLanguageChange,
   otherDirectionsOpen = false,
@@ -75,38 +76,77 @@ export function Menu({
   const isMobile = size === "mobile";
   const isTablet = size === "tablet";
   const isDesktop = size === "desktop";
+  const isLaptop = size === "laptop";
+  const isWideBar = isDesktop || isLaptop;
   const isCompact = isMobile || isTablet;
-  const showNav = isDesktop;
-  const showLangInBar = isDesktop || isTablet;
-  const showDonateInBar = isDesktop || isTablet;
+  const showNav = isWideBar;
+  const showLangInBar = isWideBar || isTablet;
+  const showDonateInBar = isWideBar || isTablet;
   const logoHeight = isCompact ? 28 : 32;
+
+  const [internalLogoLanguage, setInternalLogoLanguage] =
+    useState<LogoLanguage>(logoLanguage);
+  const isLanguageControlled = onLanguageChange != null;
+  const activeLogoLanguage = isLanguageControlled
+    ? logoLanguage
+    : internalLogoLanguage;
+
+  const copy = menuCopy(activeLogoLanguage);
+
+  const resolvedNavItems = resolveMenuNavItems(navItems, activeLogoLanguage);
+  const resolvedAboutPanelLinks = resolveAboutPanelLinks(
+    aboutPanelLinks,
+    activeLogoLanguage,
+  );
+  const resolvedDirectionPanelLinks = resolveDirectionPanelLinks(
+    directionPanelLinks,
+    activeLogoLanguage,
+  );
   const drawerNavLinksResolved = isTablet
-    ? drawerNavLinks === DEFAULT_DRAWER_NAV_LINKS
-      ? TABLET_DRAWER_NAV_LINKS
-      : drawerNavLinks
-    : drawerNavLinks;
-  const aboutOpen = navItems.some(
+    ? resolveTabletDrawerNavLinks(drawerNavLinks, activeLogoLanguage)
+    : resolveDrawerNavLinks(drawerNavLinks, activeLogoLanguage);
+  const aboutOpen = resolvedNavItems.some(
     (item) => item.type === "dropdown" && Boolean(item.open),
   );
-  const showAboutPanel = isDesktop && aboutOpen && !otherDirectionsOpen;
-  const showDirectionsPanel = isDesktop && otherDirectionsOpen;
+  const showAboutPanel = isWideBar && aboutOpen && !otherDirectionsOpen;
+  const showDirectionsPanel = isWideBar && otherDirectionsOpen;
   const showDrawer = isCompact && mobileMenuOpen;
 
-  const handleDrawerLanguageSelect = (language: LogoLanguage) => {
-    if (language === logoLanguage) return;
-    onLanguageChange?.(language);
+  const setActiveLanguage = (language: LogoLanguage) => {
+    if (language === activeLogoLanguage) return;
+    if (isLanguageControlled) {
+      onLanguageChange(language);
+    } else {
+      setInternalLogoLanguage(language);
+    }
     onLanguageClick?.();
   };
+
+  const handleBarLanguageClick = () => {
+    setActiveLanguage(activeLogoLanguage === "uk" ? "en" : "uk");
+  };
+
+  const handleDrawerLanguageSelect = (language: LogoLanguage) => {
+    setActiveLanguage(language);
+  };
+
+  const barLanguageLabel = languageLabel ?? copy.barLanguageLabel;
   const isOpenDesktop = showAboutPanel || showDirectionsPanel;
 
   const resolvedDonateLabel =
     donateLabel ??
-    (isMobile || isTablet ? "Підтримати" : "Допомогти війську");
+    (isMobile || isTablet ? copy.donateCompact : copy.donateWide);
+
+  const resolvedHotlineLabel =
+    hotlineLabel === DEFAULT_HOTLINE.label
+      ? getDefaultHotlineLabel(activeLogoLanguage)
+      : hotlineLabel;
 
   const rootClass = [
     styles.root,
     isMobile ? styles.mobile : "",
     isTablet ? styles.tablet : "",
+    isLaptop ? styles.laptop : "",
     className,
   ]
     .filter(Boolean)
@@ -142,7 +182,7 @@ export function Menu({
   const footer = (
     <MenuFooter
       socialLinks={[...socialLinks]}
-      hotlineLabel={hotlineLabel}
+      hotlineLabel={resolvedHotlineLabel}
       hotlineValue={hotlineValue}
       hotlineHref={hotlineHref}
       email={email}
@@ -156,12 +196,12 @@ export function Menu({
         <div className={barClass}>
           <div className={styles.row}>
             <a href={homeHref} className={styles.logoLink}>
-              <Logo language={logoLanguage} height={logoHeight} />
+              <Logo language={activeLogoLanguage} height={logoHeight} />
             </a>
 
             {showNav ? (
-              <nav className={styles.nav} aria-label="Головна навігація">
-                {navItems.map(renderNavItem)}
+              <nav className={styles.nav} aria-label={copy.navAria}>
+                {resolvedNavItems.map(renderNavItem)}
               </nav>
             ) : null}
 
@@ -170,10 +210,15 @@ export function Menu({
                 <button
                   type="button"
                   className={styles.lang}
-                  onClick={onLanguageClick}
+                  onClick={handleBarLanguageClick}
+                  aria-label={
+                    activeLogoLanguage === "uk"
+                      ? copy.langSwitchToEn
+                      : copy.langSwitchToUk
+                  }
                 >
                   <IconGlobe20 size={20} aria-hidden />
-                  <span>{languageLabel}</span>
+                  <span>{barLanguageLabel}</span>
                 </button>
               ) : null}
 
@@ -195,7 +240,7 @@ export function Menu({
                     onClick={onMobileMenuToggle}
                     aria-expanded={mobileMenuOpen}
                   >
-                    Меню
+                    {copy.menuToggle}
                   </Button>
                 ) : (
                   <>
@@ -204,6 +249,7 @@ export function Menu({
                       theme="dark"
                       showLeftIcon
                       showRightIcon={false}
+                      className={styles.otherDirectionsButton}
                       leftIcon={
                         otherDirectionsOpen ? (
                           <IconClose size={24} aria-hidden />
@@ -214,13 +260,14 @@ export function Menu({
                       onClick={onOtherDirectionsClick}
                       aria-expanded={otherDirectionsOpen}
                     >
-                      Інші напрями
+                      {copy.otherDirections}
                     </Button>
                     <Button
                       variant="primary"
                       theme="dark"
                       showLeftIcon={false}
                       showRightIcon={false}
+                      className={styles.donateWideButton}
                       onClick={handleDonate}
                     >
                       {resolvedDonateLabel}
@@ -233,6 +280,7 @@ export function Menu({
                     theme="dark"
                     showLeftIcon={false}
                     showRightIcon={false}
+                    className={styles.barDonate}
                     onClick={handleDonate}
                   >
                     {resolvedDonateLabel}
@@ -249,17 +297,19 @@ export function Menu({
             <div
               className={styles.openPanelBody}
               role="region"
-              aria-label="Про фонд"
+              aria-label={copy.aboutPanelAria}
             >
               <div className={styles.aboutPanelLayout}>
                 <div className={styles.cardsRow}>
-                  {aboutPanelLinks.map((link) => (
+                  {resolvedAboutPanelLinks.map((link) => (
                     <LinkCard
                       key={link.href}
                       href={link.href}
                       title={link.title}
                       illustration={link.illustration}
                       size="desktop"
+                      titleSize={isLaptop ? "mobile" : undefined}
+                      className={isLaptop ? linkCardStyles.menuPanelCompact : undefined}
                     />
                   ))}
                 </div>
@@ -275,10 +325,10 @@ export function Menu({
             <div
               className={styles.openPanelBody}
               role="region"
-              aria-label="Інші напрями"
+              aria-label={copy.directionsPanelAria}
             >
               <div className={styles.directionsPanel}>
-                {directionPanelLinks.map((link) => (
+                {resolvedDirectionPanelLinks.map((link) => (
                   <LinkCard
                     key={link.href}
                     href={link.href}
@@ -296,7 +346,7 @@ export function Menu({
           <div
             className={styles.drawer}
             role="dialog"
-            aria-label="Меню сайту"
+            aria-label={copy.drawerAria}
           >
             <div className={styles.drawerMain}>
               {isMobile ? (
@@ -304,15 +354,15 @@ export function Menu({
                   <div
                     className={styles.langSelector}
                     role="group"
-                    aria-label="Мова сайту"
+                    aria-label={copy.langGroupAria}
                   >
                     <IconGlobe20 size={20} aria-hidden />
                     <div className={styles.langOptions}>
                       <button
                         type="button"
-                        className={`${styles.langOption} ${logoLanguage === "en" ? styles.langOptionActive : ""}`}
+                        className={`${styles.langOption} ${activeLogoLanguage === "en" ? styles.langOptionActive : ""}`}
                         onClick={() => handleDrawerLanguageSelect("en")}
-                        aria-current={logoLanguage === "en" ? "true" : undefined}
+                        aria-current={activeLogoLanguage === "en" ? "true" : undefined}
                       >
                         Eng
                       </button>
@@ -321,9 +371,9 @@ export function Menu({
                       </span>
                       <button
                         type="button"
-                        className={`${styles.langOption} ${logoLanguage === "uk" ? styles.langOptionActive : ""}`}
+                        className={`${styles.langOption} ${activeLogoLanguage === "uk" ? styles.langOptionActive : ""}`}
                         onClick={() => handleDrawerLanguageSelect("uk")}
-                        aria-current={logoLanguage === "uk" ? "true" : undefined}
+                        aria-current={activeLogoLanguage === "uk" ? "true" : undefined}
                       >
                         Ukr
                       </button>
@@ -346,7 +396,7 @@ export function Menu({
                 className={
                   isTablet ? styles.drawerNavTablet : styles.drawerNav
                 }
-                aria-label="Навігація"
+                aria-label={copy.drawerNavAria}
               >
                 {drawerNavLinksResolved.map((link) => (
                   <a
@@ -364,9 +414,9 @@ export function Menu({
 
             <div className={styles.panelDivider} aria-hidden />
             <div className={styles.drawerSection}>
-              <p className={styles.drawerSectionTitle}>Інші напрями</p>
+              <p className={styles.drawerSectionTitle}>{copy.drawerSectionTitle}</p>
               <div className={styles.drawerCards}>
-                {directionPanelLinks.map((link) => (
+                {resolvedDirectionPanelLinks.map((link) => (
                   <LinkCard
                     key={link.href}
                     href={link.href}
@@ -387,7 +437,7 @@ export function Menu({
             >
               <MenuFooter
                 socialLinks={[...socialLinks]}
-                hotlineLabel={hotlineLabel}
+                hotlineLabel={resolvedHotlineLabel}
                 hotlineValue={hotlineValue}
                 hotlineHref={hotlineHref}
                 email={email}

@@ -1,155 +1,199 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ProgressBar } from "../../design-system/ProgressBar";
 import {
-  ShowcaseCodeBlock,
-  ShowcaseDoDont,
+  ShowcaseDocBulletList,
+  ShowcaseDocLivePreview,
+  ShowcaseDocPage,
+  ShowcaseDocPropertiesTable,
+  ShowcaseDocRelated,
+  ShowcaseDocSection,
+  ShowcaseDocTokenUsageTable,
+  ShowcaseDocUsageGuidelines,
   ShowcaseMatrix,
-  ShowcasePageLayout,
   ShowcasePreview,
-  ShowcasePropsTable,
-  ShowcaseSection,
   ShowcaseThemeProvider,
-  ShowcaseTokensList,
-  type TokenUsage,
+  type DocPropertyRow,
   useShowcaseTheme,
 } from "../primitives";
+import { useCssVarValues } from "../tokens/useCssVarValues";
 import styles from "./ProgressBarShowcase.module.css";
 
-const QUICK_EXAMPLE = `import { ProgressBar } from '@/design-system/ProgressBar';
+const FIGMA_URL =
+  "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=728-13566";
 
-<ProgressBar value={69} />
-<ProgressBar value={101} variant="done" />`;
+const LIVE_PREVIEW_CODE = `import { ProgressBar } from "@/design-system/ProgressBar";
 
-const PROPS = [
+<ProgressBar value={69} variant="inProgress" />`;
+
+const PROPERTY_ROWS: DocPropertyRow[] = [
   {
-    name: "value",
+    property: "value",
     type: "number",
-    required: true,
-    description: "Відсоток 0–100+; відображається округленим цілим.",
+    typeKind: "TEXT",
+    optionsDefault: "required",
+    description: "Відсоток 0–100+; badge показує округлене ціле.",
   },
   {
-    name: "variant",
+    property: "variant",
     type: '"inProgress" | "done"',
-    description: "Figma Property 1. Без пропа: done при value ≥ 100.",
+    typeKind: "VARIANT",
+    optionsDefault: "auto (done if value ≥ 100)",
+    description: "Figma Property 1: InProgres | Done.",
   },
   {
-    name: "label",
+    property: "label",
     type: "string",
-    description: "aria-label для progressbar (за замовчуванням «Прогрес: N%»).",
+    typeKind: "TEXT",
+    optionsDefault: '"Прогрес: N%"',
+    description: "aria-label для role=progressbar.",
   },
 ];
 
-const TOKENS_USED: TokenUsage[] = [
+const TOKEN_USAGE_SAMPLE = [
+  { element: "Track", property: "background", token: "--pryt-brand-neutral-200" },
+  { element: "Fill", property: "background", token: "--accent-primary" },
   {
-    category: "Surface",
-    name: "--pryt-brand-neutral-200",
-    usedIn: "Track (#d1d1d1, Figma surface/progress-track)",
+    element: "Badge (in progress)",
+    property: "background",
+    token: "--pryt-brand-neutral-500",
   },
-  {
-    category: "Color",
-    name: "--accent-primary",
-    usedIn: "Fill + badge Done (#001e61)",
-  },
-  {
-    category: "Color",
-    name: "--pryt-brand-neutral-500",
-    usedIn: "Badge In progress (#757575, Figma surface/percentage-badge)",
-  },
-  {
-    category: "Text",
-    name: "--text-on-inverse",
-    usedIn: "Відсоток у badge",
-  },
-  {
-    category: "Typography",
-    name: "--font-size-caption",
-    usedIn: "Caption 12px",
-  },
-  {
-    category: "Radius",
-    name: "--radius-medium, --radius-round",
-    usedIn: "Track/fill 8px; badge pill",
-  },
-];
+  { element: "Badge", property: "color", token: "--text-on-inverse" },
+  { element: "Badge", property: "font-size", token: "--font-size-caption" },
+  { element: "Track/fill", property: "border-radius", token: "--radius-medium" },
+  { element: "Badge", property: "border-radius", token: "--radius-round" },
+] as const;
 
 function ProgressBarShowcasePage() {
   const { theme } = useShowcaseTheme();
   const [sliderValue, setSliderValue] = useState(69);
 
+  const usageValues = useCssVarValues(
+    useMemo(() => TOKEN_USAGE_SAMPLE.map((row) => row.token), []),
+  );
+
+  const tokenUsageRows = TOKEN_USAGE_SAMPLE.map((row) => ({
+    element: row.element,
+    property: row.property,
+    token: row.token,
+    value: usageValues[row.token] ?? "—",
+  }));
+
   return (
     <div className={styles.pageRoot} data-showcase-theme={theme}>
-      <ShowcasePageLayout
+      <ShowcaseDocPage
         title="Progress bar"
-        description="Лінійний індикатор збору (Figma 728:13566, Prytula-Responsive): In progress з синім fill і сірим badge; Done — повний track і navy badge (101%)."
+        description="Лінійний індикатор збору: in progress (fill + badge на краю) або done (повний track, navy badge)."
+        status="stable"
+        version="1.0"
+        updatedAt="2026-05-22"
+        figmaUrl={FIGMA_URL}
+        showViewportBar={false}
       >
-
-        <ShowcaseSection title="Quick example">
-          <ShowcaseCodeBlock code={QUICK_EXAMPLE} language="tsx" />
-        </ShowcaseSection>
-
-        <ShowcaseSection
-          title="Variants"
-          description="Figma Property 1: InProgres | Done. Ширина за замовчуванням до 340px (21.25rem), 100% у вужчому контейнері."
+        <ShowcaseDocSection
+          section="live-preview"
+          description="In progress ~69% — типовий стан картки проєкту."
         >
+          <ShowcaseDocLivePreview
+            caption="variant=inProgress · value=69 · max-width 340px."
+            code={LIVE_PREVIEW_CODE}
+            constrainWidth
+          >
+            <ProgressBar value={69} variant="inProgress" />
+          </ShowcaseDocLivePreview>
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection
+          section="variants-gallery"
+          description="Property: variant · інтерактивний slider 0–110."
+        >
+          <p className={styles.galleryCaption}>
+            variant=inProgress (69%) · variant=done (101%)
+          </p>
           <ShowcaseMatrix
             columns={["In progress (69%)", "Done (101%)"]}
             rows={[
               {
                 cells: [
-                  <ProgressBar value={69} variant="inProgress" />,
-                  <ProgressBar value={101} variant="done" />,
+                  <ProgressBar key="ip" value={69} variant="inProgress" />,
+                  <ProgressBar key="d" value={101} variant="done" />,
                 ],
               },
             ]}
           />
-        </ShowcaseSection>
 
-        <ShowcaseSection title="Live preview">
-          <ShowcasePreview>
-          <div className={styles.liveRow}>
-            <label className={styles.rangeMeta} htmlFor="progress-demo-range">
-              value: {Math.round(sliderValue)}
-            </label>
-            <input
-              id="progress-demo-range"
-              className={styles.rangeInput}
-              type="range"
-              min={0}
-              max={110}
-              step={1}
-              value={sliderValue}
-              onChange={(event) =>
-                setSliderValue(Number(event.target.value))
-              }
-            />
-            <ProgressBar value={sliderValue} />
-          </div>
+          <p className={styles.galleryCaption}>Interactive · value from range</p>
+          <ShowcasePreview className={styles.preview}>
+            <div className={styles.liveRow}>
+              <label className={styles.rangeMeta} htmlFor="progress-demo-range">
+                value: {Math.round(sliderValue)}
+              </label>
+              <input
+                id="progress-demo-range"
+                className={styles.rangeInput}
+                type="range"
+                min={0}
+                max={110}
+                step={1}
+                value={sliderValue}
+                onChange={(event) =>
+                  setSliderValue(Number(event.target.value))
+                }
+              />
+              <ProgressBar value={sliderValue} />
+            </div>
           </ShowcasePreview>
-        </ShowcaseSection>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Tokens used">
-          <ShowcaseTokensList tokens={TOKENS_USED} />
-        </ShowcaseSection>
+        <ShowcaseDocSection section="properties">
+          <ShowcaseDocPropertiesTable rows={PROPERTY_ROWS} />
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Props">
-          <ShowcasePropsTable props={PROPS} />
-        </ShowcaseSection>
+        <ShowcaseDocSection section="token-usage">
+          <ShowcaseDocTokenUsageTable rows={tokenUsageRows} />
+          <p className={styles.note}>
+            Track/badge in-progress використовують --pryt-brand-* у CSS
+            компонента (legacy); fill/badge done — --accent-primary. Track
+            height 6px — TODO mapped token.
+          </p>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Guidelines">
-          <ShowcaseDoDont
-            do={[
-              "Передавай value з API (зібрано / ціль × 100).",
-              "variant=\"done\" або value ≥ 100 для завершених зборів.",
-              "Обгортай у .container / card — компонент width: 100%, max 340px.",
-            ]}
-            dont={[
-              "НЕ хардкодуй кольори track/fill/badge.",
-              "НЕ дублюй progress markup у ProjectsPage — імпортуй ProgressBar.",
-              "НЕ зменшуй висоту track без нового токена в Figma.",
+        <ShowcaseDocSection section="accessibility">
+          <ShowcaseDocBulletList
+            items={[
+              "role=progressbar; aria-valuenow/min/max; aria-label з label prop.",
+              "Відсоток у badge — візуально; SR читає aria-valuenow.",
+              "Не покладайтесь лише на колір fill — текст N% у badge.",
             ]}
           />
-        </ShowcaseSection>
-      </ShowcasePageLayout>
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="usage-guidelines">
+          <ShowcaseDocUsageGuidelines
+            do={[
+              "value з API (зібрано / ціль × 100)",
+              'variant="done" або value ≥ 100 для завершених зборів',
+              "Контейнер width 100%, max 340px на картці",
+            ]}
+            dont={[
+              "Не хардкодуй кольори track/fill/badge",
+              "Не дублюй markup у сторінках — імпортуй ProgressBar",
+              "Не зменшуй висоту track без токена в Figma",
+            ]}
+            alternatives={[]}
+          />
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="related-components">
+          <ShowcaseDocRelated
+            related={[]}
+            usedWith={[
+              { label: "Project Card", path: "project-card" },
+              { label: "Main Project", path: "main-project" },
+              { label: "General Widget", path: "general-widget" },
+            ]}
+          />
+        </ShowcaseDocSection>
+      </ShowcaseDocPage>
     </div>
   );
 }

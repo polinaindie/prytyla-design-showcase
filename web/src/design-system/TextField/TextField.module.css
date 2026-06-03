@@ -1,0 +1,152 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xsmall);
+  width: 100%;
+  max-width: 13.125rem; /* Figma 210px — showcase; override via className */
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.root.fullWidth {
+  max-width: none;
+}
+
+.control {
+  display: flex;
+  align-items: stretch;
+  box-sizing: border-box;
+  min-height: var(--size-4xlarge);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  background: var(--surface-default);
+  transition:
+    border-color 0.15s ease,
+    border-width 0.15s ease;
+}
+
+.inner {
+  display: flex;
+  flex: 1;
+  align-items: stretch;
+  gap: var(--space-xsmall);
+  min-width: 0;
+  padding: var(--space-xsmall) var(--space-medium) var(--space-xsmall) 0;
+}
+
+.innerNoTrailing {
+  padding-right: var(--space-medium);
+}
+
+.label {
+  align-self: flex-start;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: var(--font-size-body-small);
+  font-weight: 400;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.iconSlot {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-3xlarge);
+  min-height: var(--size-3xlarge);
+  color: var(--icon-default);
+}
+
+.iconSlotButton {
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-round);
+  background: transparent;
+  color: var(--icon-default);
+  cursor: pointer;
+}
+
+.iconSlotButton:focus-visible {
+  outline: var(--border-width-small) solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.iconSlotButton:disabled {
+  cursor: not-allowed;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: var(--space-xsmall) 0;
+  border: none;
+  background: transparent;
+  color: var(--text-default);
+  font-family: inherit;
+  font-size: var(--font-size-body-medium);
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.input::placeholder {
+  color: var(--text-disabled);
+}
+
+.input:focus {
+  outline: none;
+}
+
+.helper {
+  margin: 0;
+  padding: 0;
+  color: var(--text-secondary);
+  font-size: var(--font-size-caption);
+  font-weight: 400;
+  line-height: 1.33;
+}
+
+/* —— States —— */
+
+@media (hover: hover) {
+  .root:not(.disabled):not(.error):hover .control {
+    border-color: var(--border-strong);
+  }
+
+  .root:not(.disabled):not(.error):hover .label {
+    color: var(--text-default);
+  }
+}
+
+.root:focus-within:not(.disabled):not(.error) .control {
+  border-width: var(--border-width-medium);
+  border-color: var(--border-strong);
+}
+
+.root:focus-within:not(.disabled):not(.error) .label {
+  color: var(--text-default);
+}
+
+.error .control {
+  border-color: var(--feedback-error);
+}
+
+.error .label,
+.error .helper {
+  color: var(--feedback-error);
+}
+
+.error .iconSlot,
+.error .iconSlotButton {
+  color: var(--feedback-error);
+}
+
+.disabled {
+  opacity: 0.38;
+  pointer-events: none;
+}
+
+.disabled .input {
+  cursor: not-allowed;
+}

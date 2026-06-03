@@ -1,5 +1,8 @@
 export { SubPageHero } from "./SubPageHero";
 export type {
+  SubPageHeroAction,
+  SubPageHeroActionAppearance,
+  SubPageHeroActionsProps,
   SubPageHeroBackground,
   SubPageHeroImageProps,
   SubPageHeroLink,

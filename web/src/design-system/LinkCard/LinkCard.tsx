@@ -1,5 +1,5 @@
 import { Illustration3D } from "../Illustration3D";
-import { IconArrowUpRight40 } from "../Icons";
+import { IconArrowRight40 } from "../Icons";
 import type { LinkCardProps } from "./LinkCard.types";
 import styles from "./LinkCard.module.css";
 
@@ -26,7 +26,11 @@ export function LinkCard({
 
   const titleClass = [
     styles.title,
-    resolvedTitleSize === "mobile" ? styles.titleMobile : styles.titleDesktop,
+    resolvedTitleSize === "desktop"
+      ? styles.titleDesktop
+      : size === "desktop"
+        ? styles.titleMobileOpen
+        : styles.titleMobile,
   ]
     .filter(Boolean)
     .join(" ");
@@ -41,7 +45,7 @@ export function LinkCard({
       <span className={styles.body}>
         <span className={titleClass}>{title}</span>
         {size !== "mobile" ? (
-          <IconArrowUpRight40 className={styles.arrow} size={40} aria-hidden />
+          <IconArrowRight40 className={styles.arrow} size={40} aria-hidden />
         ) : null}
       </span>
     </a>

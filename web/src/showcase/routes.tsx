@@ -6,6 +6,14 @@ import { DropdownItemShowcase } from "./components/DropdownItemShowcase";
 import { CurrencySelectShowcase } from "./components/CurrencySelectShowcase";
 import { SortControlShowcase } from "./components/SortControlShowcase";
 import { TabsShowcase } from "./components/TabsShowcase";
+import { TextFieldShowcase } from "./components/TextFieldShowcase";
+import { DepartmentSelectShowcase } from "./components/DepartmentSelectShowcase";
+import { CheckboxShowcase } from "./components/CheckboxShowcase";
+import { MultiDropShowcase } from "./components/MultiDropShowcase";
+import { PartnerCardShowcase } from "./components/PartnerCardShowcase";
+import { MemorandumPartnerCardShowcase } from "./components/MemorandumPartnerCardShowcase";
+import { PartnerLogoShowcase } from "./components/PartnerLogoShowcase";
+import { PartnersShowcase } from "./components/PartnersShowcase";
 import { AccordionShowcase } from "./components/AccordionShowcase";
 import { PaymentInfoShowcase } from "./components/PaymentInfoShowcase";
 import { ChipPaymentTypeShowcase } from "./components/ChipPaymentTypeShowcase";
@@ -122,6 +130,12 @@ export const showcaseRoutes: ShowcaseGroup[] = [
             path: "illustration-3d",
             Component: Illustration3DShowcase,
           },
+          {
+            id: "partner-logo",
+            label: "Partner Logo",
+            path: "partner-logo",
+            Component: PartnerLogoShowcase,
+          },
         ],
       },
     ],
@@ -207,6 +221,18 @@ export const showcaseRoutes: ShowcaseGroup[] = [
         label: "Components",
         pages: [
           {
+            id: "checkbox",
+            label: "Checkbox",
+            path: "checkbox",
+            Component: CheckboxShowcase,
+          },
+          {
+            id: "multi-drop",
+            label: "MultiDrop",
+            path: "multi-drop",
+            Component: MultiDropShowcase,
+          },
+          {
             id: "accordion",
             label: "Accordion",
             path: "accordion",
@@ -242,6 +268,18 @@ export const showcaseRoutes: ShowcaseGroup[] = [
             path: "tabs",
             Component: TabsShowcase,
           },
+          {
+            id: "text-field",
+            label: "Text field",
+            path: "text-field",
+            Component: TextFieldShowcase,
+          },
+          {
+            id: "department-select",
+            label: "Department select",
+            path: "department-select",
+            Component: DepartmentSelectShowcase,
+          },
         ],
       },
       {
@@ -271,6 +309,24 @@ export const showcaseRoutes: ShowcaseGroup[] = [
             label: "Vacancy Card",
             path: "vacancy-card",
             Component: VacancyCardShowcase,
+          },
+          {
+            id: "partner-card",
+            label: "Partner Card",
+            path: "partner-card",
+            Component: PartnerCardShowcase,
+          },
+          {
+            id: "memorandum-partner-card",
+            label: "Memorandum Partner Card",
+            path: "memorandum-partner-card",
+            Component: MemorandumPartnerCardShowcase,
+          },
+          {
+            id: "partners",
+            label: "Partners",
+            path: "partners",
+            Component: PartnersShowcase,
           },
         ],
       },

@@ -1,0 +1,42 @@
+.root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 16.1625rem; /* Figma 258.6px */
+  height: 9.3125rem; /* Figma 149px */
+  padding: var(--space-medium);
+  border: var(--border-width-small) solid var(--text-disabled);
+  border-radius: var(--radius-large);
+  background: transparent;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+@media (hover: hover) {
+  .root:hover {
+    border-color: var(--text-secondary);
+    background: var(--surface-default);
+  }
+}
+
+.root:focus-visible {
+  outline: var(--border-width-small) solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.logo {
+  display: block;
+  width: 100%;
+  max-width: 14.1875rem; /* Figma ~227px */
+  height: auto;
+  max-height: 7.4375rem; /* Figma ~119px */
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+}

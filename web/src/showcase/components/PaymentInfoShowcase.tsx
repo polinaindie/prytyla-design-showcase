@@ -1,66 +1,34 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   PaymentInfo,
   PaymentInfoGroup,
   type PaymentInfoField,
 } from "../../design-system/PaymentInfo";
 import {
-  ShowcaseCodeBlock,
-  ShowcaseDoDont,
-  ShowcasePageLayout,
+  ShowcaseDocBulletList,
+  ShowcaseDocLivePreview,
+  ShowcaseDocPage,
+  ShowcaseDocPropertiesTable,
+  ShowcaseDocRelated,
+  ShowcaseDocSection,
+  ShowcaseDocTokenUsageTable,
+  ShowcaseDocUsageGuidelines,
   ShowcasePreview,
-  ShowcasePropsTable,
-  ShowcaseSection,
   ShowcaseThemeProvider,
-  ShowcaseTokensList,
-  type TokenUsage,
+  type DocPropertyRow,
   useShowcaseTheme,
 } from "../primitives";
+import { useCssVarValues } from "../tokens/useCssVarValues";
 import styles from "./PaymentInfoShowcase.module.css";
 
-const QUICK_EXAMPLE = `import { PaymentInfo, PaymentInfoGroup } from '@/design-system/PaymentInfo';
+const FIGMA_URL =
+  "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=284-13904";
+
+const LIVE_PREVIEW_CODE = `import { PaymentInfo, PaymentInfoGroup } from "@/design-system/PaymentInfo";
 
 <PaymentInfoGroup>
-  <PaymentInfo
-    id="card"
-    paymentType="card"
-    title="Переказ на карту"
-    fields={[
-      { label: "Одержувач", value: "Сергій Притула", copyValue: "Сергій Притула" },
-    ]}
-  />
+  <PaymentInfo id="card" paymentType="card" title="…" fields={fields} />
 </PaymentInfoGroup>`;
-
-const ITEM_PROPS = [
-  { name: "paymentType", type: "PaymentInfoType", required: true, description: "card | bank | paypal | crypto | swift" },
-  { name: "title", type: "ReactNode", required: true, description: "Заголовок способу оплати." },
-  { name: "fields", type: "PaymentInfoField[]", required: true, description: "Рядки label + value + copy." },
-  { name: "description", type: "ReactNode", description: "Вступ (ShowDescription=Yes)." },
-  { name: "id", type: "string", description: "Id для PaymentInfoGroup." },
-];
-
-const GROUP_PROPS = [
-  {
-    name: "allowMultiple",
-    type: "boolean",
-    default: "false",
-    description: "Кілька відкритих блоків.",
-  },
-];
-
-const TOKENS_USED: TokenUsage[] = [
-  { category: "Surface", name: "--surface-default", usedIn: "Контейнер Default" },
-  { category: "Surface", name: "--surface-subtle-neutral", usedIn: "Hover фон + icon tile" },
-  { category: "Surface", name: "--accent-highlight", usedIn: "Hover icon tile (#fff5c5)" },
-  {
-    category: "Surface",
-    name: "--pryt-brand-orange-300",
-    usedIn: "Opened header (#ffda46)",
-  },
-  { category: "Surface", name: "--surface-inverse", usedIn: "Opened icon tile" },
-  { category: "Text", name: "--text-muted / --text-default", usedIn: "Label / value" },
-  { category: "Layout", name: "--radius-large, --space-medium", usedIn: "Card radius 12px, padding" },
-];
 
 const CARD_FIELDS: PaymentInfoField[] = [
   { label: "Одержувач", value: "Сергій Притула", copyValue: "Сергій Притула" },
@@ -135,6 +103,107 @@ const CRYPTO_FIELDS: PaymentInfoField[] = [
   { label: "Tether USDT (TRC20)", value: "T…", copyValue: "Texample" },
 ];
 
+const PROPERTY_ROWS: DocPropertyRow[] = [
+  {
+    property: "PaymentInfo.paymentType",
+    type: "card | bank | paypal | crypto | swift",
+    typeKind: "VARIANT",
+    optionsDefault: "required",
+    description: "Іконка типу оплати.",
+  },
+  {
+    property: "PaymentInfo.title",
+    type: "ReactNode",
+    typeKind: "TEXT",
+    optionsDefault: "required",
+    description: "Заголовок способу оплати.",
+  },
+  {
+    property: "PaymentInfo.fields",
+    type: "PaymentInfoField[]",
+    typeKind: "INSTANCE_SWAP",
+    optionsDefault: "—",
+    description: "Рядки label + value + copy (+ currency на IBAN).",
+  },
+  {
+    property: "PaymentInfo.description",
+    type: "ReactNode",
+    typeKind: "TEXT",
+    optionsDefault: "—",
+    description: "Вступ (ShowDescription=Yes).",
+  },
+  {
+    property: "PaymentInfoGroup.allowMultiple",
+    type: "boolean",
+    typeKind: "BOOLEAN",
+    optionsDefault: "false",
+    description: "Кілька відкритих блоків.",
+  },
+];
+
+const TOKEN_USAGE_SAMPLE = [
+  { element: "Item", property: "background", token: "--surface-default" },
+  { element: "Hover", property: "background", token: "--surface-subtle-neutral" },
+  { element: "Open header", property: "background", token: "--pryt-brand-orange-300" },
+  { element: "Hover icon", property: "background", token: "--accent-highlight" },
+  { element: "Open icon", property: "background", token: "--bg-inverse-strong" },
+  { element: "Label", property: "color", token: "--text-muted" },
+  { element: "Value", property: "color", token: "--text-default" },
+  { element: "Item", property: "border-radius", token: "--radius-large" },
+] as const;
+
+function PaymentMethodsList({ swiftFields }: { swiftFields: PaymentInfoField[] }) {
+  return (
+    <PaymentInfoGroup>
+      <PaymentInfo
+        id="card"
+        paymentType="card"
+        title="Переказ на карту"
+        fields={CARD_FIELDS}
+      />
+      <PaymentInfo
+        id="bank"
+        paymentType="bank"
+        title={
+          <>
+            Банківський переказ
+            <br />
+            по Україні
+          </>
+        }
+        description={BANK_DESCRIPTION}
+        fields={BANK_FIELDS}
+      />
+      <PaymentInfo id="paypal" paymentType="paypal" title="Paypal" fields={PAYPAL_FIELDS} />
+      <PaymentInfo
+        id="crypto"
+        paymentType="crypto"
+        title="Crypto"
+        description={CRYPTO_DESCRIPTION}
+        fields={CRYPTO_FIELDS}
+      />
+      <PaymentInfo
+        id="swift"
+        paymentType="swift"
+        title={
+          <>
+            SWIFT перекази
+            <br />
+            з-за кордону
+          </>
+        }
+        description={
+          <p>
+            Для міжнародного переказу використовуйте реквізити SWIFT та оберіть
+            валюту для IBAN.
+          </p>
+        }
+        fields={swiftFields}
+      />
+    </PaymentInfoGroup>
+  );
+}
+
 function PaymentInfoShowcasePage() {
   const { theme } = useShowcaseTheme();
   const [swiftCurrency, setSwiftCurrency] = useState("USD");
@@ -158,105 +227,119 @@ function PaymentInfoShowcasePage() {
     { label: "SWIFT code", value: "PBANUA2X", copyValue: "PBANUA2X" },
   ];
 
+  const usageValues = useCssVarValues(
+    useMemo(() => TOKEN_USAGE_SAMPLE.map((row) => row.token), []),
+  );
+
+  const tokenUsageRows = TOKEN_USAGE_SAMPLE.map((row) => ({
+    element: row.element,
+    property: row.property,
+    token: row.token,
+    value: usageValues[row.token] ?? "—",
+  }));
+
   return (
     <div className={styles.pageRoot} data-showcase-theme={theme}>
-      <ShowcasePageLayout
+      <ShowcaseDocPage
         title="Payment Info"
-        description="Спосіб оплати / FAQ-акордеон (Figma PaymentInfo 284:13904): Default, Hover, OnClick з реквізитами та copy."
+        description="Спосіб оплати: Default, Hover, Opened з реквізитами, copy і CurrencySelect у SWIFT."
+        status="stable"
+        version="1.0"
+        updatedAt="2026-05-22"
+        figmaUrl={FIGMA_URL}
+        showViewportBar={false}
       >
+        <ShowcaseDocSection
+          section="live-preview"
+          description="Група способів оплати — один відкритий (max-width 293px)."
+        >
+          <ShowcaseDocLivePreview
+            caption="PaymentInfoGroup · 5 payment types · click to expand."
+            code={LIVE_PREVIEW_CODE}
+            constrainWidth
+          >
+            <ShowcasePreview className={styles.list}>
+              <PaymentMethodsList swiftFields={swiftFields} />
+            </ShowcasePreview>
+          </ShowcaseDocLivePreview>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Quick example">
-          <ShowcaseCodeBlock code={QUICK_EXAMPLE} language="tsx" />
-        </ShowcaseSection>
-
-        <ShowcaseSection
-          title="Payment methods"
-          description="Один відкритий блок. Hover — сірий фон; OnClick — жовтий header."
+        <ShowcaseDocSection
+          section="variants-gallery"
+          description="Усі типи: card, bank, paypal, crypto, swift."
         >
           <ShowcasePreview className={styles.list}>
-            <PaymentInfoGroup>
-              <PaymentInfo
-                id="card"
-                paymentType="card"
-                title="Переказ на карту"
-                fields={CARD_FIELDS}
-              />
-              <PaymentInfo
-                id="bank"
-                paymentType="bank"
-                title={
-                  <>
-                    Банківський переказ
-                    <br />
-                    по Україні
-                  </>
-                }
-                description={BANK_DESCRIPTION}
-                fields={BANK_FIELDS}
-              />
-              <PaymentInfo
-                id="paypal"
-                paymentType="paypal"
-                title="Paypal"
-                fields={PAYPAL_FIELDS}
-              />
-              <PaymentInfo
-                id="crypto"
-                paymentType="crypto"
-                title="Crypto"
-                description={CRYPTO_DESCRIPTION}
-                fields={CRYPTO_FIELDS}
-              />
-              <PaymentInfo
-                id="swift"
-                paymentType="swift"
-                title={
-                  <>
-                    SWIFT перекази
-                    <br />
-                    з-за кордону
-                  </>
-                }
-                description={
-                  <p>
-                    Для міжнародного переказу використовуйте реквізити SWIFT та
-                    оберіть валюту для IBAN.
-                  </p>
-                }
-                fields={swiftFields}
-              />
-            </PaymentInfoGroup>
+            <PaymentMethodsList swiftFields={swiftFields} />
           </ShowcasePreview>
-          <p className={styles.hint}>max-width 293px (Figma desktop)</p>
-        </ShowcaseSection>
+          <p className={styles.hint}>
+            Hover — сірий фон; Opened — header --pryt-brand-orange-300
+          </p>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Tokens used">
-          <ShowcaseTokensList tokens={TOKENS_USED} />
-        </ShowcaseSection>
+        <ShowcaseDocSection section="properties">
+          <ShowcaseDocPropertiesTable rows={PROPERTY_ROWS} />
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="PaymentInfoGroup props">
-          <ShowcasePropsTable props={GROUP_PROPS} />
-        </ShowcaseSection>
+        <ShowcaseDocSection section="token-usage">
+          <ShowcaseDocTokenUsageTable rows={tokenUsageRows} />
+          <p className={styles.note}>
+            Open header --pryt-brand-orange-300 — brand token; icon tile radius
+            10px — TODO token.
+          </p>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="PaymentInfo props">
-          <ShowcasePropsTable props={ITEM_PROPS} />
-        </ShowcaseSection>
-
-        <ShowcaseSection title="Guidelines">
-          <ShowcaseDoDont
-            do={[
-              "Обгортай у PaymentInfoGroup — один відкритий спосіб оплати.",
-              "copyValue на полях з IBAN, email, номерами карт.",
-              "currency на полі IBAN для SWIFT (CurrencySelect).",
-            ]}
-            dont={[
-              "НЕ плутай з Accordion FAQ — інший вигляд і поля.",
-              "НЕ додавай state props — Default / Hover / OnClick через CSS і open.",
-              "НЕ хардкодуй жовтий header — --pryt-brand-orange-300.",
+        <ShowcaseDocSection section="states-interactions">
+          <ShowcaseDocBulletList
+            items={[
+              "Default / Hover / Open — CSS + open state у PaymentInfoGroup.",
+              "Copy на полях — PaymentInfoCopyButton + copyValue.",
+              "SWIFT IBAN — CurrencySelect у field.currency.",
+              "Header — button з aria-expanded; panel hidden коли closed.",
             ]}
           />
-        </ShowcaseSection>
-      </ShowcasePageLayout>
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="accessibility">
+          <ShowcaseDocBulletList
+            items={[
+              "Кожен спосіб — button header + region panel.",
+              "Copy buttons — aria-label «Скопіювати …».",
+              "Посилання в value (PayPal email) — нативні <a>.",
+            ]}
+          />
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="usage-guidelines">
+          <ShowcaseDocUsageGuidelines
+            do={[
+              "PaymentInfoGroup — один відкритий спосіб (за замовч.)",
+              "copyValue на IBAN, email, номерах",
+              "currency на IBAN для SWIFT",
+            ]}
+            dont={[
+              "Не плутай з Accordion FAQ",
+              "Не додавай state props — open через групу",
+              "Не хардкодуй жовтий header",
+            ]}
+            alternatives={[
+              { label: "Accordion", path: "accordion", note: "FAQ текст" },
+            ]}
+          />
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="related-components">
+          <ShowcaseDocRelated
+            related={[
+              { label: "Currency Select", path: "currency-select" },
+              { label: "Accordion", path: "accordion" },
+            ]}
+            usedWith={[
+              { label: "General Widget", path: "general-widget" },
+              { label: "Chip Payment Type", path: "chip-payment-type" },
+            ]}
+          />
+        </ShowcaseDocSection>
+      </ShowcaseDocPage>
     </div>
   );
 }

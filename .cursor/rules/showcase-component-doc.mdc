@@ -1,0 +1,107 @@
+---
+description: Structure of Prytula showcase **component** doc pages (ShowcaseDocPage). Use when migrating or creating pages under web/src/showcase/components/. Foundations use a shorter checklist — see showcaseDoc.ts SHOWCASE_DOC_FOUNDATION_SECTIONS.
+globs:
+  - "web/src/showcase/components/**"
+  - "web/src/showcase/primitives/**"
+alwaysApply: false
+---
+
+# Showcase component page structure
+
+Use **`ShowcaseDocPage`** + **`ShowcaseDocSection`** (`section` = canonical id from `showcaseDoc.ts`).  
+Do **not** use raw `ShowcasePageLayout` for new component docs.
+
+Import primitives from `../primitives`. Tokens: follow `prytula-design-system.mdc`.
+
+---
+
+## Page chrome (always)
+
+| # | Block | Implementation |
+|---|--------|----------------|
+| 1 | **Page header** | `ShowcaseDocPage` — `title` (H1), `description` (one line), optional `status`, `updatedAt`, `version` |
+| 14 | **Page footer** | `ShowcaseDocPage` — `figmaUrl` (CS node), optional `feedbackHref` |
+
+`showViewportBar={true}` only when preview width matters (rare for simple components).
+
+---
+
+## Live preview viewport switch (default for component pages)
+
+When the user asks for **«переключалось по розмірам»** (or the component is responsive / section-scale), wire **`ShowcaseDocLivePreview`** with the **five named breakpoints**:
+
+| Toggle label   | Frame width |
+|----------------|-------------|
+| Wide desktop   | 1920px      |
+| Desktop        | 1440px      |
+| Laptop         | 1200px      |
+| Tablet         | 768px       |
+| Mobile         | 375px       |
+
+**Implementation** (see `PartnersShowcase.tsx`, `ProjectCardShowcase.tsx`, `PartnerCardShowcase.tsx`):
+
+```tsx
+const [previewViewportId, setPreviewViewportId] =
+  useState<ShowcaseViewportId>("1440");
+const previewWidth = showcaseViewportWidth(previewViewportId);
+
+<ShowcaseDocLivePreview
+  caption={`${showcaseViewportName(previewViewportId)} (${previewWidth}px) · …`}
+  previewViewport
+  previewViewportId={previewViewportId}
+  onPreviewViewportChange={setPreviewViewportId}
+  flush
+>
+  …
+</ShowcaseDocLivePreview>
+```
+
+- Import `ShowcaseViewportId`, `showcaseViewportName`, `showcaseViewportWidth` from `../primitives`.
+- If the component has Figma **Size** (`desktop` | `tablet` | `mobile`), also pass `size={figmaComponentSizeForViewportWidth(previewWidth)}`.
+- Do **not** nest extra `ShowcasePreview` inside `ShowcaseDocLivePreview` — the live preview primitive already wraps the frame.
+- Smaller components (Link Card, …) may use `previewSizeOptions` (Desktop / Tablet / Mobile) **in addition** when Figma Size matters; section-scale pages use viewport switch only.
+
+---
+
+## Body sections (top → bottom)
+
+| # | Section id | Title (default) | Primitives / notes |
+|---|------------|-----------------|---------------------|
+| 2 | `live-preview` | Live preview | `ShowcaseDocLivePreview` — neutral `ShowcasePreview`, hero variant, **caption**, optional `code` + Copy code |
+| 3 | `variants-gallery` | Variants gallery | `ShowcaseMatrix` and/or grid of instances; **full variant name** in caption; group by Figma property (rows/cols) |
+| 4 | `anatomy` | Anatomy | `ShowcaseDocAnatomy` — diagram + labeled parts (full genre only) |
+| 5 | `properties` | Properties | `ShowcaseDocPropertiesTable` — Property \| Type \| Options/default \| Description; `typeKind`: VARIANT / TEXT / BOOLEAN / INSTANCE_SWAP |
+| 6 | `token-usage` | Token usage | `ShowcaseDocTokenUsageTable` — Element \| Property \| Token \| Value (resolved) |
+| 7 | `states-interactions` | States & interactions | Separate row per state if not covered in gallery (full genre) |
+| 8 | `sizes` | Sizes | Side-by-side S/M/L or breakpoints (full genre, if applicable) |
+| 9 | `accessibility` | Accessibility | `ShowcaseDocBulletList` — keyboard, ARIA, hit target, focus, SR |
+| 10 | `usage-guidelines` | Usage guidelines | `ShowcaseDocUsageGuidelines` — do / don't / **alternatives** (links) |
+| 11 | `examples` | Examples / recipes | Product context blocks + code (full genre) |
+| 12 | `related-components` | Related components | `ShowcaseDocRelated` — siblings + «used with» |
+| 13 | `changelog` | Changelog | `ShowcaseDocChangelog` — optional |
+
+---
+
+## Genre checklists (`showcaseDoc.ts`)
+
+**Minimal** (Checkbox, Radiobutton, Badge, …): sections **2, 3, 5, 6, 9, 10, 12**  
+→ `SHOWCASE_DOC_MINIMAL_SECTIONS`
+
+**Full** (Donation Widget, Menu, TextField, …): sections **2–12**, optional **13**  
+→ `SHOWCASE_DOC_FULL_SECTIONS`
+
+Helper: `getShowcaseDocSections("component-minimal" | "component-full")`.
+
+---
+
+## Section order
+
+Render sections in the **same order** as the checklist. Do not reorder (e.g. props before gallery on minimal pages).
+
+Foundations (Colors, Spacing, …): **no** live preview; start at `variants-gallery`; see `SHOWCASE_DOC_FOUNDATION_SECTIONS`.
+
+---
+
+## Reference implementation
+
+`web/src/showcase/components/CheckboxShowcase.tsx` — minimal genre.

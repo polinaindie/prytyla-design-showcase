@@ -129,7 +129,6 @@
 
 .logo {
   display: block;
-  color: var(--text-on-inverse);
 }
 
 .socialRow {
@@ -312,13 +311,23 @@
   gap: var(--space-3xsmall);
 }
 
+/* Figma tablet 451:3842 — nav + contacts in one row, gap 32px */
 .tablet .midRow {
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3xlarge);
+}
+
+.tablet .nav {
+  flex: 0 0 auto;
   gap: var(--space-3xlarge);
 }
 
 .tablet .contacts {
-  flex: 1 1 auto;
+  flex: 1 1 0;
   min-width: 0;
+  max-width: 19rem;
 }
 
 /* ——— Mobile ——— */
@@ -365,13 +374,18 @@
 }
 
 .mobile .nav {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-start;
   justify-content: space-between;
   width: 100%;
-  gap: var(--space-3xlarge);
+  gap: 0;
 }
 
 .mobile .navCol {
-  width: 8.625rem;
+  flex: 0 0 auto;
+  width: fit-content;
+  gap: var(--space-large);
 }
 
 .mobile .contacts {

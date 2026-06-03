@@ -1,20 +1,30 @@
 import type { PropsConfig } from "./showcase.types";
-import styles from "./ShowcasePropsTable.module.css";
+import styles from "./showcaseTables.module.css";
 
 type ShowcasePropsTableProps = {
   props: PropsConfig[];
 };
 
 export function ShowcasePropsTable({ props }: ShowcasePropsTableProps) {
+  if (props.length === 0) return null;
+
   return (
-    <div className={styles.tableWrap}>
+    <div className={styles.wrap}>
       <table className={styles.table}>
         <thead>
           <tr>
-            <th className={styles.th}>Name</th>
-            <th className={styles.th}>Type</th>
-            <th className={styles.th}>Default</th>
-            <th className={styles.th}>Description</th>
+            <th className={styles.th} scope="col">
+              Property
+            </th>
+            <th className={styles.th} scope="col">
+              Type
+            </th>
+            <th className={styles.th} scope="col">
+              Default
+            </th>
+            <th className={styles.th} scope="col">
+              Description
+            </th>
           </tr>
         </thead>
         <tbody>

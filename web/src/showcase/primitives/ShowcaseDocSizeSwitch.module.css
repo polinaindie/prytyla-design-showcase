@@ -1,0 +1,32 @@
+.root {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xsmall);
+}
+
+.button {
+  padding: var(--space-xsmall) var(--space-medium);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-round);
+  background: var(--surface-default);
+  font-size: var(--font-size-caption);
+  font-weight: 500;
+  color: var(--text-default);
+  cursor: pointer;
+}
+
+.button:hover {
+  background: var(--surface-subtle-neutral);
+  border-color: var(--border-strong);
+}
+
+.buttonActive {
+  border-color: var(--border-strong);
+  background: var(--surface-subtle-accent);
+  font-weight: 600;
+}
+
+.button:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: var(--space-3xsmall);
+}

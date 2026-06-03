@@ -112,10 +112,11 @@
 }
 
 .description a {
-  font-size: var(--font-size-body-small);
+  font-size: inherit;
   font-weight: 700;
-  line-height: 1.5;
+  line-height: inherit;
   text-decoration: underline;
+  text-underline-position: from-font;
   color: inherit;
 }
 
@@ -151,8 +152,22 @@
   display: none;
 }
 
-.root[data-variant="image"] .copy {
-  gap: var(--space-large);
+.root[data-variant="image"] .copy,
+.root[data-variant="actions"] .copy {
+  gap: var(--space-3xlarge);
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-small);
+  width: 100%;
+}
+
+.actionLink {
+  width: 100%;
+  text-decoration: none;
 }
 
 /* ——— Tablet (768px+ container) ——— */
@@ -175,7 +190,8 @@
   }
 
   /* Figma image tablet 997:26225 — pl 32, pr 0, py 8, gap 24, h 320 */
-  .root[data-variant="image"] {
+  .root[data-variant="image"],
+  .root[data-variant="actions"] {
     min-height: 20rem;
     padding-block: var(--space-small);
     padding-inline-start: var(--space-3xlarge);
@@ -229,11 +245,13 @@
     justify-content: stretch;
   }
 
-  .root[data-variant="image"] .imageTitleRow {
+  .root[data-variant="image"] .imageTitleRow,
+  .root[data-variant="actions"] .imageTitleRow {
     display: block;
   }
 
-  .root[data-variant="image"] .imageTitleRow .title {
+  .root[data-variant="image"] .imageTitleRow .title,
+  .root[data-variant="actions"] .imageTitleRow .title {
     width: 100%;
   }
 
@@ -241,7 +259,8 @@
     display: none;
   }
 
-  .root[data-variant="image"] .illustrationAside {
+  .root[data-variant="image"] .illustrationAside,
+  .root[data-variant="actions"] .illustrationAside {
     display: flex;
     flex: 0 0 auto;
     align-items: flex-end;
@@ -252,9 +271,21 @@
     height: 10.625rem;
   }
 
-  .root[data-variant="image"] .illustrationAside > span {
+  .root[data-variant="image"] .illustrationAside > span,
+  .root[data-variant="actions"] .illustrationAside > span {
     width: 100% !important;
     height: 100% !important;
+  }
+
+  .actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    width: auto;
+  }
+
+  .actionLink {
+    width: auto;
   }
 }
 
@@ -267,7 +298,8 @@
   }
 
   /* Figma image desktop 473:12529 — pl 32, pr 0, py 8, gap 64, h 320 */
-  .root[data-variant="image"] {
+  .root[data-variant="image"],
+  .root[data-variant="actions"] {
     flex-flow: row nowrap;
     align-items: center;
     justify-content: flex-start;
@@ -282,13 +314,15 @@
     max-width: 56rem;
   }
 
-  .root[data-variant="image"] .copy {
+  .root[data-variant="image"] .copy,
+  .root[data-variant="actions"] .copy {
     flex: 1 1 0;
     min-width: 0;
     max-width: 56rem;
   }
 
-  .root[data-variant="image"] .illustrationAside {
+  .root[data-variant="image"] .illustrationAside,
+  .root[data-variant="actions"] .illustrationAside {
     flex: 0 0 auto;
     align-items: flex-end;
     justify-content: flex-end;
@@ -338,7 +372,8 @@
 
 /* Showcase: layout tied to viewport toggle (Figma), not squeezed main column width */
 
-:global([data-showcase-typography="desktop"]) .shell .root[data-variant="image"] {
+:global([data-showcase-typography="desktop"]) .shell .root[data-variant="image"],
+:global([data-showcase-typography="desktop"]) .shell .root[data-variant="actions"] {
   flex-flow: row nowrap;
   align-items: center;
   justify-content: flex-start;
@@ -348,13 +383,15 @@
   padding-inline-end: var(--space-none);
 }
 
-:global([data-showcase-typography="desktop"]) .shell .root[data-variant="image"] .copy {
+:global([data-showcase-typography="desktop"]) .shell .root[data-variant="image"] .copy,
+:global([data-showcase-typography="desktop"]) .shell .root[data-variant="actions"] .copy {
   flex: 1 1 0;
   min-width: 0;
   max-width: 56rem;
 }
 
-:global([data-showcase-typography="desktop"]) .shell .root[data-variant="image"] .illustrationAside {
+:global([data-showcase-typography="desktop"]) .shell .root[data-variant="image"] .illustrationAside,
+:global([data-showcase-typography="desktop"]) .shell .root[data-variant="actions"] .illustrationAside {
   display: flex;
   flex: 0 0 auto;
   align-items: flex-end;
@@ -365,7 +402,8 @@
   height: 18.875rem;
 }
 
-:global([data-showcase-typography="tablet"]) .shell .root[data-variant="image"] {
+:global([data-showcase-typography="tablet"]) .shell .root[data-variant="image"],
+:global([data-showcase-typography="tablet"]) .shell .root[data-variant="actions"] {
   flex-flow: row wrap;
   align-items: center;
   justify-content: flex-start;
@@ -375,7 +413,8 @@
   padding-inline-end: var(--space-none);
 }
 
-:global([data-showcase-typography="tablet"]) .shell .root[data-variant="image"] .illustrationAside {
+:global([data-showcase-typography="tablet"]) .shell .root[data-variant="image"] .illustrationAside,
+:global([data-showcase-typography="tablet"]) .shell .root[data-variant="actions"] .illustrationAside {
   display: flex;
   flex: 0 0 auto;
   align-items: flex-end;

@@ -20,33 +20,53 @@
   background: var(--surface-inverse);
   color: var(--text-inverse);
   font-size: var(--font-size-body-small);
-  border: var(--border-width-small) solid var(--border-default);
+  font-weight: 600;
 }
 
-.previewHeading {
+.searchCount {
+  margin: 0 0 var(--space-medium);
+  font-size: var(--font-size-body-small);
+  color: var(--text-secondary);
+}
+
+.pageRoot[data-showcase-theme="dark"] .searchCount {
+  color: var(--text-on-inverse-muted);
+}
+
+.searchEmpty {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: var(--font-size-heading-h1);
-  line-height: 1.1;
+  font-size: var(--font-size-body-small);
+  color: var(--text-muted);
+}
+
+.pageRoot[data-showcase-theme="dark"] .searchEmpty {
+  color: var(--text-on-inverse-muted);
+}
+
+.collectionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
+  padding-bottom: var(--space-xlarge);
+  margin-bottom: var(--space-xsmall);
+  border-bottom: var(--border-width-small) solid var(--border-default);
+}
+
+.pageRoot[data-showcase-theme="dark"] .collectionBlock {
+  border-color: var(--border-on-inverse);
+}
+
+.collectionTitle {
+  margin: 0;
+  font-size: var(--font-size-body-medium);
+  font-weight: 700;
   color: inherit;
 }
 
-.previewCaption {
-  margin: 0;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: var(--font-size-caption);
-  color: var(--text-muted);
-}
-
-.previewBody {
-  margin: 0;
-  font-size: var(--font-size-body-medium);
-  line-height: 1.5;
-  color: var(--text-muted);
-}
-
-.pageRoot[data-showcase-theme="dark"] .previewBody {
-  color: var(--text-on-inverse-muted);
+.typographyFrame {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-large);
 }
 
 .familyBlock {
@@ -130,13 +150,35 @@
   color: var(--text-inverse);
 }
 
-.breakpointHint {
-  margin: 0 0 var(--space-medium);
+.slotToolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-small);
+}
+
+.slotCaption {
+  margin: 0;
   font-size: var(--font-size-body-small);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text-default);
+}
+
+.viewportInline {
+  margin-bottom: 0;
+  margin-left: auto;
+}
+
+.slotHint {
+  margin: 0;
+  font-size: var(--font-size-body-small);
+  line-height: 1.45;
   color: var(--text-muted);
 }
 
-.pageRoot[data-showcase-theme="dark"] .breakpointHint {
+.pageRoot[data-showcase-theme="dark"] .slotHint {
   color: var(--text-on-inverse-muted);
 }
 

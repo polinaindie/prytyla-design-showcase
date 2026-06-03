@@ -1,7 +1,4 @@
 .pageRoot {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2xlarge);
   color: var(--text-default);
 }
 
@@ -9,19 +6,22 @@
   color: var(--text-inverse);
 }
 
-.previewDesktop {
-  max-width: 28rem;
+.hint {
+  margin: var(--space-small) 0 0;
+  font-size: var(--font-size-caption);
+  color: var(--text-muted);
 }
 
-.previewTablet {
-  max-width: 50.6875rem;
+.note {
+  margin: var(--space-medium) 0 0;
+  font-size: var(--font-size-body-small);
+  color: var(--text-muted);
+}
+
+.livePreviewSlot {
+  width: 100%;
 }
 
 .previewFeatured {
-  width: 100%;
   max-width: 87rem;
-}
-
-.previewFeaturedMobile {
-  max-width: 21.4375rem;
 }

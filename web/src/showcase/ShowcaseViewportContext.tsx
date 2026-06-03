@@ -12,14 +12,22 @@ import {
 } from "./showcaseTypography";
 
 export const SHOWCASE_VIEWPORTS = [
-  { id: "1920", label: "1920", width: 1920 },
-  { id: "1440", label: "1440", width: 1440 },
-  { id: "1200", label: "1200", width: 1200 },
-  { id: "768", label: "768", width: 768 },
-  { id: "375", label: "375", width: 375 },
+  { id: "1920", label: "1920", name: "Wide desktop", width: 1920 },
+  { id: "1440", label: "1440", name: "Desktop", width: 1440 },
+  { id: "1200", label: "1200", name: "Laptop", width: 1200 },
+  { id: "768", label: "768", name: "Tablet", width: 768 },
+  { id: "375", label: "375", name: "Mobile", width: 375 },
 ] as const;
 
 export type ShowcaseViewportId = (typeof SHOWCASE_VIEWPORTS)[number]["id"];
+
+export function showcaseViewportWidth(id: ShowcaseViewportId): number {
+  return SHOWCASE_VIEWPORTS.find((item) => item.id === id)?.width ?? 1440;
+}
+
+export function showcaseViewportName(id: ShowcaseViewportId): string {
+  return SHOWCASE_VIEWPORTS.find((item) => item.id === id)?.name ?? id;
+}
 
 type ShowcaseViewportContextValue = {
   viewportId: ShowcaseViewportId;

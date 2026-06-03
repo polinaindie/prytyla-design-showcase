@@ -1,6 +1,10 @@
 import { useState } from "react";
 import styles from "./NewsPage.module.css";
 import { assets } from "../../figmaAssets";
+import {
+  POWERED_BY_LOGOS_ALT,
+  SUBPAGE_HERO_POWERED_BY_SRC,
+} from "../../design-system/shared/poweredByLogos";
 
 const FILTER_TAGS = [
   "Усі новини",
@@ -376,10 +380,13 @@ export function NewsPage() {
             <p className={styles.footerCopyright}>
               © {new Date().getFullYear()} Благодійний фонд Сергія Притули. Всі права захищені.
             </p>
-            <div className={styles.credit}>
-              <img src={assets.newsCreditPartner} alt="" height={20} />
-              <img src={assets.newsCreditOpenTech} alt="Open Tech" height={20} />
-            </div>
+            <img
+              className={styles.credit}
+              src={SUBPAGE_HERO_POWERED_BY_SRC}
+              alt={POWERED_BY_LOGOS_ALT}
+              decoding="async"
+              draggable={false}
+            />
           </div>
         </div>
       </main>

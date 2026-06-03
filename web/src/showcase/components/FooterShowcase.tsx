@@ -1,18 +1,26 @@
+import { useMemo, useState } from "react";
 import { Footer } from "../../design-system/Footer";
 import type { FooterSocialLink } from "../../design-system/Footer";
 import {
-  ShowcaseCodeBlock,
-  ShowcaseDoDont,
-  ShowcaseMatrix,
-  ShowcasePageLayout,
-  ShowcasePreview,
-  ShowcasePropsTable,
-  ShowcaseSection,
+  ShowcaseDocBulletList,
+  ShowcaseDocLivePreview,
+  ShowcaseDocPage,
+  ShowcaseDocPropertiesTable,
+  ShowcaseDocRelated,
+  ShowcaseDocSection,
+  ShowcaseDocTokenUsageTable,
+  ShowcaseDocUsageGuidelines,
   ShowcaseThemeProvider,
-  ShowcaseTokensList,
-  type TokenUsage,
+  type DocPropertyRow,
   useShowcaseTheme,
 } from "../primitives";
+import { figmaComponentSizeForViewportWidth } from "../showcaseTypography";
+import {
+  showcaseViewportName,
+  showcaseViewportWidth,
+  type ShowcaseViewportId,
+} from "../ShowcaseViewportContext";
+import { useCssVarValues } from "../tokens/useCssVarValues";
 import styles from "./FooterShowcase.module.css";
 
 const FIGMA_URL =
@@ -27,100 +35,197 @@ const SOCIAL_LINKS: FooterSocialLink[] = [
   { network: "youtube", href: "https://youtube.com/", label: "YouTube" },
 ];
 
-const QUICK_EXAMPLE = `import { Footer } from '@/design-system/Footer';
+const LIVE_PREVIEW_CODE = `import { Footer } from "@/design-system/Footer";
 
 <Footer
-  size="desktop"
   donateHref="/donate/military"
-  socialLinks={[
-    { network: "facebook", href: "https://facebook.com/", label: "Facebook" },
-    // …
-  ]}
+  socialLinks={socialLinks}
 />`;
-
-const PROPS = [
-  { name: "donateHref", type: "string", required: true, description: "CTA «Допомогти війську»." },
-  { name: "size", type: '"desktop" | "tablet" | "mobile"', default: '"desktop"', description: "Figma Size." },
-  { name: "ctaTitle", type: "string", description: "Заголовок CTA (H3)." },
-  { name: "ctaDescription", type: "string", description: "Текст CTA; \\n для переносу." },
-  { name: "navColumn1", type: "FooterNavLink[]", description: "Ліва колонка nav (дефолт — Figma)." },
-  { name: "navColumn2", type: "FooterNavLink[]", description: "Права колонка nav." },
-  { name: "socialLinks", type: "FooterSocialLink[]", required: true, description: "6 соцмереж." },
-  { name: "hotlineHref", type: "string", description: "tel:…" },
-  { name: "emailHref", type: "string", description: "mailto:…" },
-  { name: "poweredBySrc", type: "string", description: "SVG/PNG powered by." },
-];
-
-const TOKENS_USED: TokenUsage[] = [
-  { category: "Surface", name: "--bg-subtle-info, --accent-primary, --surface-action", usedIn: "CTA фон / dark card / кнопка" },
-  { category: "Surface", name: "--surface-contact-subtle, --surface-contact-subtle-hover", usedIn: "Social chips" },
-  { category: "Text", name: "--text-default, --text-on-inverse, --text-secondary", usedIn: "CTA / footer / copyright" },
-  { category: "Typography", name: "--font-size-heading-h3, --font-size-body-large, --font-size-body-medium", usedIn: "Type scale" },
-  { category: "Layout", name: "--space-6xlarge, --space-5xlarge, --space-3xlarge, --radius-xlarge", usedIn: "Spacing, radius" },
-  { category: "Brand", name: "IconBrandVprytyl", usedIn: "Логотип у dark card" },
-];
 
 const DEMO = {
   donateHref: "/donate/military",
   socialLinks: SOCIAL_LINKS,
 } as const;
 
+const PROPERTY_ROWS: DocPropertyRow[] = [
+  {
+    property: "donateHref",
+    type: "string",
+    typeKind: "TEXT",
+    optionsDefault: "required",
+    description: "CTA «Допомогти війську».",
+  },
+  {
+    property: "size",
+    type: '"desktop" | "tablet" | "mobile"',
+    typeKind: "VARIANT",
+    optionsDefault: '"desktop"',
+    description: "Figma Size breakpoints.",
+  },
+  {
+    property: "ctaTitle / ctaDescription",
+    type: "string",
+    typeKind: "TEXT",
+    optionsDefault: "Figma defaults",
+    description: "Заголовок H3 + текст CTA; \\n у description.",
+  },
+  {
+    property: "navColumn1 / navColumn2",
+    type: "FooterNavLink[]",
+    typeKind: "INSTANCE_SWAP",
+    optionsDefault: "footerDefaults",
+    description: "Дві колонки навігації.",
+  },
+  {
+    property: "socialLinks",
+    type: "FooterSocialLink[]",
+    typeKind: "INSTANCE_SWAP",
+    optionsDefault: "required",
+    description: "6 соцмереж з aria-label.",
+  },
+  {
+    property: "hotlineHref / emailHref",
+    type: "string",
+    typeKind: "TEXT",
+    optionsDefault: "tel: / mailto:",
+    description: "Контакти в dark card.",
+  },
+  {
+    property: "logoLanguage / logoHref",
+    type: "uk | en / string",
+    typeKind: "VARIANT",
+    optionsDefault: '"uk"',
+    description: "Logo variant=inverse у dark card.",
+  },
+  {
+    property: "poweredBySrc / poweredByAlt",
+    type: "string",
+    typeKind: "INSTANCE_SWAP",
+    optionsDefault: "default asset",
+    description: "Powered by блок.",
+  },
+];
+
+const TOKEN_USAGE_SAMPLE = [
+  { element: "Root", property: "background", token: "--bg-subtle-info" },
+  { element: "Dark card", property: "background", token: "--accent-primary" },
+  { element: "CTA button", property: "background", token: "--surface-action" },
+  { element: "CTA button", property: "color", token: "--text-on-action" },
+  { element: "Dark card", property: "color", token: "--text-on-inverse" },
+  { element: "CTA title", property: "font-size", token: "--font-size-heading-h3" },
+  { element: "Body", property: "font-size", token: "--font-size-body-medium" },
+  { element: "Social chip", property: "background", token: "--surface-contact-subtle" },
+  { element: "Social hover", property: "background", token: "--surface-contact-subtle-hover" },
+  { element: "Dark card", property: "border-radius", token: "--radius-xlarge" },
+] as const;
+
 function FooterShowcasePage() {
   const { theme } = useShowcaseTheme();
+  const [previewViewportId, setPreviewViewportId] =
+    useState<ShowcaseViewportId>("1440");
+
+  const previewWidth = showcaseViewportWidth(previewViewportId);
+  const footerSize = figmaComponentSizeForViewportWidth(previewWidth);
+
+  const usageValues = useCssVarValues(
+    useMemo(() => TOKEN_USAGE_SAMPLE.map((row) => row.token), []),
+  );
+
+  const tokenUsageRows = TOKEN_USAGE_SAMPLE.map((row) => ({
+    element: row.element,
+    property: row.property,
+    token: row.token,
+    value: usageValues[row.token] ?? "—",
+  }));
 
   return (
     <div className={styles.pageRoot} data-showcase-theme={theme}>
-      <ShowcasePageLayout
+      <ShowcaseDocPage
         title="Footer"
-        description={`Підвал з CTA та темною карткою (Figma 451:3822). Figma: ${FIGMA_URL}`}
+        description="Підвал сайту: CTA «Допомогти війську», темна картка з nav, контактами та соцмережами."
+        status="stable"
+        version="1.0"
+        updatedAt="2026-05-22"
+        figmaUrl={FIGMA_URL}
+        showViewportBar={false}
       >
-        <ShowcaseSection title="Quick example">
-          <ShowcaseCodeBlock code={QUICK_EXAMPLE} language="tsx" />
-        </ShowcaseSection>
+        <ShowcaseDocSection
+          section="live-preview"
+          description="Ширина frame — перемикай у toolbar; Figma size підбирається автоматично."
+        >
+          <ShowcaseDocLivePreview
+            caption={`${showcaseViewportName(previewViewportId)} (${previewWidth}px) · size=${footerSize} · default nav + 6 social links.`}
+            code={LIVE_PREVIEW_CODE}
+            previewViewport
+            previewViewportId={previewViewportId}
+            onPreviewViewportChange={setPreviewViewportId}
+            flush
+          >
+            <Footer {...DEMO} size={footerSize} />
+          </ShowcaseDocLivePreview>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Live preview" description="Desktop, width 100%.">
-          <ShowcasePreview className={styles.preview}>
-            <Footer {...DEMO} />
-          </ShowcasePreview>
-        </ShowcaseSection>
+        <ShowcaseDocSection section="properties">
+          <ShowcaseDocPropertiesTable rows={PROPERTY_ROWS} />
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Sizes">
-          <ShowcaseMatrix
-            columns={["Desktop", "Tablet", "Mobile"]}
-            rows={[
-              {
-                cells: [
-                  <Footer key="d" {...DEMO} size="desktop" />,
-                  <Footer key="t" {...DEMO} size="tablet" />,
-                  <Footer key="m" {...DEMO} size="mobile" />,
-                ],
-              },
+        <ShowcaseDocSection section="token-usage">
+          <ShowcaseDocTokenUsageTable rows={tokenUsageRows} />
+          <p className={styles.note}>
+            Logo — <code>variant=&quot;inverse&quot;</code> height 32px; не brand
+            token у CSS, inline height у компоненті Logo.
+          </p>
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="states-interactions">
+          <ShowcaseDocBulletList
+            items={[
+              "Social chips — hover --surface-contact-subtle-hover.",
+              "CTA button — hover --surface-action-hover.",
+              "Nav links — underline on hover у dark card.",
+              "Без controlled state props.",
             ]}
           />
-        </ShowcaseSection>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Tokens used">
-          <ShowcaseTokensList tokens={TOKENS_USED} />
-        </ShowcaseSection>
+        <ShowcaseDocSection section="accessibility">
+          <ShowcaseDocBulletList
+            items={[
+              "<footer> з семантичною структурою nav.",
+              "socialLinks — aria-label + target=_blank rel=noopener.",
+              "hotlineHref tel: · emailHref mailto:.",
+              "Logo з alt за logoLanguage.",
+            ]}
+          />
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Guidelines">
-          <ShowcaseDoDont
+        <ShowcaseDocSection section="usage-guidelines">
+          <ShowcaseDocUsageGuidelines
             do={[
               "donateHref — сторінка донату для CTA",
-              "socialLinks — 6 мереж з aria-label; target=_blank на соцмережах",
-              "Існуючі alias: --bg-subtle-info, --accent-primary, --surface-contact-subtle",
+              "socialLinks — 6 мереж з label",
+              "Імпортуй Footer з design-system на product pages",
             ]}
             dont={[
-              "Не дублюйте footer у product pages — імпортуйте Footer з design-system",
-              "Не замінюйте IconBrandVprytyl текстом",
+              "Не дублюйте розмітку footer вручну",
+              "Не хардкодьте nav — передай navColumn* або defaults",
+              "Не звичайний Logo — inverse на dark card",
             ]}
+            alternatives={[{ label: "Menu", path: "menu", note: "header nav" }]}
           />
-        </ShowcaseSection>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Props API">
-          <ShowcasePropsTable props={PROPS} />
-        </ShowcaseSection>
-      </ShowcasePageLayout>
+        <ShowcaseDocSection section="related-components">
+          <ShowcaseDocRelated
+            related={[
+              { label: "Logo", path: "logo" },
+              { label: "Button", path: "button" },
+              { label: "Menu", path: "menu" },
+            ]}
+            usedWith={[{ label: "Sub Page Hero", path: "sub-page-hero" }]}
+          />
+        </ShowcaseDocSection>
+      </ShowcaseDocPage>
     </div>
   );
 }

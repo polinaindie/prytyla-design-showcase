@@ -9,23 +9,66 @@
   color: var(--text-inverse);
 }
 
-.viewportBanner {
+.viewportNote {
   margin: 0;
-  padding: var(--space-medium) var(--space-large);
-  border: var(--border-width-small) solid var(--border-default);
-  border-radius: var(--radius-medium);
-  background: var(--surface-subtle-info);
   font-size: var(--font-size-body-small);
-  line-height: 1.4;
+  color: var(--text-muted);
 }
 
-.pageRoot[data-showcase-theme="dark"] .viewportBanner {
-  background: var(--surface-subtle-neutral);
+.pageRoot[data-showcase-theme="dark"] .viewportNote {
+  color: var(--text-on-inverse-muted);
+}
+
+.viewportNote strong {
+  font-weight: 600;
+  color: var(--text-default);
+}
+
+.pageRoot[data-showcase-theme="dark"] .viewportNote strong {
+  color: var(--text-inverse);
+}
+
+.galleryPart {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
+}
+
+.galleryPart + .galleryPart {
+  padding-top: var(--space-large);
+  border-top: var(--border-width-small) solid var(--border-default);
+}
+
+.pageRoot[data-showcase-theme="dark"] .galleryPart + .galleryPart {
   border-color: var(--border-on-inverse);
 }
 
-.viewportBanner strong {
+.gallerySubheading {
+  margin: 0;
+  font-size: var(--font-size-body-small);
   font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.pageRoot[data-showcase-theme="dark"] .gallerySubheading {
+  color: var(--text-on-inverse-muted);
+}
+
+.galleryLead {
+  margin: calc(-1 * var(--space-xsmall)) 0 0;
+  font-size: var(--font-size-body-small);
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.pageRoot[data-showcase-theme="dark"] .galleryLead {
+  color: var(--text-on-inverse-muted);
+}
+
+.propertiesStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-large);
 }
 
 .tableWrap {
@@ -33,8 +76,7 @@
 }
 
 .table {
-  width: 100%;
-  border-collapse: collapse;
+border-collapse: collapse;
   font-size: var(--font-size-body-small);
 }
 
@@ -86,8 +128,7 @@
 }
 
 .overlayViewport {
-  width: 100%;
-  min-width: 0;
+min-width: 0;
 }
 
 .overlayGridInner {
@@ -151,8 +192,7 @@
 
 .frame {
   box-sizing: border-box;
-  width: 100%;
-  padding: var(--space-medium);
+padding: var(--space-medium);
   border: var(--border-width-small) dashed var(--border-default);
   border-radius: var(--radius-medium);
   background: var(--surface-default);

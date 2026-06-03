@@ -1,142 +1,137 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Badge } from "../../design-system/Badge";
 import {
-  ShowcaseCodeBlock,
-  ShowcaseDoDont,
+  ShowcaseDocBulletList,
+  ShowcaseDocLivePreview,
+  ShowcaseDocPage,
+  ShowcaseDocPropertiesTable,
+  ShowcaseDocRelated,
+  ShowcaseDocSection,
+  ShowcaseDocTokenUsageTable,
+  ShowcaseDocUsageGuidelines,
   ShowcaseMatrix,
-  ShowcasePageLayout,
   ShowcasePreview,
-  ShowcasePropsTable,
-  ShowcaseSection,
   ShowcaseThemeProvider,
-  ShowcaseTokensList,
-  type TokenUsage,
+  type DocPropertyRow,
   useShowcaseTheme,
 } from "../primitives";
+import { useCssVarValues } from "../tokens/useCssVarValues";
 import styles from "./BadgeShowcase.module.css";
+
+const FIGMA_URL =
+  "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=1318-54208";
+
+const LIVE_PREVIEW_CODE = `import { Badge } from "@/design-system/Badge";
+
+<Badge onDismiss={() => {}} dismissLabel="Зняти «Освіта»">
+  Освіта
+</Badge>`;
 
 const DEMO_TAGS = ["Щелепи", "Освіта", "Медицина"];
 
 const NESTED_TAG = {
   label: "Літакового типу",
-  path: [
-    "Ударні БПЛА",
-    "FPV-перехоплювачі",
-    "Літакового типу",
-  ] as const,
+  path: ["Ударні БПЛА", "FPV-перехоплювачі", "Літакового типу"] as const,
 };
 
-const QUICK_EXAMPLE = `import { Badge } from '@/design-system/Badge';
-
-<Badge
-  categoryPath={['Ударні БПЛА', 'FPV-перехоплювачі', 'Літакового типу']}
-  onDismiss={() => removeTag(id)}
->
-  Літакового типу
-</Badge>`;
-
-const PROPS = [
+const PROPERTY_ROWS: DocPropertyRow[] = [
   {
-    name: "children",
+    property: "children",
     type: "ReactNode",
-    required: true,
-    description: "Текст тега.",
+    typeKind: "TEXT",
+    optionsDefault: "—",
+    description: "Текст тега (label).",
   },
   {
-    name: "onDismiss",
+    property: "onDismiss",
     type: "() => void",
-    required: true,
-    description: "Клік по × знімає тег.",
+    typeKind: "BOOLEAN",
+    optionsDefault: "required",
+    description: "Обробник кліку по ×; без нього dismiss не рендериться логічно.",
   },
   {
-    name: "dismissLabel",
+    property: "dismissLabel",
     type: "string",
-    default: '"Зняти"',
+    typeKind: "TEXT",
+    optionsDefault: '"Зняти"',
     description: "aria-label для кнопки закриття.",
   },
   {
-    name: "categoryPath",
+    property: "categoryPath",
     type: "readonly string[]",
+    typeKind: "INSTANCE_SWAP",
+    optionsDefault: "—",
     description:
-      "Ланцюжок категорій для tooltip при hover (Figma 1318:54224). Без пропа — звичайний тег.",
+      "Breadcrumb для tooltip при hover (Figma Tooltip 1318:54224). Без пропа — плоский тег.",
   },
 ];
 
-const TOKENS_USED: TokenUsage[] = [
-  {
-    category: "Surface",
-    name: "--surface-badge",
-    usedIn: "Фон тега",
-  },
-  {
-    category: "Surface",
-    name: "--surface-subtle-neutral",
-    usedIn: "Hover фону",
-  },
-  { category: "Color", name: "--text-default", usedIn: "Label + іконка" },
-  {
-    category: "Typography",
-    name: "--font-size-body-small",
-    usedIn: "Body small 14px",
-  },
-  {
-    category: "Layout",
-    name: "--space-small, --space-medium, --space-xsmall",
-    usedIn: "Gap, padding",
-  },
-  { category: "Radius", name: "--radius-medium", usedIn: "8px кути" },
-  { category: "Size", name: "--size-xlarge", usedIn: "min-height 32px" },
-  {
-    category: "Surface",
-    name: "--surface-default, --border-default",
-    usedIn: "Tooltip panel",
-  },
-];
+const TOKEN_USAGE_SAMPLE = [
+  { element: "Root", property: "background", token: "--surface-badge" },
+  { element: "Root", property: "background (hover)", token: "--surface-subtle-neutral" },
+  { element: "Root", property: "color", token: "--text-default" },
+  { element: "Root", property: "font-size", token: "--font-size-body-small" },
+  { element: "Root", property: "min-height", token: "--size-xlarge" },
+  { element: "Root", property: "padding", token: "--space-xsmall, --space-medium" },
+  { element: "Root", property: "gap", token: "--space-small" },
+  { element: "Root", property: "border-radius", token: "--radius-medium" },
+  { element: "Dismiss", property: "focus outline", token: "--border-focus" },
+  { element: "Tooltip", property: "background", token: "--surface-default" },
+  { element: "Tooltip", property: "border", token: "--border-default" },
+] as const;
 
 function BadgeShowcasePage() {
   const { theme } = useShowcaseTheme();
   const [tags, setTags] = useState(DEMO_TAGS);
-  const [copied, setCopied] = useState(false);
+
+  const usageValues = useCssVarValues(
+    useMemo(() => TOKEN_USAGE_SAMPLE.map((row) => row.token), []),
+  );
+
+  const tokenUsageRows = TOKEN_USAGE_SAMPLE.map((row) => ({
+    element: row.element,
+    property: row.property,
+    token: row.token,
+    value: usageValues[row.token] ?? "—",
+  }));
 
   const removeTag = (label: string) => {
     setTags((prev) => prev.filter((t) => t !== label));
   };
 
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(QUICK_EXAMPLE);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
-    } catch {
-      /* ignore */
-    }
-  };
-
   return (
     <div className={styles.pageRoot} data-showcase-theme={theme}>
-      {copied ? (
-        <p className={styles.toast} aria-live="polite">
-          Copied!
-        </p>
-      ) : null}
-
-      <ShowcasePageLayout
+      <ShowcaseDocPage
         title="Badge"
-        description="Тег із закриттям. Figma Badge (1318:54208). Окремо від Filter Chip — пізніше можна уніфікувати патерни."
+        description="Тег із закриттям (×); опційно tooltip з ієрархією категорій при hover."
+        status="stable"
+        version="1.0"
+        updatedAt="2026-05-22"
+        figmaUrl={FIGMA_URL}
+        showViewportBar={false}
       >
-
-        <ShowcaseSection title="Quick example">
-          <ShowcaseCodeBlock code={QUICK_EXAMPLE} />
-          <button type="button" onClick={handleCopy}>
-            Copy snippet
-          </button>
-        </ShowcaseSection>
-
-        <ShowcaseSection
-          title="Категорія з ієрархією"
-          description="Наведи на тег — tooltip з шляхом вищих категорій (Figma Tooltip 1318:54224)."
+        <ShowcaseDocSection
+          section="live-preview"
+          description="Базовий плоский тег без categoryPath."
         >
-          <ShowcasePreview>
+          <ShowcaseDocLivePreview
+            caption="Default · flat tag · dismiss enabled."
+            code={LIVE_PREVIEW_CODE}
+          >
+            <Badge onDismiss={() => {}} dismissLabel="Зняти «Освіта»">
+              Освіта
+            </Badge>
+          </ShowcaseDocLivePreview>
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection
+          section="variants-gallery"
+          description="Плоский тег, ієрархія з tooltip, інтерактивний ряд."
+        >
+          <p className={styles.galleryCaption}>
+            With categoryPath · hover для breadcrumb tooltip
+          </p>
+          <ShowcasePreview className={styles.preview}>
             <Badge
               categoryPath={NESTED_TAG.path}
               onDismiss={() => {}}
@@ -145,12 +140,10 @@ function BadgeShowcasePage() {
               {NESTED_TAG.label}
             </Badge>
           </ShowcasePreview>
-        </ShowcaseSection>
 
-        <ShowcaseSection
-          title="Інтерактивно"
-          description="Плоскі теги без categoryPath. × знімає пункт."
-        >
+          <p className={styles.galleryCaption}>
+            Flat tags · interactive dismiss · Property: categoryPath=unset
+          </p>
           {tags.length > 0 ? (
             <>
               <ShowcaseMatrix
@@ -172,36 +165,79 @@ function BadgeShowcasePage() {
               <p className={styles.hint}>Активні: {tags.join(", ")}</p>
             </>
           ) : (
-            <ShowcasePreview>
+            <ShowcasePreview className={styles.preview}>
               <p className={styles.hint}>
                 Усі теги знято — перезавантаж сторінку showcase.
               </p>
             </ShowcasePreview>
           )}
-        </ShowcaseSection>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Props">
-          <ShowcasePropsTable props={PROPS} />
-        </ShowcaseSection>
+        <ShowcaseDocSection
+          section="properties"
+          description="React API Badge + пов’язаний Tooltip."
+        >
+          <ShowcaseDocPropertiesTable rows={PROPERTY_ROWS} />
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Tokens">
-          <ShowcaseTokensList tokens={TOKENS_USED} />
-        </ShowcaseSection>
+        <ShowcaseDocSection
+          section="token-usage"
+          description="Токени Badge.module.css та Tooltip (categoryPath)."
+        >
+          <ShowcaseDocTokenUsageTable rows={tokenUsageRows} />
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Guidelines">
-          <ShowcaseDoDont
-            do={[
-              "Фон — --surface-badge; hover — CSS на .root.",
-              "categoryPath — повний breadcrumb; tooltip з’являється при hover на обгортку.",
-              "Закриття лише через onDismiss на ×.",
-            ]}
-            dont={[
-              "Не плутай з Filter Chip — там вибір фільтра без ×.",
-              "Не додавай Figma Status=Hover як проп.",
+        <ShowcaseDocSection section="accessibility">
+          <ShowcaseDocBulletList
+            items={[
+              "Dismiss — нативна <button type=\"button\"> з aria-label={dismissLabel}.",
+              "Іконка × — aria-hidden; текст тега в .label.",
+              "categoryPath: aria-describedby зв’язує тег з tooltip id.",
+              "Tooltip видимий при :hover / :focus-within на .wrapper.",
+              "Focus dismiss: outline --border-focus на :focus-visible.",
             ]}
           />
-        </ShowcaseSection>
-      </ShowcasePageLayout>
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="usage-guidelines">
+          <ShowcaseDocUsageGuidelines
+            do={[
+              "onDismiss обов’язковий — × завжди доступний для зняття тега",
+              "categoryPath — повний шлях категорій для breadcrumb у tooltip",
+              "Фон --surface-badge; hover через CSS на .root",
+            ]}
+            dont={[
+              "Не плутай з Filter Chip — там вибір фільтра без ×",
+              "Не додавай Figma Status=Hover як окремий проп",
+              "Не хардкодуй 32px — min-height через --size-xlarge",
+            ]}
+            alternatives={[
+              {
+                label: "Filter Chip",
+                path: "filter-chip",
+                note: "фільтр без dismiss",
+              },
+              { label: "Tag", path: "tag", note: "статичний лейбл без ×" },
+            ]}
+          />
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection
+          section="related-components"
+          description="Споріднені та типові комбінації."
+        >
+          <ShowcaseDocRelated
+            related={[
+              { label: "Tag", path: "tag" },
+              { label: "Filter Chip", path: "filter-chip" },
+            ]}
+            usedWith={[
+              { label: "DepartmentSelect", path: "department-select" },
+              { label: "MultiDrop", path: "multi-drop" },
+            ]}
+          />
+        </ShowcaseDocSection>
+      </ShowcaseDocPage>
     </div>
   );
 }

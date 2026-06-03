@@ -1,0 +1,102 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 19.6875rem; /* Figma 315px */
+  overflow: hidden;
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  background: var(--surface-default);
+  font-family: Inter, system-ui, sans-serif;
+  /* Figma shadow — TODO: shadow token when added to design system */
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
+  padding: var(--space-medium) var(--space-medium) 0;
+}
+
+.search {
+  max-width: none;
+  width: 100%;
+}
+
+.divider {
+  flex-shrink: 0;
+  height: 1px;
+  margin: 0;
+  border: none;
+  background: var(--border-default);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  max-height: 17rem; /* Figma 272px */
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.listWithFooter {
+  max-height: 14rem; /* Figma 224px */
+}
+
+.footer {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.footerInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-medium);
+  padding: var(--space-large) var(--space-medium);
+}
+
+.selectedCount {
+  padding: 0 var(--space-xsmall);
+  color: var(--text-secondary);
+  font-size: var(--font-size-body-small);
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.clearButton {
+  margin: 0;
+  padding: 0 var(--space-xsmall);
+  border: none;
+  background: transparent;
+  color: var(--text-default);
+  font-family: inherit;
+  font-size: var(--font-size-body-small);
+  font-weight: 400;
+  line-height: 1.4;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.clearButton:hover {
+  color: var(--text-default);
+}
+
+.clearButton:focus-visible {
+  outline: var(--border-width-small) solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.clearButton:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}

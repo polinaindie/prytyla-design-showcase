@@ -1,19 +1,21 @@
-/* Figma Media 292:6431 — Desktop: Hover; Mobile: OnClick; touch — :active (no :hover) */
+/* Figma Media 292:6431 — flip card: front = Default, back = Hover / OnClick */
 
 .root {
+  --media-flip-duration: 0.55s;
+
   position: relative;
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
+  display: block;
+  width: 100%;
+  padding: 0;
+  overflow: hidden;
   text-decoration: none;
   color: var(--text-on-inverse);
   cursor: pointer;
-  border: var(--border-width-small) solid var(--border-dark);
-  border-radius: var(--radius-large);
-  background: var(--surface-section-dark);
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease;
+  border: none;
+  background: transparent;
+  perspective: 56rem;
+  perspective-origin: center center;
 }
 
 .root:focus-visible {
@@ -21,20 +23,31 @@
   outline-offset: 2px;
 }
 
-.content {
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  min-height: 0;
+.flipInner {
+  position: relative;
   width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform var(--media-flip-duration) cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.expandedBlock {
-  display: none;
+.faceFront,
+.faceBack {
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-  min-width: 0;
+  backface-visibility: hidden;
+  border: var(--border-width-small) solid var(--border-dark);
+  border-radius: var(--radius-large);
+  background: var(--surface-section-dark);
+}
+
+.faceBack {
+  transform: rotateY(180deg);
+  border-color: var(--border-muted);
+  background: var(--surface-card-dark-elevated);
 }
 
 .logoDefault {
@@ -64,6 +77,15 @@
   user-select: none;
 }
 
+.backContent {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 0;
+  width: 100%;
+}
+
 .divider {
   flex-shrink: 0;
   width: 100%;
@@ -75,13 +97,13 @@
   margin: 0;
   width: 100%;
   min-width: 0;
-  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .arrowDesktop,
 .arrowMobile {
   position: absolute;
-  display: none;
+  display: flex;
   flex-shrink: 0;
   color: var(--text-on-inverse);
 }
@@ -89,14 +111,19 @@
 /* ——— Desktop 330×257.5 (Figma 292:6443 / 292:6432) ——— */
 
 .desktop {
-  width: 100%;
   max-width: 20.625rem;
   min-height: 16.09375rem;
-  /* Figma spacing/card-medium 25px */
-  padding: 1.5625rem;
 }
 
-/* Figma default Thumbnail 280×207 */
+.desktop .flipInner {
+  min-height: 16.09375rem;
+}
+
+.desktop .faceFront,
+.desktop .faceBack {
+  padding: 1.5625rem; /* Figma spacing/card-medium 25px */
+}
+
 .desktop .logoDefault {
   height: 12.9375rem;
 }
@@ -108,7 +135,15 @@
   object-position: center;
 }
 
-/* Figma hover Thumbnail row 46px, image 201×25 */
+.desktop .faceBack {
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.desktop .backContent {
+  gap: var(--space-large);
+}
+
 .desktop .logoCompact {
   height: 2.875rem;
 }
@@ -120,80 +155,45 @@
 }
 
 .desktop .title {
-  font-family: var(--font-display);
-  font-size: var(--font-size-heading-h4);
+  /* Figma Headers/H4 — Mariupol Bold 24px, lh 1.2 */
+  font-family: Mariupol, var(--font-display), system-ui, sans-serif;
+  font-size: var(--pryt-brand-font-size-600);
   font-weight: 700;
   line-height: 1.2;
+  letter-spacing: 0;
 }
 
-/* Figma Icon/32 at left 273px, top 31px (card 330px) */
 .desktop .arrowDesktop {
   top: 1.9375rem;
   left: 17.0625rem;
 }
 
-@media (hover: hover) {
-  .desktop:hover,
-  .desktop:focus-visible {
-    align-items: flex-start;
-    justify-content: space-between;
-    padding: 1.5625rem;
-    border-color: var(--border-muted);
-    background: var(--surface-card-dark-elevated);
-  }
-
-  .desktop:hover .expandedBlock,
-  .desktop:focus-visible .expandedBlock {
-    display: flex;
-    gap: var(--space-large);
-  }
-
-  .desktop:hover .logoDefault,
-  .desktop:focus-visible .logoDefault {
-    display: none;
-  }
-
-  .desktop:hover .arrowDesktop,
-  .desktop:focus-visible .arrowDesktop {
-    display: flex;
-  }
-}
-
-@media (hover: none) {
-  .desktop:active,
-  .desktop:focus-visible {
-    align-items: flex-start;
-    justify-content: space-between;
-    padding: 1.5625rem;
-    border-color: var(--border-muted);
-    background: var(--surface-card-dark-elevated);
-  }
-
-  .desktop:active .expandedBlock,
-  .desktop:focus-visible .expandedBlock {
-    display: flex;
-    gap: var(--space-large);
-  }
-
-  .desktop:active .logoDefault,
-  .desktop:focus-visible .logoDefault {
-    display: none;
-  }
-
-  .desktop:active .arrowDesktop,
-  .desktop:focus-visible .arrowDesktop {
-    display: flex;
-  }
-}
-
 /* ——— Mobile 156×122 (Figma 1162:29230 / 1162:29128 OnClick) ——— */
 
 .mobile {
-  width: 100%;
   max-width: 9.75rem;
   height: 7.625rem;
-  padding: 1.5625rem;
+}
+
+.mobile .flipInner {
+  height: 7.625rem;
+}
+
+.mobile .faceFront,
+.mobile .faceBack {
   border-radius: var(--radius-medium);
+}
+
+.mobile .faceFront {
+  padding: 1.5625rem;
+}
+
+.mobile .faceBack {
+  align-items: flex-start;
+  justify-content: space-between;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0.5625rem; /* Figma spacing/gap-sm 9px */
 }
 
 .mobile .logoDefault {
@@ -207,7 +207,15 @@
   object-position: center;
 }
 
-/* Figma OnClick Thumbnail 18px row, image 71×9 */
+.mobile .backContent {
+  flex: 1 1 auto;
+  gap: var(--space-small);
+  min-width: 0;
+  min-height: 0;
+  width: calc(100% - 0.625rem);
+  overflow: hidden;
+}
+
 .mobile .logoCompact {
   height: 1.125rem;
 }
@@ -218,96 +226,51 @@
   max-width: none;
 }
 
-/* Figma body-small 14px semibold */
 .mobile .title {
-  font-family: Inter, system-ui, sans-serif;
-  font-size: var(--font-size-body-small);
-  font-weight: 600;
-  line-height: 1.43;
-}
-
-/* Figma Icon/10 at left 133px, top 14px (card 156px) */
-.mobile .arrowMobile {
-  top: 0.875rem;
-  left: 8.3125rem;
-}
-
-.mobile:active,
-.mobile:focus-visible {
-  align-items: flex-start;
-  justify-content: space-between;
-  /* Figma spacing/gap-sm 9px */
-  padding: 0.5625rem;
-  border-color: var(--border-muted);
-  background: var(--surface-card-dark-elevated);
-}
-
-.mobile:active .expandedBlock,
-.mobile:focus-visible .expandedBlock {
-  display: flex;
+  /* Figma Others/Button text — Inter Semi Bold 14px, lh 1.43, max 69px */
   flex: 1 1 auto;
-  gap: var(--space-small);
   min-height: 0;
-  width: calc(100% - 0.625rem);
-}
-
-.mobile:active .logoDefault,
-.mobile:focus-visible .logoDefault {
-  display: none;
-}
-
-.mobile:active .title,
-.mobile:focus-visible .title {
-  height: 4.3125rem;
+  max-height: 4.3125rem;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 4;
+  line-clamp: 4;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-small);
+  font-weight: 600;
+  line-height: 1.43;
+  letter-spacing: 0;
 }
 
-.mobile:active .arrowMobile,
-.mobile:focus-visible .arrowMobile {
-  display: flex;
+.mobile .arrowMobile {
+  top: 0.875rem;
+  left: 8.3125rem;
 }
+
+/* ——— Flip on hover / focus / touch ——— */
 
 @media (hover: hover) {
-  .mobile:hover {
-    align-items: flex-start;
-    justify-content: space-between;
-    padding: 0.5625rem;
-    border-color: var(--border-muted);
-    background: var(--surface-card-dark-elevated);
+  .root:hover .flipInner,
+  .root:focus-visible .flipInner {
+    transform: rotateY(180deg);
   }
+}
 
-  .mobile:hover .expandedBlock {
-    display: flex;
-    flex: 1 1 auto;
-    gap: var(--space-small);
-    min-height: 0;
-    width: calc(100% - 0.625rem);
-  }
-
-  .mobile:hover .logoDefault {
-    display: none;
-  }
-
-  .mobile:hover .title {
-    height: 4.3125rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4;
-  }
-
-  .mobile:hover .arrowMobile {
-    display: flex;
+@media (hover: none) {
+  .root:active .flipInner,
+  .root:focus-visible .flipInner {
+    transform: rotateY(180deg);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .root {
-    transition-duration: 0.01ms;
+    --media-flip-duration: 0.01ms;
+  }
+
+  .flipInner {
+    transition: none;
   }
 }

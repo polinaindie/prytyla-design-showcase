@@ -1,8 +1,12 @@
 .pageRoot {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2xlarge);
   color: var(--text-default);
+}
+
+.galleryCaption {
+  margin: 0 0 var(--space-medium);
+  color: var(--text-muted);
+  font-size: var(--font-size-caption);
+  line-height: 1.33;
 }
 
 .pageRoot[data-showcase-theme="dark"] {
@@ -61,8 +65,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-small);
-  width: 100%;
-  min-width: 0;
+min-width: 0;
   padding: var(--space-large) var(--space-medium);
   border: var(--border-width-small) solid var(--border-default);
   border-radius: var(--radius-medium);
@@ -86,8 +89,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-2xsmall);
-  width: 100%;
-  min-width: 0;
+min-width: 0;
 }
 
 .name {

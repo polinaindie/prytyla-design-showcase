@@ -36,4 +36,23 @@ export type SubPageHeroImageProps = SubPageHeroBaseProps & {
   illustration?: Illustration3DVariant;
 };
 
-export type SubPageHeroProps = SubPageHeroLinksProps | SubPageHeroImageProps;
+export type SubPageHeroActionAppearance = "primary" | "secondary";
+
+export type SubPageHeroAction = {
+  label: string;
+  href: string;
+  appearance: SubPageHeroActionAppearance;
+};
+
+export type SubPageHeroActionsProps = SubPageHeroBaseProps & {
+  variant: "actions";
+  /** @default "humanitarianProjects" */
+  illustration?: Illustration3DVariant;
+  /** CTA row; omit or `[]` for title/description only (Figma 1162:37652). */
+  actions?: SubPageHeroAction[];
+};
+
+export type SubPageHeroProps =
+  | SubPageHeroLinksProps
+  | SubPageHeroImageProps
+  | SubPageHeroActionsProps;

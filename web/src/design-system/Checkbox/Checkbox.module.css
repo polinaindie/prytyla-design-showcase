@@ -1,0 +1,111 @@
+.root {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: var(--size-small);
+  height: var(--size-small);
+  vertical-align: middle;
+}
+
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--size-small);
+  height: var(--size-small);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-small);
+  background: var(--surface-subtle-neutral);
+  color: var(--text-on-inverse);
+  pointer-events: none;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.input:checked:not(:indeterminate) + .box {
+  border-color: var(--text-default);
+  background: var(--text-default);
+}
+
+.input:indeterminate + .box {
+  border-color: var(--border-default);
+  background: var(--surface-subtle-neutral);
+}
+
+.input:focus-visible + .box {
+  outline: var(--border-width-small) solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+.input:disabled + .box {
+  opacity: 0.38;
+}
+
+.check {
+  display: block;
+  width: 0.875rem;
+  height: 0.875rem;
+  opacity: 0;
+  transform: scale(0.85);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+
+.input:checked:not(:indeterminate) + .box .check {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.indeterminateMark {
+  position: absolute;
+  width: var(--space-small);
+  height: var(--space-small);
+  border-radius: 1px; /* Figma 1px — no token */
+  background: var(--text-default);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.input:indeterminate + .box .indeterminateMark {
+  opacity: 1;
+}
+
+.labelRow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-small);
+  cursor: pointer;
+}
+
+.labelText {
+  color: var(--text-default);
+  font-size: var(--font-size-body-small);
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.labelRowDisabled {
+  cursor: not-allowed;
+}
+
+.labelRowDisabled .labelText {
+  color: var(--text-disabled);
+}

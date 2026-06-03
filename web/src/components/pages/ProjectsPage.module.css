@@ -644,11 +644,9 @@
 }
 
 .credit {
-  height: 20px;
-}
-
-.credit img {
-  height: 100%;
-  width: auto;
+  display: block;
+  width: 10.3125rem;
+  height: 1.25rem;
   object-fit: contain;
+  object-position: left center;
 }

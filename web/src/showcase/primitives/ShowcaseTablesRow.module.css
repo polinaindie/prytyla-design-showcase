@@ -1,0 +1,22 @@
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xlarge);
+  align-items: stretch;
+}
+
+.slot {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-small);
+  min-width: 0;
+  width: 100%;
+}
+
+.caption {
+  margin: 0;
+  font-size: var(--font-size-body-small);
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text-default);
+}

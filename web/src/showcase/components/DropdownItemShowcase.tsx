@@ -1,58 +1,30 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { DropdownItem } from "../../design-system/DropdownItem";
 import {
-  ShowcaseCodeBlock,
-  ShowcaseDoDont,
-  ShowcasePageLayout,
+  ShowcaseDocBulletList,
+  ShowcaseDocLivePreview,
+  ShowcaseDocPage,
+  ShowcaseDocPropertiesTable,
+  ShowcaseDocRelated,
+  ShowcaseDocSection,
+  ShowcaseDocTokenUsageTable,
+  ShowcaseDocUsageGuidelines,
   ShowcasePreview,
-  ShowcasePropsTable,
-  ShowcaseSection,
   ShowcaseThemeProvider,
-  ShowcaseTokensList,
-  type TokenUsage,
+  type DocPropertyRow,
   useShowcaseTheme,
 } from "../primitives";
+import { useCssVarValues } from "../tokens/useCssVarValues";
 import styles from "./DropdownItemShowcase.module.css";
 
-const QUICK_EXAMPLE = `import { DropdownItem } from '@/design-system/DropdownItem';
+const FIGMA_URL =
+  "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=473-6474";
 
-<li>
-  <DropdownItem onClick={handleSelect}>Newest first</DropdownItem>
-</li>`;
+const LIVE_PREVIEW_CODE = `import { DropdownItem } from "@/design-system/DropdownItem";
 
-const PROPS = [
-  {
-    name: "children",
-    type: "ReactNode",
-    required: true,
-    description: "Текст пункту.",
-  },
-  {
-    name: "disabled",
-    type: "boolean",
-    default: "false",
-    description: "Нативний disabled на <button>.",
-  },
-];
-
-const TOKENS_USED: TokenUsage[] = [
-  {
-    category: "Typography",
-    name: "--font-size-body-medium",
-    usedIn: "Label 16px regular",
-  },
-  { category: "Color", name: "--text-default", usedIn: "Label" },
-  {
-    category: "Surface",
-    name: "--surface-default, --surface-subtle-neutral",
-    usedIn: "Default / hover (≈ Figma #F0F0F0)",
-  },
-  {
-    category: "Layout",
-    name: "--space-xlarge, --space-small",
-    usedIn: "Padding 20×8",
-  },
-];
+<DropdownItem onClick={() => setSelected(label)}>
+  Newest first
+</DropdownItem>`;
 
 const SORT_OPTIONS = [
   "Newest first",
@@ -61,46 +33,93 @@ const SORT_OPTIONS = [
   "Closing soon",
 ];
 
+const PROPERTY_ROWS: DocPropertyRow[] = [
+  {
+    property: "children",
+    type: "ReactNode",
+    typeKind: "TEXT",
+    optionsDefault: "—",
+    description: "Текст пункту меню.",
+  },
+  {
+    property: "disabled",
+    type: "boolean",
+    typeKind: "BOOLEAN",
+    optionsDefault: "false",
+    description: "Нативний disabled на <button>.",
+  },
+];
+
+const TOKEN_USAGE_SAMPLE = [
+  { element: "Root", property: "background", token: "--surface-default" },
+  {
+    element: "Root",
+    property: "background (hover)",
+    token: "--surface-subtle-neutral",
+  },
+  { element: "Root", property: "color", token: "--text-default" },
+  { element: "Root", property: "font-size", token: "--font-size-body-medium" },
+  { element: "Root", property: "padding", token: "--space-small, --space-xlarge" },
+  { element: "Focus", property: "outline", token: "--border-focus" },
+] as const;
+
 function DropdownItemShowcasePage() {
   const { theme } = useShowcaseTheme();
   const [selected, setSelected] = useState(SORT_OPTIONS[0]);
-  const [copied, setCopied] = useState(false);
 
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(QUICK_EXAMPLE);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
-    } catch {
-      /* ignore */
-    }
-  };
+  const usageValues = useCssVarValues(
+    useMemo(() => TOKEN_USAGE_SAMPLE.map((row) => row.token), []),
+  );
+
+  const tokenUsageRows = TOKEN_USAGE_SAMPLE.map((row) => ({
+    element: row.element,
+    property: row.property,
+    token: row.token,
+    value: usageValues[row.token] ?? "—",
+  }));
 
   return (
     <div className={styles.pageRoot} data-showcase-theme={theme}>
-      {copied ? (
-        <p className={styles.toast} aria-live="polite">
-          Copied!
-        </p>
-      ) : null}
-
-      <ShowcasePageLayout
+      <ShowcaseDocPage
         title="Dropdown Item"
-        description="Один пункт списку в dropdown. Figma Small Dropdown Item (473:6474). Обгортку меню додамо окремим компонентом."
+        description="Один пункт списку в dropdown; ширина 100% від контейнера меню."
+        status="stable"
+        version="1.0"
+        updatedAt="2026-05-22"
+        figmaUrl={FIGMA_URL}
+        showViewportBar={false}
       >
-
-        <ShowcaseSection title="Quick example">
-          <ShowcaseCodeBlock code={QUICK_EXAMPLE} />
-          <button type="button" onClick={handleCopy}>
-            Copy snippet
-          </button>
-        </ShowcaseSection>
-
-        <ShowcaseSection
-          title="У списку"
-          description="Клік і hover — наведи на пункт. Ширина від контейнера меню."
+        <ShowcaseDocSection
+          section="live-preview"
+          description="Пункт у контексті меню — типовий sort dropdown."
         >
-          <ShowcasePreview>
+          <ShowcaseDocLivePreview
+            caption={`aria-current на обраному · selected="${selected}".`}
+            code={LIVE_PREVIEW_CODE}
+          >
+            <ul className={styles.menu}>
+              {SORT_OPTIONS.map((label) => (
+                <li key={label}>
+                  <DropdownItem
+                    onClick={() => setSelected(label)}
+                    aria-current={selected === label ? "true" : undefined}
+                  >
+                    {label}
+                  </DropdownItem>
+                </li>
+              ))}
+            </ul>
+          </ShowcaseDocLivePreview>
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection
+          section="variants-gallery"
+          description="Default / hover (CSS) / disabled у списку."
+        >
+          <p className={styles.galleryCaption}>
+            Interactive menu · width від контейнера (145px Figma ref)
+          </p>
+          <ShowcasePreview className={styles.preview}>
             <ul className={styles.menu}>
               {SORT_OPTIONS.map((label) => (
                 <li key={label}>
@@ -115,29 +134,78 @@ function DropdownItemShowcasePage() {
             </ul>
             <p className={styles.cellLabel}>Обрано: {selected}</p>
           </ShowcasePreview>
-        </ShowcaseSection>
 
-        <ShowcaseSection title="Props">
-          <ShowcasePropsTable props={PROPS} />
-        </ShowcaseSection>
+          <p className={styles.galleryCaption}>disabled=true · останній пункт</p>
+          <ShowcasePreview className={styles.preview}>
+            <ul className={styles.menu}>
+              <li>
+                <DropdownItem>Enabled row</DropdownItem>
+              </li>
+              <li>
+                <DropdownItem disabled>Disabled row</DropdownItem>
+              </li>
+            </ul>
+          </ShowcasePreview>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Tokens">
-          <ShowcaseTokensList tokens={TOKENS_USED} />
-        </ShowcaseSection>
+        <ShowcaseDocSection section="properties">
+          <ShowcaseDocPropertiesTable rows={PROPERTY_ROWS} />
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Guidelines">
-          <ShowcaseDoDont
-            do={[
-              "Використовуй всередині майбутнього DropdownMenu / Select.",
-              "Hover у продукті — через :hover і :focus-visible на кнопці.",
-            ]}
-            dont={[
-              "Не додавай role=\"menu\" / menuitem на цьому рівні — це зона батьківського компонента.",
-              "Не фіксуй width на самому DropdownItem — width: 100% від контейнера.",
+        <ShowcaseDocSection section="token-usage">
+          <ShowcaseDocTokenUsageTable rows={tokenUsageRows} />
+          <p className={styles.note}>
+            min-height 2.25rem (36px) — збігається з --size-2xlarge; padding
+            використовує space-токени.
+          </p>
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="accessibility">
+          <ShowcaseDocBulletList
+            items={[
+              "Нативний <button type=\"button\">; label у children.",
+              "aria-current=\"true\" для обраного пункту (рекомендовано з батька).",
+              "Hover/focus — :hover та :focus-visible; outline --border-focus.",
+              "role=menu/menuitem — на рівні батьківського DropdownMenu, не тут.",
             ]}
           />
-        </ShowcaseSection>
-      </ShowcasePageLayout>
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="usage-guidelines">
+          <ShowcaseDocUsageGuidelines
+            do={[
+              "Використовуй у SortControl, Select, MultiDrop panels",
+              "width: 100% — ширину задає ul/menu контейнер",
+              "Hover у продукті — CSS на .root",
+            ]}
+            dont={[
+              "Не фіксуй width на самому DropdownItem",
+              "Не плутай з CurrencyOption — інший розмір (caption)",
+              "Не додавай menu/menuitem ARIA на цьому рівні",
+            ]}
+            alternatives={[
+              {
+                label: "Currency Select",
+                path: "currency-select",
+                note: "pill + currency list",
+              },
+            ]}
+          />
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="related-components">
+          <ShowcaseDocRelated
+            related={[
+              { label: "Sort Control", path: "sort-control" },
+              { label: "Currency Select", path: "currency-select" },
+            ]}
+            usedWith={[
+              { label: "DepartmentSelect", path: "department-select" },
+              { label: "MultiDrop", path: "multi-drop" },
+            ]}
+          />
+        </ShowcaseDocSection>
+      </ShowcaseDocPage>
     </div>
   );
 }

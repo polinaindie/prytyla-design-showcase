@@ -1,6 +1,6 @@
 import { Button } from "../Button";
+import { Logo } from "../Logo";
 import {
-  IconBrandVprytyl,
   IconSocialFacebook,
   IconSocialInstagram,
   IconSocialLinkedIn,
@@ -8,6 +8,10 @@ import {
   IconSocialX,
   IconSocialYouTube,
 } from "../Icons";
+import {
+  POWERED_BY_LOGOS_ALT,
+  POWERED_BY_LOGOS_SRC,
+} from "../shared/poweredByLogos";
 import type {
   FooterProps,
   FooterSocialLink,
@@ -83,8 +87,10 @@ export function Footer({
   email = "info@prytulafoundation.org",
   emailHref = "mailto:info@prytulafoundation.org",
   copyright = "© 2025 Благодійний фонд Сергія Притули. Всі права захищені.",
-  poweredBySrc = "/showcase/footer-powered-by.svg",
-  poweredByAlt = "Powered by OPENTECH та SoftServe",
+  poweredBySrc = POWERED_BY_LOGOS_SRC,
+  poweredByAlt = POWERED_BY_LOGOS_ALT,
+  logoLanguage = "uk",
+  logoHref = "/",
   className,
   ...rest
 }: FooterProps) {
@@ -127,11 +133,16 @@ export function Footer({
         <section className={styles.bodySection} aria-label="Підвал сайту">
           <div className={styles.darkCard}>
             <div className={styles.topRow}>
-              <a href="/" className={styles.logoLink} aria-label="Благодійний фонд Сергія Притули">
-                <IconBrandVprytyl
-                  className={styles.logo}
-                  width={223}
+              <a
+                href={logoHref}
+                className={styles.logoLink}
+                aria-label="Благодійний фонд Сергія Притули"
+              >
+                <Logo
+                  language={logoLanguage}
+                  variant="inverse"
                   height={32}
+                  className={styles.logo}
                   aria-hidden
                 />
               </a>

@@ -5,40 +5,81 @@ import {
   type Illustration3DVariant,
 } from "../../design-system/Illustration3D";
 import {
-  ShowcaseCodeBlock,
-  ShowcaseDoDont,
-  ShowcasePageLayout,
+  ShowcaseDocBulletList,
+  ShowcaseDocPage,
+  ShowcaseDocPropertiesTable,
+  ShowcaseDocRelated,
+  ShowcaseDocSection,
+  ShowcaseDocTokenUsageTable,
+  ShowcaseDocUsageGuidelines,
   ShowcasePreview,
-  ShowcaseSection,
+  ShowcaseTablesRow,
   ShowcaseThemeProvider,
-  ShowcaseTokensList,
-  type TokenUsage,
+  type DocPropertyRow,
   useShowcaseSearch,
   useShowcaseTheme,
 } from "../primitives";
 import styles from "./Illustration3DShowcase.module.css";
 
-const QUICK_EXAMPLE = `import { Illustration3D } from '@/design-system/Illustration3D';
-
-<Illustration3D variant="drone" alt="FPV дрон" />`;
-
-const TOKENS_USED: TokenUsage[] = [
-  {
-    category: "Layout",
-    name: "116×116 / 156×156 artboards",
-    usedIn: "Фіксовані rem-розміри в Illustration3D.module.css (layout chrome)",
-  },
-  {
-    category: "Surface",
-    name: "--surface-default",
-    usedIn: "Фон preview-клітинок у showcase",
-  },
-];
+const FIGMA_URL =
+  "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=293-3871";
 
 const LIVE_VARIANTS: Illustration3DVariant[] = [
   "humanitarianProjects",
   "drone",
   "annualReports",
+];
+
+const PROPERTY_ROWS: DocPropertyRow[] = [
+  {
+    property: "variant",
+    type: "Illustration3DVariant",
+    typeKind: "VARIANT",
+    optionsDefault: "required",
+    description: "17 Figma Property 1 — розмір small/large з assets.",
+  },
+  {
+    property: "alt",
+    type: "string",
+    typeKind: "TEXT",
+    optionsDefault: "figmaLabel",
+    description: "Alt текст; за замовч. — Figma label.",
+  },
+  {
+    property: "aria-hidden",
+    type: "boolean",
+    typeKind: "BOOLEAN",
+    optionsDefault: "false",
+    description: "true якщо декоративна поруч із видимим title.",
+  },
+  {
+    property: "className",
+    type: "string",
+    typeKind: "TEXT",
+    optionsDefault: "—",
+    description: "Wrapper only — не масштабуй img через CSS.",
+  },
+];
+
+const TOKEN_USAGE_ROWS = [
+  {
+    element: "Small artboard",
+    property: "width × height",
+    token: "7.25rem × 7.25rem",
+    value: "116×116px (Figma) — no size token",
+  },
+  {
+    element: "Large artboard",
+    property: "width × height",
+    token: "9.75rem × 9.75rem",
+    value: "156×156px (Figma) — no size token",
+  },
+  {
+    element: "Showcase cell",
+    property: "background",
+    token: "--surface-default",
+    value: "preview chrome only",
+  },
 ];
 
 async function copyUsage(variant: Illustration3DVariant): Promise<boolean> {
@@ -90,19 +131,20 @@ function Illustration3DShowcasePage() {
         </p>
       ) : null}
 
-      <ShowcasePageLayout
+      <ShowcaseDocPage
         title="3D Illustrations"
-        description="Білі 3D-ілюстрації з Figma `3d images` (node 293:3871). Варіант = тема картки / напрямку."
+        description="Білі 3D-ілюстрації з Figma 3d images (293:3871). variant = тема картки / напрямку."
+        status="stable"
+        updatedAt="2026-05-22"
+        figmaUrl={FIGMA_URL}
+        showViewportBar={false}
       >
-
-        <ShowcaseSection title="Quick example">
-          <ShowcaseCodeBlock code={QUICK_EXAMPLE} />
-        </ShowcaseSection>
-
-        <ShowcaseSection
-          title="Live preview"
-          description="Три типові варіанти: humanitarian (small), drone (large), annual reports."
+        <ShowcaseDocSection
+          section="variants-gallery"
+          title="Illustration catalog"
+          description="17 варіантів Property 1 · клік — import + JSX. Large / Small artboard з Figma."
         >
+          <p className={styles.galleryCaption}>Typical variants (small + large)</p>
           <ShowcasePreview>
             <div className={styles.livePreview}>
               {LIVE_VARIANTS.map((variant) => (
@@ -110,18 +152,13 @@ function Illustration3DShowcasePage() {
               ))}
             </div>
           </ShowcasePreview>
-        </ShowcaseSection>
 
-        {searchActive ? (
-          <p className={styles.searchCount} aria-live="polite">
-            Знайдено {filtered.length} ілюстрацій
-          </p>
-        ) : null}
+          {searchActive ? (
+            <p className={styles.searchCount} aria-live="polite">
+              Знайдено {filtered.length} ілюстрацій
+            </p>
+          ) : null}
 
-        <ShowcaseSection
-          title="Variants"
-          description="17 варіантів Property 1 · клік — копіює import + JSX. Large / Small artboard з Figma."
-        >
           <div className={styles.grid}>
             {filtered.map((entry) => (
               <button
@@ -142,27 +179,68 @@ function Illustration3DShowcasePage() {
               </button>
             ))}
           </div>
-        </ShowcaseSection>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Tokens used">
-          <ShowcaseTokensList tokens={TOKENS_USED} />
-        </ShowcaseSection>
-
-        <ShowcaseSection title="Guidelines">
-          <ShowcaseDoDont
-            do={[
-              "Використовуй для тематичних тайлів (проєкти, напрямки, звіти)",
-              "Передавай змістовний alt, якщо ілюстрація несе сенс (не лише декор)",
-              "Обирай variant за Figma Property 1 — розмір підставиться автоматично",
-            ]}
-            dont={[
-              "НЕ масштабуй через CSS transform — є окремі artboard 116 / 156",
-              "НЕ фарбуй і не накладай фільтри — assets монохромні з Figma",
-              "НЕ підміняй іншим PNG — оновлюй через export з node 293:3871",
+        <ShowcaseDocSection
+          section="properties"
+          title="Properties & token usage"
+          description="Illustration3DProps + фіксовані artboard-розміри."
+        >
+          <ShowcaseTablesRow
+            tables={[
+              {
+                key: "properties",
+                caption: "Properties",
+                children: <ShowcaseDocPropertiesTable rows={PROPERTY_ROWS} />,
+              },
+              {
+                key: "token-usage",
+                caption: "Token usage",
+                children: <ShowcaseDocTokenUsageTable rows={TOKEN_USAGE_ROWS} />,
+              },
             ]}
           />
-        </ShowcaseSection>
-      </ShowcasePageLayout>
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="accessibility">
+          <ShowcaseDocBulletList
+            items={[
+              "alt за замовчуванням з figmaLabel — достатньо для LinkCard title поруч.",
+              "aria-hidden коли title/link text несе зміст (Sub-page Hero, LinkCard).",
+              "Декоративна у hero — alt=\"\" + aria-hidden.",
+              "Не інтерактивна — pointer-events: none на img.",
+            ]}
+          />
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="usage-guidelines">
+          <ShowcaseDocUsageGuidelines
+            do={[
+              "Тематичні тайли: проєкти, напрямки, звіти",
+              "variant за Figma Property 1 — розмір автоматично",
+              "Оновлення — export PNG → /public/illustrations/3d/",
+            ]}
+            dont={[
+              "Не scale через CSS transform",
+              "Не фільтри / recolor — assets монохромні з Figma",
+              "Не підміняй іншим PNG без оновлення assets",
+            ]}
+            alternatives={[
+              { label: "Icons", path: "icons", note: "24–100px UI glyphs" },
+            ]}
+          />
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="related-components" description="Foundation + consumers.">
+          <ShowcaseDocRelated
+            related={[{ label: "Icons", path: "icons" }]}
+            usedWith={[
+              { label: "Link Card", path: "link-card" },
+              { label: "Sub-page Hero", path: "sub-page-hero" },
+            ]}
+          />
+        </ShowcaseDocSection>
+      </ShowcaseDocPage>
     </div>
   );
 }

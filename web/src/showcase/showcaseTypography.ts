@@ -63,14 +63,53 @@ export function typographyModeForWidth(width: number): ShowcaseTypographyMode {
   return "mobile";
 }
 
-export function showcaseTypographyStyle(
+/** Figma component Size variant for showcase preview frame width. */
+export function figmaComponentSizeForViewportWidth(
+  width: number,
+): ShowcaseTypographyMode {
+  return typographyModeForWidth(width);
+}
+
+/** Menu bar size — laptop (1024–1439) is tighter than desktop (Figma 1162:35251). */
+export function menuSizeForViewportWidth(
+  width: number,
+): "desktop" | "laptop" | "tablet" | "mobile" {
+  if (width >= 1440) return "desktop";
+  if (width >= 1024) return "laptop";
+  if (width >= 768) return "tablet";
+  return "mobile";
+}
+
+/** Two-tier Figma Size (desktop | mobile only). */
+export function figmaComponentSizeBinaryForViewportWidth(
+  width: number,
+): "desktop" | "mobile" {
+  return width < 768 ? "mobile" : "desktop";
+}
+
+export function showcaseTypographyVars(
+  width: number,
+): Record<string, string> {
+  return BY_MODE[typographyModeForWidth(width)];
+}
+
+/** Fixed viewport width for full-bleed section previews only. */
+export function showcaseViewportWidthStyle(
   width: number,
 ): Record<string, string | number> {
-  const mode = typographyModeForWidth(width);
   return {
     width,
     minWidth: width,
     maxWidth: width,
-    ...BY_MODE[mode],
+  };
+}
+
+export function showcaseTypographyStyle(
+  width: number,
+  options?: { constrainWidth?: boolean },
+): Record<string, string | number> {
+  return {
+    ...showcaseTypographyVars(width),
+    ...(options?.constrainWidth ? showcaseViewportWidthStyle(width) : {}),
   };
 }

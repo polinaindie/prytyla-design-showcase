@@ -13,15 +13,42 @@ function getScrollYRelativeToAnchor(anchor: HTMLElement | null): number {
   return Math.max(0, window.scrollY - anchorTop);
 }
 
+function getOffsetWithinScrollParent(
+  scrollParent: HTMLElement,
+  element: HTMLElement,
+): number {
+  let offset = 0;
+  let current: HTMLElement | null = element;
+  while (current && current !== scrollParent) {
+    offset += current.offsetTop;
+    current = current.parentElement;
+  }
+  return offset;
+}
+
+/** scrollTop відносно верху anchor (0 = повний віджет, 260 = compact). */
+function getScrollYInContainer(
+  container: HTMLElement,
+  anchor: HTMLElement | null,
+): number {
+  if (!anchor) {
+    return container.scrollTop;
+  }
+  const anchorStart = getOffsetWithinScrollParent(container, anchor);
+  return Math.max(0, container.scrollTop - anchorStart);
+}
+
 /**
- * Відстежує window.scrollY відносно верху віджета (не внутрішній скрол PaymentInfo).
- * CSS height transition лише при поверненні relative scroll → 0.
+ * Відстежує scroll відносно верху віджета: window.scrollY або scroll усередині
+ * `scrollContainerRef`. CSS height transition лише при поверненні offset → 0.
  */
 export function useGeneralWidgetPageScroll(
   activeTab: GeneralWidgetPaymentTab,
   enabled: boolean,
   anchorRef?: RefObject<HTMLElement | null>,
   scrollOffsetOverride?: number,
+  progressBarHeight?: number,
+  scrollContainerRef?: RefObject<HTMLElement | null>,
 ): GeneralWidgetScrollMetrics & { pageScrollY: number; useHeightTransition: boolean } {
   const [pageScrollY, setPageScrollY] = useState(0);
   const [useHeightTransition, setUseHeightTransition] = useState(false);
@@ -32,26 +59,59 @@ export function useGeneralWidgetPageScroll(
       return;
     }
 
+    let disposed = false;
+    let rafId = 0;
+    let container: HTMLElement | null = null;
+
     const handleScroll = () => {
-      const y = getScrollYRelativeToAnchor(anchorRef?.current ?? null);
+      const y = container
+        ? getScrollYInContainer(container, anchorRef?.current ?? null)
+        : getScrollYRelativeToAnchor(anchorRef?.current ?? null);
       setPageScrollY(y);
       setUseHeightTransition(y === 0);
     };
 
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleScroll, { passive: true });
+    const attach = () => {
+      if (disposed) {
+        return;
+      }
+
+      container = scrollContainerRef?.current ?? null;
+      if (scrollContainerRef && !container) {
+        rafId = requestAnimationFrame(attach);
+        return;
+      }
+
+      handleScroll();
+
+      if (container) {
+        container.addEventListener("scroll", handleScroll, { passive: true });
+        return;
+      }
+
+      window.addEventListener("scroll", handleScroll, { passive: true });
+      window.addEventListener("resize", handleScroll, { passive: true });
+    };
+
+    attach();
+
     return () => {
+      disposed = true;
+      cancelAnimationFrame(rafId);
+      if (container) {
+        container.removeEventListener("scroll", handleScroll);
+      }
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", handleScroll);
     };
-  }, [enabled, isScrollFrozen]);
+  }, [enabled, isScrollFrozen, anchorRef, scrollContainerRef]);
 
   const effectiveScrollY = isScrollFrozen ? scrollOffsetOverride : pageScrollY;
 
   const metrics = getGeneralWidgetScrollMetrics(
     enabled ? effectiveScrollY : 0,
     activeTab,
+    progressBarHeight,
   );
 
   return {

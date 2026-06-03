@@ -144,6 +144,15 @@
   stroke: var(--text-default);
 }
 
+.specialBrandIcon {
+  flex-shrink: 0;
+  display: inline-flex;
+}
+
+.special:hover:not(:disabled) .specialBrandIcon path {
+  fill: var(--text-default);
+}
+
 .special:disabled {
   background: var(--surface-disabled);
   background-image: none;
@@ -155,6 +164,10 @@
   background-clip: unset;
   -webkit-background-clip: unset;
   color: var(--text-disabled);
+}
+
+.special:disabled .specialBrandIcon path {
+  fill: var(--text-disabled);
 }
 
 /* Contact (Figma ContactLink) — fluid width, pill chip as link */

@@ -1,0 +1,40 @@
+.pageRoot {
+}
+
+.galleryCaption {
+  margin: 0 0 var(--space-small);
+  font-size: var(--font-size-body-small);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.galleryCaption:not(:first-child) {
+  margin-top: var(--space-2xlarge);
+}
+
+.note {
+  margin: var(--space-medium) 0 0;
+  font-size: var(--font-size-body-small);
+  color: var(--text-muted);
+}
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  max-width: 19.6875rem;
+  padding: var(--space-medium);
+  background: var(--surface-default);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+}
+
+.tree {
+  display: flex;
+  flex-direction: column;
+  max-width: 19.6875rem;
+  overflow: hidden;
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  background: var(--surface-default);
+}

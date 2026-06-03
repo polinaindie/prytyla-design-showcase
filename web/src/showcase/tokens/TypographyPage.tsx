@@ -1,21 +1,34 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type CSSProperties, type ReactNode } from "react";
 import {
   semanticFontSizeMeta,
   typographyBreakpoints,
 } from "../../../../design-tokens/dist/tokens";
 import {
-  ShowcaseCodeBlock,
+  ShowcaseDocBulletList,
+  ShowcaseDocPage,
+  ShowcaseDocPropertiesTable,
+  ShowcaseDocRelated,
+  ShowcaseDocSection,
+  ShowcaseDocTokenUsageTable,
   ShowcaseDoDont,
-  ShowcaseGrid,
-  ShowcasePageLayout,
-  ShowcasePreview,
-  ShowcaseSection,
+  ShowcaseTablesRow,
   ShowcaseThemeProvider,
   ShowcaseTokenTable,
+  ShowcaseViewportBar,
+  useShowcaseSearch,
   useShowcaseTheme,
 } from "../primitives";
+import { useShowcaseViewport } from "../ShowcaseViewportContext";
+import {
+  showcaseTypographyVars,
+  type ShowcaseTypographyMode,
+} from "../showcaseTypography";
+import shared from "./tokensShared.module.css";
 import styles from "./TypographyPage.module.css";
-import { useResolvedTokens } from "./useCssVarValues";
+import { useCssVarValues, useResolvedTokens } from "./useCssVarValues";
+
+const FIGMA_FILE_URL =
+  "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive";
 
 const FONT_SIZE_CANDIDATES = [
   "--pryt-brand-font-size-100",
@@ -34,17 +47,43 @@ const FONT_SIZE_CANDIDATES = [
   "--pryt-brand-font-size-1200",
 ] as const;
 
-const QUICK_EXAMPLE = `/* Prefer semantic tokens (responsive) */
-.pageTitle {
-  font-family: var(--font-display);
-  font-size: var(--font-size-heading-h1);
-  color: var(--text-default);
-}
+const TOKEN_USAGE_SAMPLE = [
+  { element: "Display heading", property: "font-family", token: "--font-display" },
+  { element: "Page H1", property: "font-size", token: "--font-size-heading-h1" },
+  { element: "Section H2", property: "font-size", token: "--font-size-heading-h2" },
+  { element: "Body copy", property: "font-size", token: "--font-size-body-medium" },
+  { element: "Caption / meta", property: "font-size", token: "--font-size-caption" },
+  { element: "Tab label", property: "font-size", token: "--font-size-tab-label" },
+] as const;
 
-.body {
-  font-size: var(--font-size-body-medium);
-  color: var(--text-muted);
-}`;
+const TYPOGRAPHY_PROPERTIES = [
+  {
+    property: "Semantic font-size",
+    type: "responsive token",
+    optionsDefault: "--font-size-heading-h1, --font-size-body-medium, …",
+    description:
+      "Figma Semantic font-size/* · mobile-first у tokens.css (@media 768px / 1024px).",
+  },
+  {
+    property: "Brand font-size",
+    type: "primitive",
+    optionsDefault: "--pryt-brand-font-size-400 … 1200",
+    description: "Legacy шкала з Brand collection — не для нових компонентів.",
+  },
+  {
+    property: "font-display",
+    type: "app stack",
+    optionsDefault: "Mariupol Strong → Mariupol → Inter",
+    description: "Задається в web/src/index.css, не з Figma export.",
+  },
+  {
+    property: "Showcase viewport",
+    type: "preview control",
+    optionsDefault: `Mobile · Tablet · Desktop (${typographyBreakpoints.desktopMin}+)`,
+    description:
+      "Панель «Ширина» біля semantic sizes змінює effective breakpoint для px у таблиці.",
+  },
+];
 
 const SIZE_SAMPLE = "Допомога фронту і тилу";
 
@@ -62,33 +101,14 @@ function usesDisplayFont(token: string): boolean {
   return fontSizeStep(token) >= 600;
 }
 
-function useTypographyBreakpoint(): "Mobile" | "Tablet" | "Desktop" {
-  const [breakpoint, setBreakpoint] = useState<"Mobile" | "Tablet" | "Desktop">(
-    "Mobile",
-  );
-
-  useEffect(() => {
-    const mqTablet = window.matchMedia(
-      `(min-width: ${typographyBreakpoints.tabletMin})`,
-    );
-    const mqDesktop = window.matchMedia(
-      `(min-width: ${typographyBreakpoints.desktopMin})`,
-    );
-    const update = () => {
-      if (mqDesktop.matches) setBreakpoint("Desktop");
-      else if (mqTablet.matches) setBreakpoint("Tablet");
-      else setBreakpoint("Mobile");
-    };
-    update();
-    mqTablet.addEventListener("change", update);
-    mqDesktop.addEventListener("change", update);
-    return () => {
-      mqTablet.removeEventListener("change", update);
-      mqDesktop.removeEventListener("change", update);
-    };
-  }, []);
-
-  return breakpoint;
+function semanticSizeForMode(
+  row: (typeof semanticFontSizeMeta)[number],
+  mode: ShowcaseTypographyMode,
+): string {
+  if (!row.responsive) return `${row.mobile}px`;
+  if (mode === "desktop") return `${row.desktop}px`;
+  if (mode === "tablet") return `${row.tablet}px`;
+  return `${row.mobile}px`;
 }
 
 function semanticUsesDisplay(figmaName: string): boolean {
@@ -101,6 +121,17 @@ function semanticUsesDisplay(figmaName: string): boolean {
 
 function tokenVarRef(token: string): string {
   return `var(${token})`;
+}
+
+function parsePx(value: string): number {
+  const n = Number.parseFloat(value);
+  return Number.isNaN(n) ? 0 : n;
+}
+
+function filterTokens(tokens: readonly string[], query: string): readonly string[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return tokens;
+  return tokens.filter((token) => token.toLowerCase().includes(q));
 }
 
 function TypeSample({
@@ -154,17 +185,23 @@ function FamilyCopyBlock({ token, label, onCopy, children }: FamilyCopyProps) {
 
 function TypographyPageContent() {
   const { theme } = useShowcaseTheme();
+  const { query } = useShowcaseSearch();
+  const { viewportWidth, typographyMode } = useShowcaseViewport();
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
-  const activeBreakpoint = useTypographyBreakpoint();
 
-  const semanticCandidates = useMemo(
-    () => semanticFontSizeMeta.map((row) => row.cssVar),
-    [],
+  const typographyFrameStyle = useMemo(
+    () => showcaseTypographyVars(viewportWidth) as CSSProperties,
+    [viewportWidth],
   );
-  const { values: semanticValues } = useResolvedTokens(semanticCandidates);
 
   const candidates = useMemo(() => FONT_SIZE_CANDIDATES, []);
   const { values, resolved: fontSizes } = useResolvedTokens(candidates);
+
+  const usageTokens = useMemo(
+    () => TOKEN_USAGE_SAMPLE.map((row) => row.token),
+    [],
+  );
+  const usageValues = useCssVarValues(usageTokens);
 
   const sortedSizes = useMemo(
     () => [...fontSizes].sort((a, b) => fontSizeStep(b) - fontSizeStep(a)),
@@ -181,34 +218,34 @@ function TypographyPageContent() {
     setCopiedToken(token);
   };
 
-  const semanticRows = useMemo(
-    () =>
-      semanticFontSizeMeta.map((row) => {
-        const computed = semanticValues[row.cssVar] ?? "—";
-        const valueLabel = row.responsive
-          ? `${row.mobile}px · ${row.tablet}px · ${row.desktop}px (${activeBreakpoint}: ${computed})`
-          : `${row.mobile}px (${computed})`;
+  const semanticRows = useMemo(() => {
+    const rows = semanticFontSizeMeta.map((row) => {
+      const computed = semanticSizeForMode(row, typographyMode);
+      const valueLabel = row.responsive
+        ? `${row.mobile}px · ${row.tablet}px · ${row.desktop}px`
+        : `${row.mobile}px`;
 
-        return {
-          token: row.cssVar,
-          value: valueLabel,
-          preview: (
-            <TypeSample
-              fontSize={computed}
-              display={semanticUsesDisplay(row.figma)}
-            />
-          ),
-          onCopy: () => {
-            void navigator.clipboard.writeText(tokenVarRef(row.cssVar)).then(
-              () => handleCopy(row.cssVar),
-              () => undefined,
-            );
-          },
-          copyTitle: `${row.figma} → ${row.cssVar}`,
-        };
-      }),
-    [semanticValues, activeBreakpoint],
-  );
+      return {
+        token: row.cssVar,
+        value: computed,
+        preview: (
+          <TypeSample
+            fontSize={computed}
+            display={semanticUsesDisplay(row.figma)}
+          />
+        ),
+        onCopy: () => {
+          void navigator.clipboard.writeText(tokenVarRef(row.cssVar)).then(
+            () => handleCopy(row.cssVar),
+            () => undefined,
+          );
+        },
+        copyTitle: `${row.figma} → ${row.cssVar} (${valueLabel})`,
+      };
+    });
+
+    return rows.sort((a, b) => parsePx(b.value) - parsePx(a.value));
+  }, [typographyMode]);
 
   const brandRows = useMemo(
     () =>
@@ -228,105 +265,215 @@ function TypographyPageContent() {
     [sortedSizes, values],
   );
 
+  const searchActive = query.trim().length > 0;
+
+  const filteredSemanticRows = useMemo(() => {
+    if (!searchActive) return semanticRows;
+    const q = query.trim().toLowerCase();
+    return semanticRows.filter((row) => row.token.toLowerCase().includes(q));
+  }, [query, searchActive, semanticRows]);
+
+  const filteredBrandRows = useMemo(() => {
+    if (!searchActive) return brandRows;
+    const visible = filterTokens(sortedSizes, query);
+    return brandRows.filter((row) => visible.includes(row.token));
+  }, [brandRows, query, searchActive, sortedSizes]);
+
+  const filteredCount = useMemo(() => {
+    const all = [
+      ...semanticFontSizeMeta.map((row) => row.cssVar),
+      ...sortedSizes,
+    ];
+    if (!searchActive) return all.length;
+    const q = query.trim().toLowerCase();
+    return all.filter((token) => token.toLowerCase().includes(q)).length;
+  }, [query, searchActive, sortedSizes]);
+
+  const tokenUsageRows = TOKEN_USAGE_SAMPLE.map((row) => ({
+    ...row,
+    value: usageValues[row.token] ?? "—",
+  }));
+
+  const tablesVisible = filteredSemanticRows.length > 0 || filteredBrandRows.length > 0;
+
   return (
     <div className={styles.pageRoot} data-showcase-theme={theme}>
       {copiedToken ? (
         <p className={styles.toast} aria-live="polite">
-          Copied!
+          Copied var({copiedToken})
         </p>
       ) : null}
 
-      <ShowcasePageLayout
+      <ShowcaseDocPage
         title="Typography"
         description="Шрифти Prytula DS. Семантичні --font-size-* (Figma Semantic, responsive). Примітиви --pryt-brand-font-size-* — legacy шкала."
+        status="stable"
+        updatedAt="2026-05-22"
+        figmaUrl={FIGMA_FILE_URL}
+        showViewportBar={false}
       >
-
-        <ShowcaseSection title="Quick example">
-          <ShowcaseCodeBlock code={QUICK_EXAMPLE} language="css" />
-        </ShowcaseSection>
-
-        <ShowcaseSection
-          title="Live preview"
-          description="Заголовок і body на токенах; тема сторінки керує кольором тексту."
+        <ShowcaseDocSection
+          section="variants-gallery"
+          title="Typography gallery"
+          description="Сімейства шрифтів і шкали розмірів. Клік по токену — копіює var(--token)."
         >
-          <ShowcasePreview>
-            <h2 className={styles.previewHeading}>Подаруй спокій тим, хто захищає</h2>
-            <p className={styles.previewCaption}>
-              Breakpoint: {activeBreakpoint} ({typographyBreakpoints.tabletMin} /{" "}
-              {typographyBreakpoints.desktopMin})
+          {searchActive ? (
+            <p className={styles.searchCount} aria-live="polite">
+              Знайдено {filteredCount} токенів
             </p>
-            <p className={styles.previewBody}>
-              Підтримка військових і цивільних — через прозорі проєкти фонду.
-            </p>
-          </ShowcasePreview>
-        </ShowcaseSection>
+          ) : null}
 
-        <ShowcaseSection title="Font families">
-          <div className={styles.familyBlock}>
-            <FamilyCopyBlock
-              token="--font-display"
-              label="Mariupol Strong — var(--font-display)"
-              onCopy={handleCopy}
+          <div className={styles.collectionBlock}>
+            <h3 className={styles.collectionTitle}>Font families</h3>
+            <div
+              className={styles.typographyFrame}
+              style={typographyFrameStyle}
+              data-showcase-typography={typographyMode}
             >
-              <p className={`${styles.familySample} ${styles.familyDisplay}`}>
-                Подаруй спокій тим, хто захищає
-              </p>
-            </FamilyCopyBlock>
+              <div className={styles.familyBlock}>
+                <FamilyCopyBlock
+                  token="--font-display"
+                  label="Mariupol Strong — var(--font-display)"
+                  onCopy={handleCopy}
+                >
+                  <p className={`${styles.familySample} ${styles.familyDisplay}`}>
+                    Подаруй спокій тим, хто захищає
+                  </p>
+                </FamilyCopyBlock>
 
-            <ShowcaseGrid columns={1}>
-              <div className={styles.familyItem}>
-                <p
-                  className={`${styles.familySample} ${styles.familyMariupol} ${styles.weightRegular}`}
-                >
-                  Підтримка військових — Regular
-                </p>
-                <p className={styles.familyMeta}>Mariupol — font-weight 400</p>
-              </div>
-              <div className={styles.familyItem}>
-                <p
-                  className={`${styles.familySample} ${styles.familyMariupol} ${styles.weightMedium}`}
-                >
-                  Підтримка військових — Medium
-                </p>
-                <p className={styles.familyMeta}>Mariupol — font-weight 500</p>
-              </div>
-              <div className={styles.familyItem}>
-                <p
-                  className={`${styles.familySample} ${styles.familyMariupol} ${styles.weightBold}`}
-                >
-                  Підтримка військових — Bold
-                </p>
-                <p className={styles.familyMeta}>Mariupol — font-weight 700</p>
-              </div>
-            </ShowcaseGrid>
+                <div className={styles.familyItem}>
+                  <p
+                    className={`${styles.familySample} ${styles.familyMariupol} ${styles.weightRegular}`}
+                  >
+                    Підтримка військових — Regular
+                  </p>
+                  <p className={styles.familyMeta}>Mariupol — font-weight 400</p>
+                </div>
+                <div className={styles.familyItem}>
+                  <p
+                    className={`${styles.familySample} ${styles.familyMariupol} ${styles.weightMedium}`}
+                  >
+                    Підтримка військових — Medium
+                  </p>
+                  <p className={styles.familyMeta}>Mariupol — font-weight 500</p>
+                </div>
+                <div className={styles.familyItem}>
+                  <p
+                    className={`${styles.familySample} ${styles.familyMariupol} ${styles.weightBold}`}
+                  >
+                    Підтримка військових — Bold
+                  </p>
+                  <p className={styles.familyMeta}>Mariupol — font-weight 700</p>
+                </div>
 
-            <div className={styles.familyItem}>
-              <p className={`${styles.familySample} ${styles.familyInter}`}>
-                Body text uses Inter as fallback
-              </p>
-              <p className={styles.familyMeta}>Inter — Google Fonts CDN</p>
+                <div className={styles.familyItem}>
+                  <p className={`${styles.familySample} ${styles.familyInter}`}>
+                    Body text uses Inter as fallback
+                  </p>
+                  <p className={styles.familyMeta}>Inter — Google Fonts CDN</p>
+                </div>
+              </div>
             </div>
           </div>
-        </ShowcaseSection>
 
-        <ShowcaseSection
-          title="Semantic font sizes (responsive)"
-          description={`Figma Semantic · Mobile &lt; ${typographyBreakpoints.tabletMin} · Tablet · Desktop ${typographyBreakpoints.desktopMin}+. Клік — копіює var(--token).`}
+          {tablesVisible ? (
+            <ShowcaseTablesRow
+              tables={[
+                ...(filteredSemanticRows.length > 0
+                  ? [
+                      {
+                        key: "semantic",
+                        children: (
+                          <>
+                            <div className={styles.slotToolbar}>
+                              <p className={styles.slotCaption}>
+                                Semantic font sizes (responsive)
+                              </p>
+                              <ShowcaseViewportBar className={styles.viewportInline} />
+                            </div>
+                            <p className={styles.slotHint}>
+                              Figma Semantic · Mobile &lt; {typographyBreakpoints.tabletMin} ·
+                              Tablet · Desktop {typographyBreakpoints.desktopMin}+ — px у
+                              Value для активної ширини.
+                            </p>
+                            <div
+                              className={styles.typographyFrame}
+                              style={typographyFrameStyle}
+                              data-showcase-typography={typographyMode}
+                            >
+                              <ShowcaseTokenTable
+                                rows={filteredSemanticRows}
+                                showPreview
+                              />
+                            </div>
+                          </>
+                        ),
+                      },
+                    ]
+                  : []),
+                ...(filteredBrandRows.length > 0
+                  ? [
+                      {
+                        key: "brand",
+                        caption: "Brand font sizes (primitives)",
+                        children: (
+                          <>
+                            <p className={shared.lowLevelNote}>
+                              Legacy шкала --pryt-brand-font-size-*. Однакові px на всіх
+                              breakpoints — без панелі «Ширина».
+                            </p>
+                            <ShowcaseTokenTable rows={filteredBrandRows} showPreview />
+                          </>
+                        ),
+                      },
+                    ]
+                  : []),
+              ]}
+            />
+          ) : null}
+
+          {searchActive && !tablesVisible ? (
+            <p className={styles.searchEmpty}>Нічого не знайдено за запитом «{query}».</p>
+          ) : null}
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection
+          section="properties"
+          title="Properties & token usage"
+          description="Структура шкал і типові typography-прив'язки."
         >
-          <p className={styles.breakpointHint}>
-            Активний режим: <strong>{activeBreakpoint}</strong> — змініть ширину вікна.
-          </p>
-          <ShowcaseTokenTable rows={semanticRows} />
-        </ShowcaseSection>
+          <ShowcaseTablesRow
+            tables={[
+              {
+                key: "properties",
+                caption: "Properties",
+                children: <ShowcaseDocPropertiesTable rows={TYPOGRAPHY_PROPERTIES} />,
+              },
+              {
+                key: "token-usage",
+                caption: "Token usage",
+                children: <ShowcaseDocTokenUsageTable rows={tokenUsageRows} />,
+              },
+            ]}
+          />
+        </ShowcaseDocSection>
 
-        <ShowcaseSection
-          title="Brand font sizes (primitives)"
-          description="Legacy шкала --pryt-brand-font-size-* (Figma Primitives / старий Brand). Для нових екранів — semantic токени вище."
+        <ShowcaseDocSection
+          section="accessibility"
+          description="Читабельність і ієрархія тексту."
         >
-          <ShowcaseTokenTable rows={brandRows} />
-        </ShowcaseSection>
+          <ShowcaseDocBulletList
+            items={[
+              "Ієрархія заголовків: h1 → --font-size-heading-h1, не пропускай рівні без причини.",
+              "Body на surface-page: --font-size-body-medium + --text-default.",
+              "Мінімальний зручний розмір для основного тексту — не менше body-small без дизайн-рішення.",
+              "Line-height за замовчуванням з токенів / компонента — не стискай текст лише зменшенням font-size.",
+              "Не покладайтесь лише на font-weight для стану — додавайте колір (--text-muted) або icon.",
+            ]}
+          />
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Guidelines">
+        <ShowcaseDocSection section="usage-guidelines">
           <ShowcaseDoDont
             do={[
               "Використовуй --font-size-heading-h* / --font-size-body-* для UI тексту",
@@ -339,8 +486,22 @@ function TypographyPageContent() {
               "НЕ змішуй Mariupol з Inter у одному заголовку",
             ]}
           />
-        </ShowcaseSection>
-      </ShowcasePageLayout>
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection
+          section="related-components"
+          description="Інші foundation-сторінки."
+        >
+          <ShowcaseDocRelated
+            links={[
+              { label: "Colors", path: "colors" },
+              { label: "Spacing", path: "spacing" },
+              { label: "Radius", path: "radius" },
+              { label: "Grid", path: "grid" },
+            ]}
+          />
+        </ShowcaseDocSection>
+      </ShowcaseDocPage>
     </div>
   );
 }

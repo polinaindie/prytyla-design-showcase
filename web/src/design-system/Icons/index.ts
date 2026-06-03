@@ -21,6 +21,7 @@ export {
   IconArrowLeftDouble10,
   IconArrowRightDouble10,
   IconArrowUpRight10,
+  IconSparkle14,
 } from "./tiny";
 
 export {
@@ -36,6 +37,7 @@ export {
 export {
   IconArrowUpRight32,
   IconArrowLeft40,
+  IconArrowRight40,
   IconArrowUpRight40,
   IconArrowUpRight64,
 } from "./large";

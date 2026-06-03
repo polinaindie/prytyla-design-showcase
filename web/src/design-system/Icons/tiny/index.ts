@@ -5,3 +5,4 @@ export { IconArrowRight10 } from "./IconArrowRight10";
 export { IconArrowLeftDouble10 } from "./IconArrowLeftDouble10";
 export { IconArrowRightDouble10 } from "./IconArrowRightDouble10";
 export { IconArrowUpRight10 } from "./IconArrowUpRight10";
+export { IconSparkle14 } from "./IconSparkle14";

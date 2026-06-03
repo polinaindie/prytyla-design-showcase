@@ -31,15 +31,12 @@ type ButtonPropsBase = {
   disabled?: boolean;
   /** Slot overrides; component supplies default placeholders when omitted. */
   leftIcon?: ReactNode;
+  /** Special (donate): default right slot is Icon/Vprytyl (Figma 1363:36104). */
   rightIcon?: ReactNode;
-  /** @default true */
+  /** @default true — special ignores unless `leftIcon` is set */
   showLeftIcon?: boolean;
   /** @default true */
   showRightIcon?: boolean;
-  /**
-   * TODO(design-system): theme=special should use Icon/Vprytyl on the right.
-   * MVP: same arrow icon as other buttons. Export SVG → web/public/icons/.
-   */
   htmlType?: ButtonHtmlType;
 };
 

@@ -1,7 +1,4 @@
 .pageRoot {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2xlarge);
   color: var(--text-default);
 }
 
@@ -12,12 +9,17 @@
 .list {
   display: flex;
   flex-direction: column;
-  width: 100%;
   max-width: 18.3125rem;
 }
 
 .hint {
   margin: var(--space-small) 0 0;
   font-size: var(--font-size-caption);
+  color: var(--text-muted);
+}
+
+.note {
+  margin: var(--space-medium) 0 0;
+  font-size: var(--font-size-body-small);
   color: var(--text-muted);
 }

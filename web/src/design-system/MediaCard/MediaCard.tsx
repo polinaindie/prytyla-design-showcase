@@ -11,9 +11,10 @@ export function MediaCard({
   className,
   ...rest
 }: MediaCardProps) {
+  const isMobile = size === "mobile";
   const rootClass = [
     styles.root,
-    size === "mobile" ? styles.mobile : styles.desktop,
+    isMobile ? styles.mobile : styles.desktop,
     className,
   ]
     .filter(Boolean)
@@ -21,41 +22,46 @@ export function MediaCard({
 
   return (
     <a href={href} className={rootClass} data-size={size} {...rest}>
-      <div className={styles.content}>
-        <div className={styles.expandedBlock}>
-          <div className={styles.logoCompact}>
+      <div className={styles.flipInner}>
+        <div className={styles.faceFront}>
+          <div className={styles.logoDefault}>
             <img
               className={styles.logoImage}
               src={logoSrc}
-              alt=""
-              aria-hidden
+              alt={logoAlt}
               decoding="async"
               draggable={false}
             />
           </div>
-          <div className={styles.divider} aria-hidden />
-          <p className={styles.title}>{title}</p>
         </div>
-        <div className={styles.logoDefault}>
-          <img
-            className={styles.logoImage}
-            src={logoSrc}
-            alt={logoAlt}
-            decoding="async"
-            draggable={false}
-          />
+
+        <div className={styles.faceBack}>
+          <div className={styles.backContent}>
+            <div className={styles.logoCompact}>
+              <img
+                className={styles.logoImage}
+                src={logoSrc}
+                alt=""
+                aria-hidden
+                decoding="async"
+                draggable={false}
+              />
+            </div>
+            <div className={styles.divider} aria-hidden />
+            <p className={styles.title}>{title}</p>
+          </div>
+          <span
+            className={isMobile ? styles.arrowMobile : styles.arrowDesktop}
+            aria-hidden
+          >
+            {isMobile ? (
+              <IconArrowUpRight10 size={10} aria-hidden />
+            ) : (
+              <IconArrowUpRight32 size={32} aria-hidden />
+            )}
+          </span>
         </div>
       </div>
-      <span
-        className={size === "desktop" ? styles.arrowDesktop : styles.arrowMobile}
-        aria-hidden
-      >
-        {size === "desktop" ? (
-          <IconArrowUpRight32 size={32} aria-hidden />
-        ) : (
-          <IconArrowUpRight10 size={10} aria-hidden />
-        )}
-      </span>
     </a>
   );
 }

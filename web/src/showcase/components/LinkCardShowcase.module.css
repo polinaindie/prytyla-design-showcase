@@ -1,16 +1,15 @@
 .pageRoot {
-  position: relative;
+  color: var(--text-default);
 }
 
-.toast {
-  position: fixed;
-  top: var(--space-large);
-  right: var(--space-large);
-  z-index: 100;
+.galleryCaption {
   margin: 0;
-  padding: var(--space-small) var(--space-medium);
-  border-radius: var(--radius-medium);
-  background: var(--surface-inverse);
-  color: var(--text-on-inverse);
   font-size: var(--font-size-body-small);
+  color: var(--text-muted);
+}
+
+.note {
+  margin: var(--space-medium) 0 0;
+  font-size: var(--font-size-body-small);
+  color: var(--text-muted);
 }

@@ -1,10 +1,19 @@
 .pageRoot {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2xlarge);
   color: var(--text-default);
 }
 
-.preview {
-  width: 100%;
+.sizeCell {
+  overflow: hidden;
+  border-radius: 0;
+}
+
+.note {
+  margin: var(--space-medium) 0 0;
+  color: var(--text-muted);
+  font-size: var(--font-size-caption);
+  line-height: 1.5;
+}
+
+.note code {
+  font-size: inherit;
 }

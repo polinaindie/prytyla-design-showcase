@@ -18,6 +18,7 @@ import {
   IconChevronDown,
   IconChevronDown10,
   IconDropdownArrow10,
+  IconSparkle14,
   IconClose,
   IconClose20,
   IconCopy20,
@@ -54,19 +55,25 @@ import {
   type IconProps,
 } from "../../design-system/Icons";
 import {
-  ShowcaseCodeBlock,
-  ShowcaseDoDont,
+  ShowcaseDocBulletList,
+  ShowcaseDocPage,
+  ShowcaseDocPropertiesTable,
+  ShowcaseDocRelated,
+  ShowcaseDocSection,
+  ShowcaseDocTokenUsageTable,
+  ShowcaseDocUsageGuidelines,
   ShowcaseMatrix,
-  ShowcasePageLayout,
-  ShowcasePreview,
-  ShowcaseSection,
+  ShowcaseTablesRow,
   ShowcaseThemeProvider,
-  ShowcaseTokensList,
-  type TokenUsage,
+  type DocPropertyRow,
   useShowcaseSearch,
   useShowcaseTheme,
 } from "../primitives";
+import { useCssVarValues } from "../tokens/useCssVarValues";
 import styles from "./IconsShowcase.module.css";
+
+const FIGMA_FILE_URL =
+  "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive";
 
 type IconCategoryFilter = {
   id: string;
@@ -169,6 +176,7 @@ const ICON_CATALOG: IconCatalogEntry[] = [
   { name: "Arrow-Left-Double", exportName: "IconArrowLeftDouble10", figmaPath: "Icon/10/Arrow-Left-Double", nodeId: "1319:36158", category: "tiny", nativeSize: 10, Component: IconArrowLeftDouble10 },
   { name: "Arrow-Right-Double", exportName: "IconArrowRightDouble10", figmaPath: "Icon/10/Arrow-Right-Double", nodeId: "1319:36159", category: "tiny", nativeSize: 10, Component: IconArrowRightDouble10 },
   { name: "Arrow-Up-Right", exportName: "IconArrowUpRight10", figmaPath: "Icon/10/Arrow-Up-Right", nodeId: "817:15808", category: "tiny", nativeSize: 10, Component: IconArrowUpRight10 },
+  { name: "Sparkle", exportName: "IconSparkle14", figmaPath: "GeneralWidget/Subscription Callout Icon", nodeId: "287:14999", category: "tiny", nativeSize: 14, Component: IconSparkle14 },
 
   { name: "Arrow-Up-Right 32", exportName: "IconArrowUpRight32", figmaPath: "Icon/32/Arrow-Up-Right", nodeId: "1163:26966", category: "large", nativeSize: 32, Component: IconArrowUpRight32 },
   { name: "Arrow-Left 40", exportName: "IconArrowLeft40", figmaPath: "Icon/40/Arrow-Left", nodeId: "307:3917", category: "large", nativeSize: 40, Component: IconArrowLeft40 },
@@ -200,18 +208,42 @@ const ICON_CATALOG: IconCatalogEntry[] = [
   { name: "Mono", exportName: "IconBrandMono", figmaPath: "Icon/24/Mono", nodeId: "760:2510", category: "brand", nativeSize: 24, nativeWidth: 58, nativeHeight: 24, Component: IconBrandMono },
 ];
 
-const ICON_TOKENS: TokenUsage[] = [
+const PROPERTY_ROWS: DocPropertyRow[] = [
   {
-    category: "Color",
-    name: "--icon-muted",
-    usedIn: "Колір монохромних іконок у сітці превʼю (currentColor на svg)",
+    property: "size",
+    type: "number",
+    typeKind: "TEXT",
+    optionsDefault: "native artboard",
+    description: "Width/height SVG; кожен export — фіксований Figma artboard.",
   },
   {
-    category: "Color",
-    name: "--text-inverse",
-    usedIn: "Колір іконок на темному фоні (theme Dark)",
+    property: "glyphOnly",
+    type: "boolean",
+    typeKind: "BOOLEAN",
+    optionsDefault: "false",
+    description: "Payment icons — glyph без сірої плитки 36×36.",
+  },
+  {
+    property: "className",
+    type: "string",
+    typeKind: "TEXT",
+    optionsDefault: "—",
+    description: "Колір через color на батьку (currentColor), не fill у SVG.",
+  },
+  {
+    property: "aria-label / aria-hidden",
+    type: "string / boolean",
+    typeKind: "TEXT",
+    optionsDefault: "—",
+    description: "Інтерактивна іконка — label; декоративна — aria-hidden.",
   },
 ];
+
+const TOKEN_USAGE_SAMPLE = [
+  { element: "Preview grid", property: "color", token: "--icon-muted" },
+  { element: "Dark theme", property: "color", token: "--text-inverse" },
+  { element: "Product UI", property: "color", token: "--icon-default" },
+] as const;
 
 const ALL_FILTER_IDS = CATEGORY_FILTERS.map((f) => f.id);
 
@@ -297,6 +329,17 @@ function IconsShowcasePage() {
 
   const searchActive = query.trim().length > 0;
 
+  const usageValues = useCssVarValues(
+    useMemo(() => TOKEN_USAGE_SAMPLE.map((row) => row.token), []),
+  );
+
+  const tokenUsageRows = TOKEN_USAGE_SAMPLE.map((row) => ({
+    element: row.element,
+    property: row.property,
+    token: row.token,
+    value: usageValues[row.token] ?? "—",
+  }));
+
   return (
     <div className={styles.pageRoot} data-showcase-theme={theme}>
       {copiedExport ? (
@@ -305,31 +348,18 @@ function IconsShowcasePage() {
         </p>
       ) : null}
 
-      <ShowcasePageLayout
+      <ShowcaseDocPage
         title="Icons"
-        description="Повний набір іконок Prytula DS з Figma SVG export. Prytula-Responsive → Icons frame."
+        description="Повний набір іконок Prytula DS з Figma SVG export. Клік по клітинці — копіює import."
+        status="stable"
+        updatedAt="2026-05-22"
+        figmaUrl={FIGMA_FILE_URL}
+        showViewportBar={false}
       >
-
-        <ShowcaseSection title="Quick example">
-          <ShowcaseCodeBlock
-            code={`import { IconArrowUpRight } from '@/design-system/Icons';
-
-<IconArrowUpRight aria-label="Open in new tab" />`}
-          />
-        </ShowcaseSection>
-
-        <ShowcaseSection
-          title="Live preview"
-          description="Типовий UI-іконка; тема сторінки керує кольором currentColor."
-        >
-          <ShowcasePreview>
-            <IconArrowUpRight size={24} aria-label="Open in new tab" />
-          </ShowcasePreview>
-        </ShowcaseSection>
-
-        <ShowcaseSection
-          title="Категорії"
-          description="Фільтр сітки іконок; пошук — у sidebar."
+        <ShowcaseDocSection
+          section="variants-gallery"
+          title="Icon catalog"
+          description="Фільтр категорій, artboard-розміри, пошук у sidebar. Клік — import line."
         >
           <div className={styles.categoryFilters} role="group" aria-label="Категорії іконок">
             {CATEGORY_FILTERS.map((filter) => {
@@ -347,94 +377,135 @@ function IconsShowcasePage() {
               );
             })}
           </div>
-        </ShowcaseSection>
 
-        <ShowcaseSection
-          title="Sizes"
-          description="Типові artboard-розміри з Figma — обирай компонент відповідного розміру."
-        >
+          <p className={styles.galleryCaption}>Native artboard sizes</p>
           <ShowcaseMatrix
             columns={["24px UI", "20px Small", "10px Tiny", "32px Large", "36px Payment"]}
             rows={[
               {
                 cells: [
-                  <IconSearch size={24} aria-hidden />,
-                  <IconCopy20 aria-hidden />,
-                  <IconChevronDown10 aria-hidden />,
-                  <IconArrowUpRight32 aria-hidden />,
-                  <IconPaymentCard aria-hidden />,
+                  <IconSearch key="24" size={24} aria-hidden />,
+                  <IconCopy20 key="20" aria-hidden />,
+                  <IconChevronDown10 key="10" aria-hidden />,
+                  <IconArrowUpRight32 key="32" aria-hidden />,
+                  <IconPaymentCard key="36" aria-hidden />,
                 ],
               },
             ]}
           />
-        </ShowcaseSection>
 
-        {searchActive ? (
-          <p className={styles.searchCount} aria-live="polite">
-            Знайдено {filteredIcons.length} іконок
-          </p>
-        ) : null}
+          {searchActive ? (
+            <p className={styles.searchCount} aria-live="polite">
+              Знайдено {filteredIcons.length} іконок
+            </p>
+          ) : null}
 
-        {CATEGORY_ORDER.map((category) => {
-          const icons = iconsByCategory.get(category) ?? [];
-          if (icons.length === 0) return null;
+          {CATEGORY_ORDER.map((category) => {
+            const icons = iconsByCategory.get(category) ?? [];
+            if (icons.length === 0) return null;
 
-          return (
-            <ShowcaseSection
-              key={category}
-              id={`icons-${category}`}
-              title={CATEGORY_SECTION_TITLE[category]}
-              description={`${icons.length} іконок · клік по клітинці — копіює import`}
-            >
-              <div className={`${styles.gridBase} ${CATEGORY_GRID_CLASS[category]}`}>
-                {icons.map((entry) => (
-                  <button
-                    key={`${entry.category}-${entry.exportName}`}
-                    type="button"
-                    className={styles.cell}
-                    onClick={() => handleCopyIcon(entry.exportName)}
-                    title={`Figma: ${entry.figmaPath} • node ${entry.nodeId} • Click to copy`}
-                  >
-                    <div className={styles.cellInner}>
-                      <div
-                        className={`${styles.previewBox} ${entry.illustration ? styles.previewBoxIllustration : ""}`}
-                      >
-                        {renderIcon(entry)}
+            return (
+              <div key={category} id={`icons-${category}`}>
+                <p className={styles.galleryCaption}>
+                  {CATEGORY_SECTION_TITLE[category]} · {icons.length} іконок
+                </p>
+                <div className={`${styles.gridBase} ${CATEGORY_GRID_CLASS[category]}`}>
+                  {icons.map((entry) => (
+                    <button
+                      key={`${entry.category}-${entry.exportName}`}
+                      type="button"
+                      className={styles.cell}
+                      onClick={() => handleCopyIcon(entry.exportName)}
+                      title={`Figma: ${entry.figmaPath} • node ${entry.nodeId} • Click to copy`}
+                    >
+                      <div className={styles.cellInner}>
+                        <div
+                          className={`${styles.previewBox} ${entry.illustration ? styles.previewBoxIllustration : ""}`}
+                        >
+                          {renderIcon(entry)}
+                        </div>
+                        <div className={styles.cellLabels}>
+                          {category === "large" ? (
+                            <span className={styles.meta}>{formatNativeSize(entry)}</span>
+                          ) : null}
+                          <span className={styles.name}>{entry.name}</span>
+                          <span className={styles.exportName} title={entry.exportName}>
+                            {entry.exportName}
+                          </span>
+                        </div>
                       </div>
-                      <div className={styles.cellLabels}>
-                        {category === "large" ? (
-                          <span className={styles.meta}>{formatNativeSize(entry)}</span>
-                        ) : null}
-                        <span className={styles.name}>{entry.name}</span>
-                        <span className={styles.exportName} title={entry.exportName}>
-                          {entry.exportName}
-                        </span>
-                      </div>
-                    </div>
-                  </button>
-                ))}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </ShowcaseSection>
-          );
-        })}
+            );
+          })}
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Tokens used">
-          <ShowcaseTokensList tokens={ICON_TOKENS} />
-        </ShowcaseSection>
-
-        <ShowcaseSection title="Guidelines" description="Коли і як використовувати іконки">
-          <ShowcaseDoDont
-            do={[
-              "Використовуй aria-label для інтерактивних іконок",
-              "Бери розмір що відповідає контексту (10px у тексті, 24px у toolbar)",
-            ]}
-            dont={[
-              "Не змінюй розмір через CSS scale — бери правильний компонент",
-              "Не хардкодуй кольори у style — використовуй CSS color / currentColor",
+        <ShowcaseDocSection
+          section="properties"
+          title="Properties & token usage"
+          description="IconProps + Mapped icon colors."
+        >
+          <ShowcaseTablesRow
+            tables={[
+              {
+                key: "properties",
+                caption: "Properties",
+                children: <ShowcaseDocPropertiesTable rows={PROPERTY_ROWS} />,
+              },
+              {
+                key: "token-usage",
+                caption: "Token usage",
+                children: <ShowcaseDocTokenUsageTable rows={tokenUsageRows} />,
+              },
             ]}
           />
-        </ShowcaseSection>
-      </ShowcasePageLayout>
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="accessibility">
+          <ShowcaseDocBulletList
+            items={[
+              "Інтерактивна іконка (кнопка без тексту) — aria-label на <button> або svg.",
+              "Декоративна поруч із текстом — aria-hidden на svg.",
+              "Social / payment у списках — label з назвою мережі або способу оплати.",
+              "Focus-visible на клітинках каталогу — outline для keyboard copy.",
+            ]}
+          />
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="usage-guidelines">
+          <ShowcaseDocUsageGuidelines
+            do={[
+              "aria-label для інтерактивних іконок",
+              "Розмір = Figma artboard (10 / 20 / 24 / 32 / 36 / …)",
+              "color: var(--icon-default) або --icon-muted на батьку",
+            ]}
+            dont={[
+              "Не scale через CSS transform",
+              "Не hardcode fill/stroke у продукті",
+              "Не один IconSearch для всіх розмірів",
+            ]}
+            alternatives={[
+              { label: "Illustration 3D", path: "illustration-3d", note: "100px+ декоративні" },
+            ]}
+          />
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="related-components" description="Foundation + consumers.">
+          <ShowcaseDocRelated
+            related={[
+              { label: "Colors", path: "colors" },
+              { label: "Illustration 3D", path: "illustration-3d" },
+            ]}
+            usedWith={[
+              { label: "Button", path: "button" },
+              { label: "Payment Info", path: "payment-info" },
+              { label: "Footer", path: "footer" },
+            ]}
+          />
+        </ShowcaseDocSection>
+      </ShowcaseDocPage>
     </div>
   );
 }

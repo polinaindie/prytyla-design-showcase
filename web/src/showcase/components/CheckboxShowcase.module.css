@@ -1,0 +1,50 @@
+.pageRoot {
+}
+
+.preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3xlarge);
+  align-items: flex-start;
+  padding: var(--space-3xlarge);
+  background: var(--surface-subtle-neutral);
+  border-radius: var(--radius-large);
+}
+
+.stateColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-large);
+  align-items: flex-start;
+}
+
+.galleryCaption {
+  margin: 0 0 var(--space-small);
+  font-size: var(--font-size-body-small);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.galleryCaption:not(:first-child) {
+  margin-top: var(--space-2xlarge);
+}
+
+.resetButton {
+  padding: var(--space-xsmall) var(--space-medium);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  font-size: var(--font-size-body-small);
+  color: var(--text-default);
+  background: var(--surface-default);
+  cursor: pointer;
+}
+
+.resetButton:hover {
+  border-color: var(--border-strong);
+  background: var(--surface-subtle-neutral);
+}
+
+.resetButton:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}

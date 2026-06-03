@@ -12,6 +12,30 @@
   overflow: hidden;
 }
 
+.previewScalerScrollable {
+  flex-shrink: 0;
+}
+
+.previewScalerScrollableScaled {
+  overflow: hidden;
+}
+
+.previewOuterScrollable {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+/* Висота за контентом — без внутрішнього скролу */
+.previewOuterScrollable .previewFlush {
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
 .preview {
   box-sizing: border-box;
   margin-inline: 0;

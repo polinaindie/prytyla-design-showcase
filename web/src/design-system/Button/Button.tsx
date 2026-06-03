@@ -3,6 +3,7 @@ import {
   IconArrowLeft10,
   IconArrowRight10,
   IconArrowUpRight,
+  IconBrandVprytyl,
   IconEmail20,
   IconMenu,
   IconPhone20,
@@ -150,8 +151,10 @@ export function Button(props: ButtonProps) {
   const iconGradient = isSpecial && !disabled ? gradientId : undefined;
   const iconClass = styles.icon;
 
+  const showLeft = isSpecial ? Boolean(leftIcon) && showLeftIcon : showLeftIcon;
+
   const renderLeft =
-    showLeftIcon &&
+    showLeft &&
     (leftIcon ??
       (iconGradient ? (
         <ButtonSpecialGradientMenu
@@ -165,7 +168,14 @@ export function Button(props: ButtonProps) {
   const renderRight =
     showRightIcon &&
     (rightIcon ??
-      (iconGradient ? (
+      (isSpecial ? (
+        <IconBrandVprytyl
+          className={styles.specialBrandIcon}
+          width={99}
+          height={13}
+          aria-hidden
+        />
+      ) : iconGradient ? (
         <ButtonSpecialGradientArrow
           className={iconClass}
           gradientId={iconGradient}

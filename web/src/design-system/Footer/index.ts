@@ -6,3 +6,4 @@ export type {
   FooterSocialLink,
   FooterSocialNetwork,
 } from "./Footer.types";
+export type { LogoLanguage } from "../Logo";

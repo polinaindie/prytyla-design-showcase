@@ -1,109 +1,124 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Menu } from "../../design-system/Menu";
-import type { MenuNavConfig } from "../../design-system/Menu";
+import { DEFAULT_NAV } from "../../design-system/Menu/menuDefaults";
+import type { MenuNavConfig, MenuSize } from "../../design-system/Menu";
+import type { LogoLanguage } from "../../design-system/Logo/Logo.types";
 import {
-  ShowcaseCodeBlock,
-  ShowcaseDoDont,
-  ShowcaseMatrix,
-  ShowcasePageLayout,
-  ShowcasePreview,
-  ShowcasePropsTable,
-  ShowcaseSection,
+  ShowcaseDocBulletList,
+  ShowcaseDocLivePreview,
+  ShowcaseDocPage,
+  ShowcaseDocPropertiesTable,
+  ShowcaseDocRelated,
+  ShowcaseDocSection,
+  ShowcaseDocTokenUsageTable,
+  ShowcaseDocUsageGuidelines,
   ShowcaseThemeProvider,
-  ShowcaseTokensList,
-  type TokenUsage,
+  menuSizeForViewportWidth,
+  showcaseViewportName,
+  showcaseViewportWidth,
+  type DocPropertyRow,
+  type ShowcaseViewportId,
   useShowcaseTheme,
 } from "../primitives";
+import { useCssVarValues } from "../tokens/useCssVarValues";
 import styles from "./MenuShowcase.module.css";
 
-const NAV: MenuNavConfig[] = [
-  { label: "Проєкти", href: "#projects" },
-  { label: "Звітність", href: "#reports" },
-  { type: "dropdown", label: "Про фонд" },
-  { label: "Новини", href: "#news" },
-  { label: "Партнерства", href: "#partnerships" },
-];
+const FIGMA_URL =
+  "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=3-7160";
 
-const QUICK_EXAMPLE = `import { Menu } from '@/design-system/Menu';
+const LIVE_PREVIEW_CODE = `import { Menu } from "@/design-system/Menu";
 
 <Menu
   size="desktop"
-  navItems={[
-    { type: 'dropdown', label: 'Про фонд', open: aboutOpen, onClick: toggleAbout },
-  ]}
+  navItems={navItems}
   otherDirectionsOpen={directionsOpen}
-  onOtherDirectionsClick={() => setDirectionsOpen((v) => !v)}
-  mobileMenuOpen={menuOpen}
-  onMobileMenuToggle={() => setMenuOpen((v) => !v)}
+  onOtherDirectionsClick={toggleDirections}
+  donateHref="/donate"
 />`;
 
-const PROPS = [
+const PROPERTY_ROWS: DocPropertyRow[] = [
   {
-    name: "size",
-    type: '"desktop" | "tablet" | "mobile"',
-    default: '"desktop"',
-    description: "Desktop/tablet — bar + panels; mobile/tablet drawer when menu open.",
+    property: "size",
+    type: '"desktop" | "laptop" | "tablet" | "mobile"',
+    typeKind: "VARIANT",
+    optionsDefault: '"desktop"',
+    description: "Bar + panels; tablet/mobile — drawer.",
   },
   {
-    name: "navItems",
+    property: "navItems",
     type: "MenuNavConfig[]",
-    description: "NavItem links; dropdown.open → About panel (desktop).",
+    typeKind: "INSTANCE_SWAP",
+    optionsDefault: "DEFAULT_NAV",
+    description: "Links; dropdown.open → About panel.",
   },
   {
-    name: "otherDirectionsOpen",
+    property: "otherDirectionsOpen",
     type: "boolean",
-    description: "Desktop/tablet — «Інші напрями» mega row (Figma 3:7270).",
+    typeKind: "BOOLEAN",
+    optionsDefault: "false",
+    description: "Desktop «Інші напрями» mega row (3:7270).",
   },
   {
-    name: "mobileMenuOpen",
+    property: "mobileMenuOpen",
     type: "boolean",
-    description: "Mobile/tablet drawer (Figma 1149:24142 / 1150:24953).",
+    typeKind: "BOOLEAN",
+    optionsDefault: "false",
+    description: "Tablet/mobile drawer open.",
   },
   {
-    name: "aboutPanelLinks / directionPanelLinks",
+    property: "aboutPanelLinks / directionPanelLinks",
     type: "MenuPanelLink[]",
-    description: "LinkCard rows inside open panels.",
+    typeKind: "INSTANCE_SWAP",
+    optionsDefault: "menuDefaults",
+    description: "LinkCard rows у панелях.",
+  },
+  {
+    property: "donateHref / onDonateClick",
+    type: "string / fn",
+    typeKind: "TEXT",
+    optionsDefault: "—",
+    description: "Donate CTA у bar / drawer.",
   },
 ];
 
-const TOKENS_USED: TokenUsage[] = [
-  {
-    category: "Surface",
-    name: "rgba(255,255,255,0.8), --surface-subtle-info",
-    usedIn: "Glass bar (default); єдиний open shell + drawer (Figma section-cool)",
-  },
-  { category: "Surface", name: "--surface-page", usedIn: "Showcase preview bg" },
-  {
-    category: "Layout",
-    name: "--size-4xlarge, --space-large, --space-3xlarge",
-    usedIn: "Bar, panels, gaps",
-  },
-  {
-    category: "Color",
-    name: "--text-default, --accent-primary, --border-contact",
-    usedIn: "Nav, drawer links, social outline",
-  },
-];
+const TOKEN_USAGE_SAMPLE = [
+  { element: "Bar", property: "background", token: "rgba(255,255,255,0.8)" },
+  { element: "Open shell", property: "background", token: "--surface-subtle-info" },
+  { element: "Bar", property: "min-height", token: "--size-4xlarge" },
+  { element: "Nav", property: "color", token: "--text-default" },
+  { element: "Drawer link", property: "color", token: "--accent-primary" },
+  { element: "Social", property: "border", token: "--border-contact" },
+] as const;
 
 function MenuShowcasePage() {
   const { theme } = useShowcaseTheme();
+  const [previewViewportId, setPreviewViewportId] =
+    useState<ShowcaseViewportId>("1440");
   const [aboutOpen, setAboutOpen] = useState(false);
   const [directionsOpen, setDirectionsOpen] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [tabletOpen, setTabletOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [logoLanguage, setLogoLanguage] = useState<LogoLanguage>("uk");
 
-  const navItems: MenuNavConfig[] = NAV.map((item) =>
-    item.type === "dropdown"
-      ? {
-          ...item,
-          open: aboutOpen,
-          onClick: () => {
-            setDirectionsOpen(false);
-            setAboutOpen((v) => !v);
-          },
-        }
-      : item,
+  const previewWidth = showcaseViewportWidth(previewViewportId);
+  const previewSize: MenuSize = menuSizeForViewportWidth(previewWidth);
+  const isWideBarPreview =
+    previewSize === "desktop" || previewSize === "laptop";
+
+  const navItems: MenuNavConfig[] = useMemo(
+    () =>
+      DEFAULT_NAV.map((item) =>
+        item.type === "dropdown"
+          ? {
+              ...item,
+              open: aboutOpen,
+              onClick: () => {
+                setDirectionsOpen(false);
+                setAboutOpen((v) => !v);
+              },
+            }
+          : item,
+      ),
+    [aboutOpen],
   );
 
   const toggleDirections = () => {
@@ -111,180 +126,143 @@ function MenuShowcasePage() {
     setDirectionsOpen((v) => !v);
   };
 
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(QUICK_EXAMPLE);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
-    } catch {
-      /* ignore */
+  const handlePreviewViewportChange = (id: ShowcaseViewportId) => {
+    setPreviewViewportId(id);
+    const nextSize = menuSizeForViewportWidth(showcaseViewportWidth(id));
+    if (nextSize === "desktop" || nextSize === "laptop") {
+      setMobileMenuOpen(false);
     }
   };
 
+  const tokenKeys = useMemo(
+    () =>
+      TOKEN_USAGE_SAMPLE.map((row) => row.token).filter((t) => t.startsWith("--")),
+    [],
+  );
+
+  const usageValues = useCssVarValues(tokenKeys);
+
+  const tokenUsageRows = TOKEN_USAGE_SAMPLE.map((row) => ({
+    element: row.element,
+    property: row.property,
+    token: row.token,
+    value: row.token.startsWith("--")
+      ? (usageValues[row.token] ?? "—")
+      : row.token,
+  }));
+
+  const panelCaption = isWideBarPreview
+    ? ` · about=${aboutOpen ? "open" : "closed"} · directions=${directionsOpen ? "open" : "closed"}`
+    : ` · drawer=${mobileMenuOpen ? "open" : "closed"}`;
+
   return (
     <div className={styles.pageRoot} data-showcase-theme={theme}>
-      {copied ? (
-        <p className={styles.toast} aria-live="polite">
-          Copied!
-        </p>
-      ) : null}
-
-      <ShowcasePageLayout
+      <ShowcaseDocPage
         title="Menu"
-        description="Хедер Prytula (Figma Menu 3:7160, Prytula-Responsive): glass bar; open desktop — один shell #e9f7ff; tablet/mobile drawer."
+        description="Хедер Prytula: glass bar, desktop mega-panels, tablet/mobile drawer."
+        status="stable"
+        version="1.0"
+        updatedAt="2026-06-03"
+        figmaUrl={FIGMA_URL}
+        showViewportBar={false}
       >
-
-        <ShowcaseSection title="Quick example">
-          <ShowcaseCodeBlock code={QUICK_EXAMPLE} />
-          <button type="button" onClick={handleCopy}>
-            Copy snippet
-          </button>
-        </ShowcaseSection>
-
-        <ShowcaseSection
-          title="Desktop — open states"
-          description="Клік «Про фонд» або «Інші напрями»; панелі взаємовиключні."
+        <ShowcaseDocSection
+          section="live-preview"
+          description="Ширина frame — Wide desktop … Mobile; Figma size і typography підбираються автоматично."
         >
-          <ShowcaseMatrix
-            rows={[
-              {
-                rowLabel: "Default",
-                cells: [
-                  <ShowcasePreview className={styles.preview}>
-                    <Menu
-                      size="desktop"
-                      navItems={navItems.map((item) =>
-                        item.type === "dropdown" ? { ...item, open: false } : item,
-                      )}
-                      otherDirectionsOpen={directionsOpen}
-                      onOtherDirectionsClick={toggleDirections}
-                      donateHref="#donate"
-                      onLanguageClick={() => {}}
-                    />
-                  </ShowcasePreview>,
-                ],
-              },
-              {
-                rowLabel: "About Open (3:7188)",
-                cells: [
-                  <ShowcasePreview className={styles.preview}>
-                    <Menu
-                      size="desktop"
-                      navItems={navItems.map((item) =>
-                        item.type === "dropdown" ? { ...item, open: true } : item,
-                      )}
-                      otherDirectionsOpen={false}
-                      onOtherDirectionsClick={toggleDirections}
-                      donateHref="#donate"
-                    />
-                  </ShowcasePreview>,
-                ],
-              },
-              {
-                rowLabel: "Other directions Open (3:7270)",
-                cells: [
-                  <ShowcasePreview className={styles.preview}>
-                    <Menu
-                      size="desktop"
-                      navItems={navItems}
-                      otherDirectionsOpen
-                      onOtherDirectionsClick={toggleDirections}
-                      donateHref="#donate"
-                    />
-                  </ShowcasePreview>,
-                ],
-              },
+          <ShowcaseDocLivePreview
+            caption={`${showcaseViewportName(previewViewportId)} (${previewWidth}px) · size=${previewSize}${panelCaption} · glass bar.`}
+            code={LIVE_PREVIEW_CODE}
+            previewViewport
+            previewViewportId={previewViewportId}
+            onPreviewViewportChange={handlePreviewViewportChange}
+            flush
+          >
+            <div className={styles.livePreviewSlot}>
+              <Menu
+                size={previewSize}
+                logoLanguage={logoLanguage}
+                onLanguageChange={setLogoLanguage}
+                navItems={navItems}
+                otherDirectionsOpen={directionsOpen}
+                onOtherDirectionsClick={toggleDirections}
+                donateHref="#donate"
+                mobileMenuOpen={isWideBarPreview ? false : mobileMenuOpen}
+                onMobileMenuToggle={() => setMobileMenuOpen((open) => !open)}
+              />
+            </div>
+          </ShowcaseDocLivePreview>
+          {!isWideBarPreview ? (
+            <button
+              type="button"
+              className={styles.toggleHint}
+              onClick={() => setMobileMenuOpen((open) => !open)}
+            >
+              Toggle drawer ({mobileMenuOpen ? "open" : "closed"})
+            </button>
+          ) : null}
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="properties">
+          <ShowcaseDocPropertiesTable rows={PROPERTY_ROWS} />
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="token-usage">
+          <ShowcaseDocTokenUsageTable rows={tokenUsageRows} />
+          <p className={styles.note}>
+            Bar glass rgba(255,255,255,0.8) — approved exception; open shell
+            --surface-subtle-info.
+          </p>
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="states-interactions">
+          <ShowcaseDocBulletList
+            items={[
+              "Desktop: dropdown.open (About) і otherDirectionsOpen — взаємовиключні.",
+              "Tablet/mobile: mobileMenuOpen + onMobileMenuToggle.",
+              "Donate / language / social — Button + LinkCard всередині Menu.",
+              "Escape / click outside — логіка в батьківській сторінці (не в Menu).",
             ]}
           />
-        </ShowcaseSection>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Tablet / Mobile">
-          <ShowcaseMatrix
-            rows={[
-              {
-                rowLabel: "Tablet — Default (127:9886)",
-                cells: [
-                  <ShowcasePreview className={`${styles.preview} ${styles.previewTablet}`}>
-                    <Menu size="tablet" donateHref="#donate" onLanguageClick={() => {}} />
-                  </ShowcasePreview>,
-                ],
-              },
-              {
-                rowLabel: "Mobile — Default (125:7776)",
-                cells: [
-                  <ShowcasePreview className={`${styles.preview} ${styles.previewMobile}`}>
-                    <Menu size="mobile" onMobileMenuToggle={() => {}} />
-                  </ShowcasePreview>,
-                ],
-              },
-              {
-                rowLabel: "Tablet — Menu Open (1150:24953)",
-                cells: [
-                  <>
-                    <ShowcasePreview className={`${styles.preview} ${styles.previewTablet}`}>
-                      <Menu
-                        size="tablet"
-                        mobileMenuOpen={tabletOpen}
-                        onMobileMenuToggle={() => setTabletOpen((v) => !v)}
-                        donateHref="#donate"
-                      />
-                    </ShowcasePreview>
-                    <button
-                      type="button"
-                      className={styles.toggleHint}
-                      onClick={() => setTabletOpen((v) => !v)}
-                    >
-                      Toggle drawer ({tabletOpen ? "open" : "closed"})
-                    </button>
-                  </>,
-                ],
-              },
-              {
-                rowLabel: "Mobile — Menu Open (1149:24142)",
-                cells: [
-                  <>
-                    <ShowcasePreview className={`${styles.preview} ${styles.previewMobile}`}>
-                      <Menu
-                        size="mobile"
-                        mobileMenuOpen={mobileOpen}
-                        onMobileMenuToggle={() => setMobileOpen((v) => !v)}
-                        donateHref="#donate"
-                      />
-                    </ShowcasePreview>
-                    <button
-                      type="button"
-                      className={styles.toggleHint}
-                      onClick={() => setMobileOpen((v) => !v)}
-                    >
-                      Toggle drawer ({mobileOpen ? "open" : "closed"})
-                    </button>
-                  </>,
-                ],
-              },
+        <ShowcaseDocSection section="accessibility">
+          <ShowcaseDocBulletList
+            items={[
+              "Nav links — нативні <a> або button для dropdown.",
+              "Drawer: focus trap — відповідальність layout/page.",
+              "Icon menu/close — aria-label на кнопках toggle.",
+              "Logo — alt / aria-hidden за контекстом home link.",
             ]}
           />
-        </ShowcaseSection>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Props">
-          <ShowcasePropsTable props={PROPS} />
-        </ShowcaseSection>
-
-        <ShowcaseSection title="Tokens">
-          <ShowcaseTokensList tokens={TOKENS_USED} />
-        </ShowcaseSection>
-
-        <ShowcaseSection title="Guidelines">
-          <ShowcaseDoDont
+        <ShowcaseDocSection section="usage-guidelines">
+          <ShowcaseDocUsageGuidelines
             do={[
-              "Керуй open через navItems dropdown.open, otherDirectionsOpen, mobileMenuOpen.",
-              "Reuse LinkCard + Button contact/social у панелях.",
+              "Керуй open через navItems, otherDirectionsOpen, mobileMenuOpen",
+              "Reuse LinkCard + Button у панелях",
+              "menuDefaults для типових panel links",
             ]}
             dont={[
-              "Не дублюй panel CSS поза Menu — розширюй MenuPanelLink props.",
+              "Не дублюй panel CSS поза Menu",
+              "Не два open panel одночасно на desktop",
             ]}
+            alternatives={[]}
           />
-        </ShowcaseSection>
-      </ShowcasePageLayout>
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="related-components">
+          <ShowcaseDocRelated
+            related={[
+              { label: "Logo", path: "logo" },
+              { label: "Button", path: "button" },
+              { label: "Link Card", path: "link-card" },
+            ]}
+            usedWith={[{ label: "Footer", path: "footer" }]}
+          />
+        </ShowcaseDocSection>
+      </ShowcaseDocPage>
     </div>
   );
 }

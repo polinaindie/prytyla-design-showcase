@@ -71,12 +71,10 @@
   align-items: center;
   min-height: var(--space-large);
   max-width: 12.5rem;
-  width: 100%;
 }
 
 .borderWidthLine {
-  width: 100%;
-  min-height: var(--border-width-small);
+min-height: var(--border-width-small);
   max-height: 100%;
   background: var(--border-strong);
   border-radius: var(--radius-small);

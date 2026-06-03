@@ -1,166 +1,217 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { FilterChip } from "../../design-system/FilterChip";
 import {
-  ShowcaseCodeBlock,
-  ShowcaseDoDont,
+  ShowcaseDocBulletList,
+  ShowcaseDocLivePreview,
+  ShowcaseDocPage,
+  ShowcaseDocPropertiesTable,
+  ShowcaseDocRelated,
+  ShowcaseDocSection,
+  ShowcaseDocTokenUsageTable,
+  ShowcaseDocUsageGuidelines,
   ShowcaseMatrix,
-  ShowcasePageLayout,
   ShowcasePreview,
-  ShowcasePropsTable,
-  ShowcaseSection,
   ShowcaseThemeProvider,
-  ShowcaseTokensList,
-  type TokenUsage,
+  type DocPropertyRow,
   useShowcaseTheme,
 } from "../primitives";
+import { useCssVarValues } from "../tokens/useCssVarValues";
 import styles from "./FilterChipShowcase.module.css";
 
-const QUICK_EXAMPLE = `import { FilterChip } from '@/design-system/FilterChip';
+const FIGMA_URL =
+  "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=459-10025";
 
-<FilterChip state="default">Назва</FilterChip>
-<FilterChip state="active">Назва</FilterChip>`;
+const LIVE_PREVIEW_CODE = `import { FilterChip } from "@/design-system/FilterChip";
 
-const PROPS = [
+<FilterChip state="active" onClick={() => setActive(0)}>
+  Усі
+</FilterChip>`;
+
+const DEMO_LABELS = ["Усі", "Гуманітарні", "Військові", "Освіта"];
+
+const PROPERTY_ROWS: DocPropertyRow[] = [
   {
-    name: "state",
+    property: "state",
     type: '"default" | "active"',
-    default: '"default"',
-    description: "Візуальний стан (Figma State=Default / Active).",
+    typeKind: "VARIANT",
+    optionsDefault: '"default"',
+    description: "Figma State=Default / Active.",
   },
   {
-    name: "children",
+    property: "children",
     type: "ReactNode",
-    required: true,
-    description: "Текст фільтра.",
+    typeKind: "TEXT",
+    optionsDefault: "—",
+    description: "Текст фільтра (без іконок).",
   },
   {
-    name: "disabled",
+    property: "disabled",
     type: "boolean",
-    default: "false",
+    typeKind: "BOOLEAN",
+    optionsDefault: "false",
     description: "Нативний disabled на <button>.",
   },
 ];
 
-const TOKENS_USED: TokenUsage[] = [
+const TOKEN_USAGE_SAMPLE = [
   {
-    category: "Typography",
-    name: "--font-size-body-small",
-    usedIn: "Label 14px semibold",
+    element: "Default",
+    property: "background",
+    token: "rgba(255,255,255,0.8)",
   },
-  {
-    category: "Color",
-    name: "--text-default, --text-on-primary",
-    usedIn: "Default / active text",
-  },
-  {
-    category: "Surface",
-    name: "rgba(255,255,255,0.8), --surface-primary",
-    usedIn: "Default glass (як ProjectsPage) / active fill",
-  },
-  {
-    category: "Border",
-    name: "--border-default, --border-strong (hover)",
-    usedIn: "Default outline",
-  },
-  {
-    category: "Layout",
-    name: "--space-large, --space-small, --size-2xsmall, 2.5rem min-height",
-    usedIn: "Padding і висота active",
-  },
-  { category: "Radius", name: "--radius-round", usedIn: "Pill shape" },
-];
-
-const DEMO_LABELS = ["Усі", "Гуманітарні", "Військові", "Освіта"];
+  { element: "Default", property: "border", token: "--border-default" },
+  { element: "Default", property: "color", token: "--text-default" },
+  { element: "Default (hover)", property: "border-color", token: "--border-strong" },
+  { element: "Active", property: "background", token: "--surface-primary" },
+  { element: "Active", property: "color", token: "--text-on-primary" },
+  { element: "Root", property: "font-size", token: "--font-size-body-small" },
+  { element: "Root", property: "border-radius", token: "--radius-round" },
+  { element: "Root", property: "padding", token: "--size-2xsmall, --space-large" },
+  { element: "Focus", property: "outline", token: "--border-focus" },
+] as const;
 
 function FilterChipShowcasePage() {
   const { theme } = useShowcaseTheme();
   const [activeIndex, setActiveIndex] = useState(0);
-  const [copied, setCopied] = useState(false);
 
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(QUICK_EXAMPLE);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
-    } catch {
-      /* ignore */
-    }
-  };
+  const tokenKeys = useMemo(
+    () =>
+      TOKEN_USAGE_SAMPLE.map((row) => row.token).filter((t) => t.startsWith("--")),
+    [],
+  );
+
+  const usageValues = useCssVarValues(tokenKeys);
+
+  const tokenUsageRows = TOKEN_USAGE_SAMPLE.map((row) => ({
+    element: row.element,
+    property: row.property,
+    token: row.token,
+    value: row.token.startsWith("--")
+      ? (usageValues[row.token] ?? "—")
+      : row.token,
+  }));
 
   return (
     <div className={styles.pageRoot} data-showcase-theme={theme}>
-      {copied ? (
-        <p className={styles.toast} aria-live="polite">
-          Copied!
-        </p>
-      ) : null}
-
-      <ShowcasePageLayout
+      <ShowcaseDocPage
         title="Filter Chip"
-        description="Pill-фільтр для списків і каталогів. Figma Filter Chip (node 459:10025)."
+        description="Pill-фільтр для каталогів і списків; default (glass) та active (primary fill)."
+        status="stable"
+        version="1.0"
+        updatedAt="2026-05-22"
+        figmaUrl={FIGMA_URL}
+        showViewportBar={false}
       >
+        <ShowcaseDocSection
+          section="live-preview"
+          description="Active chip у типовому ряді фільтрів."
+        >
+          <ShowcaseDocLivePreview
+            caption='state=active · label="Усі" · aria-pressed=true.'
+            code={LIVE_PREVIEW_CODE}
+          >
+            <FilterChip state="active">Усі</FilterChip>
+          </ShowcaseDocLivePreview>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Quick example">
-          <ShowcaseCodeBlock code={QUICK_EXAMPLE} />
-          <button type="button" onClick={handleCopy}>
-            Copy snippet
-          </button>
+        <ShowcaseDocSection
+          section="variants-gallery"
+          description="state default|active; інтерактивна група."
+        >
+          <p className={styles.galleryCaption}>Property: state · static</p>
           <ShowcaseMatrix
-            columns={["default", "active", "disabled"]}
+            columns={["Default", "Active"]}
             rows={[
               {
                 cells: [
-                  <FilterChip state="default">Назва</FilterChip>,
-                  <FilterChip state="active">Назва</FilterChip>,
-                  <FilterChip state="default" disabled>
-                    Disabled
+                  <FilterChip key="d">Гуманітарні</FilterChip>,
+                  <FilterChip key="a" state="active">
+                    Гуманітарні
                   </FilterChip>,
                 ],
               },
             ]}
           />
-        </ShowcaseSection>
 
-        <ShowcaseSection
-          title="Ряд фільтрів"
-          description="Клік перемикає active; батьківський стан керує state."
-        >
-          <ShowcasePreview>
+          <p className={styles.galleryCaption}>
+            Filter row · один active · gap 6px (Figma)
+          </p>
+          <ShowcasePreview className={styles.preview}>
             <div className={styles.filterDemo}>
-            {DEMO_LABELS.map((label, index) => (
-              <FilterChip
-                key={label}
-                state={activeIndex === index ? "active" : "default"}
-                onClick={() => setActiveIndex(index)}
-              >
-                {label}
-              </FilterChip>
-            ))}
+              {DEMO_LABELS.map((label, index) => (
+                <FilterChip
+                  key={label}
+                  state={activeIndex === index ? "active" : "default"}
+                  onClick={() => setActiveIndex(index)}
+                >
+                  {label}
+                </FilterChip>
+              ))}
             </div>
           </ShowcasePreview>
-        </ShowcaseSection>
 
-        <ShowcaseSection title="Props">
-          <ShowcasePropsTable props={PROPS} />
-        </ShowcaseSection>
+          <p className={styles.galleryCaption}>disabled=true</p>
+          <ShowcasePreview className={styles.preview}>
+            <FilterChip disabled>Недоступно</FilterChip>
+          </ShowcasePreview>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Tokens">
-          <ShowcaseTokensList tokens={TOKENS_USED} />
-        </ShowcaseSection>
+        <ShowcaseDocSection section="properties">
+          <ShowcaseDocPropertiesTable rows={PROPERTY_ROWS} />
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Guidelines">
-          <ShowcaseDoDont
-            do={[
-              "Рендери як <button type=\"button\"> з aria-pressed для active.",
-              "Керуй вибором з батька (один active у групі або мультивибір — за UX сторінки).",
-            ]}
-            dont={[
-              "Не додавай іконки всередину FilterChip — лише текст.",
-              "Не вигадуй новий glass-токен; фон default як у ProjectsPage.",
+        <ShowcaseDocSection section="token-usage">
+          <ShowcaseDocTokenUsageTable rows={tokenUsageRows} />
+          <p className={styles.note}>
+            Default glass: rgba(255,255,255,0.8) — approved exception (див.
+            prytula-design-system.mdc); TODO --bg-glass-strong.
+            min-height 2.5rem — між --size-2xlarge і --size-3xlarge.
+          </p>
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="accessibility">
+          <ShowcaseDocBulletList
+            items={[
+              "<button type=\"button\">; aria-pressed={active}.",
+              "Один active у групі — керуй state з батьківського стану.",
+              "Keyboard: Tab, Space/Enter для toggle.",
+              "Focus-visible: outline --border-focus.",
             ]}
           />
-        </ShowcaseSection>
-      </ShowcasePageLayout>
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="usage-guidelines">
+          <ShowcaseDocUsageGuidelines
+            do={[
+              "Горизонтальний ряд фільтрів над списком/сіткою",
+              "state=active для обраного фільтра",
+              "aria-pressed синхронізуй з state",
+            ]}
+            dont={[
+              "Не додавай іконки всередину — лише текст",
+              "Не плутай з Badge (×) або Chip Payment Type (іконка зверху)",
+              "Не хардкодь glass без TODO — чекай --bg-glass-strong",
+            ]}
+            alternatives={[
+              { label: "Badge", path: "badge", note: "тег із dismiss" },
+              { label: "Tag", path: "tag", note: "статичний лейбл" },
+            ]}
+          />
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="related-components">
+          <ShowcaseDocRelated
+            related={[
+              { label: "Tag", path: "tag" },
+              { label: "Badge", path: "badge" },
+            ]}
+            usedWith={[
+              { label: "Project Card", path: "project-card" },
+              { label: "News Card", path: "news-card" },
+            ]}
+          />
+        </ShowcaseDocSection>
+      </ShowcaseDocPage>
     </div>
   );
 }

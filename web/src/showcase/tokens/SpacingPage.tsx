@@ -1,17 +1,24 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  ShowcaseCodeBlock,
+  ShowcaseDocBulletList,
+  ShowcaseDocPage,
+  ShowcaseDocPropertiesTable,
+  ShowcaseDocRelated,
+  ShowcaseDocSection,
+  ShowcaseDocTokenUsageTable,
   ShowcaseDoDont,
-  ShowcasePageLayout,
-  ShowcasePreview,
-  ShowcaseSection,
+  ShowcaseTablesRow,
   ShowcaseThemeProvider,
   ShowcaseTokenTable,
   useShowcaseSearch,
   useShowcaseTheme,
 } from "../primitives";
 import styles from "./SpacingPage.module.css";
-import { useResolvedTokens } from "./useCssVarValues";
+import shared from "./tokensShared.module.css";
+import { useCssVarValues, useResolvedTokens } from "./useCssVarValues";
+
+const FIGMA_FILE_URL =
+  "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive";
 
 const ALIAS_SPACE = [
   "--space-none",
@@ -53,18 +60,43 @@ const BRAND_SCALE = [
   "--pryt-brand-scale-3200",
 ] as const;
 
-const QUICK_EXAMPLE = `.card {
-  padding: var(--space-large);
-  gap: var(--space-medium);
-}
+const TOKEN_USAGE_SAMPLE = [
+  { element: "Section padding Y", property: "padding-block", token: "--space-2xlarge" },
+  { element: "Card padding", property: "padding", token: "--space-medium" },
+  { element: "Stack gap (tight)", property: "gap", token: "--space-small" },
+  { element: "Stack gap (default)", property: "gap", token: "--space-large" },
+  { element: "Inline icon gap", property: "gap", token: "--space-xsmall" },
+  { element: "Page gutter", property: "padding-inline", token: "--space-large" },
+  { element: "Nav / CTA height", property: "min-height", token: "--size-4xlarge" },
+  { element: "Section rhythm", property: "margin-block", token: "--space-3xlarge" },
+] as const;
 
-.page {
-  padding-inline: var(--space-large);
-}
-
-.scrollRegion {
-  padding: var(--space-medium) var(--space-large);
-}`;
+const SPACING_PROPERTIES = [
+  {
+    property: "Alias spacing",
+    type: "public API",
+    optionsDefault: "--space-none … --space-8xlarge",
+    description: "Семантичні відступи для margin, padding, gap у компонентах і сторінках.",
+  },
+  {
+    property: "Brand scale",
+    type: "primitive",
+    optionsDefault: "--pryt-brand-scale-0 … 3200",
+    description: "Числова шкала в px з Figma Brand — збирає Alias, не для прямого використання.",
+  },
+  {
+    property: "CSS variable",
+    type: "string",
+    optionsDefault: "var(--space-medium)",
+    description: "Клік по рядку таблиці копіює var(--token).",
+  },
+  {
+    property: "Resolved value",
+    type: "length",
+    optionsDefault: "px з :root",
+    description: "Фактична довжина у поточній темі showcase.",
+  },
+];
 
 function tokenVarRef(token: string): string {
   return `var(${token})`;
@@ -90,14 +122,6 @@ function sortByValueDesc(
     .sort((a, b) => spacingPx(values[b]!) - spacingPx(values[a]!));
 }
 
-function SpacingBarPreview({ value }: { value: string }) {
-  return (
-    <div className={styles.barTrack}>
-      <div className={styles.bar} style={{ width: value }} />
-    </div>
-  );
-}
-
 function buildSpacingRows(
   tokens: readonly string[],
   values: Record<string, string>,
@@ -106,7 +130,6 @@ function buildSpacingRows(
   return sortByValueDesc(tokens, values).map((token) => ({
     token,
     value: values[token]!,
-    preview: <SpacingBarPreview value={values[token]!} />,
     onCopy: () => {
       void navigator.clipboard.writeText(tokenVarRef(token)).then(
         () => onCopy(token),
@@ -123,6 +146,12 @@ function SpacingPageContent() {
 
   const candidates = useMemo(() => [...ALIAS_SPACE, ...BRAND_SCALE], []);
   const { values } = useResolvedTokens(candidates);
+
+  const usageTokens = useMemo(
+    () => TOKEN_USAGE_SAMPLE.map((row) => row.token),
+    [],
+  );
+  const usageValues = useCssVarValues(usageTokens);
 
   useEffect(() => {
     if (!copiedToken) return undefined;
@@ -156,68 +185,113 @@ function SpacingPageContent() {
     [brandVisible, values],
   );
 
+  const tokenUsageRows = TOKEN_USAGE_SAMPLE.map((row) => ({
+    ...row,
+    value: usageValues[row.token] ?? "—",
+  }));
+
   return (
     <div className={styles.pageRoot} data-showcase-theme={theme}>
       {copiedToken ? (
         <p className={styles.toast} aria-live="polite">
-          Copied!
+          Copied var({copiedToken})!
         </p>
       ) : null}
 
-      <ShowcasePageLayout
+      <ShowcaseDocPage
         title="Spacing"
         description="Відступи Prytula DS. У компонентах — Alias --space-*; Brand scale лише для збірки токенів."
+        status="stable"
+        updatedAt="2026-05-22"
+        figmaUrl={FIGMA_FILE_URL}
+        showViewportBar={false}
       >
-
-        <ShowcaseSection title="Quick example">
-          <ShowcaseCodeBlock code={QUICK_EXAMPLE} language="css" />
-        </ShowcaseSection>
-
-        <ShowcaseSection
-          title="Live preview"
-          description="Padding картки та сторінки на --space-large / --space-medium."
+        <ShowcaseDocSection
+          section="variants-gallery"
+          title="Spacing gallery"
+          description="Шкала відступів від найбільшого до найменшого. Клік по токену — копіює var(--token)."
         >
-          <ShowcasePreview>
-            <div className={styles.previewPage}>
-              <div className={styles.previewCard}>
-                <p className={styles.previewTitle}>Картка проєкту</p>
-                <p className={styles.previewText}>Внутрішні відступи на spacing-токенах.</p>
-              </div>
-            </div>
-          </ShowcasePreview>
-        </ShowcaseSection>
-
-        {searchActive ? (
-          <p className={styles.searchCount} aria-live="polite">
-            Знайдено {filteredCount} токенів
-          </p>
-        ) : null}
-
-        {aliasRows.length > 0 ? (
-          <ShowcaseSection
-            id="alias-spacing"
-            title="Alias spacing — public API"
-            description="Від найбільшого до найменшого. Клік по токену — копіює var(--token)."
-          >
-            <ShowcaseTokenTable rows={aliasRows} />
-          </ShowcaseSection>
-        ) : null}
-
-        {brandRows.length > 0 ? (
-          <ShowcaseSection
-            id="brand-scale"
-            title="Brand scale primitives"
-            description="Low-level. У компонентах — --space-*."
-          >
-            <p className={styles.lowLevelNote}>
-              Low-level. Не використовуй --pryt-brand-scale-* у компонентах — лише
-              --space-*.
+          {searchActive ? (
+            <p className={styles.searchCount} aria-live="polite">
+              Знайдено {filteredCount} токенів
             </p>
-            <ShowcaseTokenTable rows={brandRows} />
-          </ShowcaseSection>
-        ) : null}
+          ) : null}
 
-        <ShowcaseSection title="Guidelines">
+          {aliasRows.length > 0 || brandRows.length > 0 ? (
+            <ShowcaseTablesRow
+              tables={[
+                ...(aliasRows.length > 0
+                  ? [
+                      {
+                        key: "alias",
+                        caption: "Alias spacing — public API",
+                        children: <ShowcaseTokenTable rows={aliasRows} />,
+                      },
+                    ]
+                  : []),
+                ...(brandRows.length > 0
+                  ? [
+                      {
+                        key: "brand",
+                        caption: "Brand scale primitives",
+                        children: (
+                          <>
+                            <p className={shared.lowLevelNote}>
+                              Low-level. Не використовуй --pryt-brand-scale-* у
+                              компонентах — лише --space-*.
+                            </p>
+                            <ShowcaseTokenTable rows={brandRows} />
+                          </>
+                        ),
+                      },
+                    ]
+                  : []),
+              ]}
+            />
+          ) : null}
+
+          {searchActive && aliasRows.length === 0 && brandRows.length === 0 ? (
+            <p className={styles.searchEmpty}>Нічого не знайдено за запитом «{query}».</p>
+          ) : null}
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection
+          section="properties"
+          title="Properties & token usage"
+          description="Структура шкали та типові layout-прив'язки."
+        >
+          <ShowcaseTablesRow
+            tables={[
+              {
+                key: "properties",
+                caption: "Properties",
+                children: <ShowcaseDocPropertiesTable rows={SPACING_PROPERTIES} />,
+              },
+              {
+                key: "token-usage",
+                caption: "Token usage",
+                children: <ShowcaseDocTokenUsageTable rows={tokenUsageRows} />,
+              },
+            ]}
+          />
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection
+          section="accessibility"
+          description="Відступи впливають на touch targets і читабельність."
+        >
+          <ShowcaseDocBulletList
+            items={[
+              "Мінімальний hit target інтерактивних елементів — 24×24px; padding доповнює, не замінює розмір.",
+              "Не стискай padding текстових блоків нижче --space-small без дизайн-рішення.",
+              "Консистентні section gaps (--space-2xlarge / --space-3xlarge) полегшують сканування сторінки.",
+              "Scroll-області: padding-inline узгоджуй з page gutter (--space-large).",
+              "Не покладайтесь лише на whitespace для групування — додавай heading або divider.",
+            ]}
+          />
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="usage-guidelines">
           <ShowcaseDoDont
             do={[
               "Використовуй --space-* tokens для margin і padding",
@@ -228,8 +302,22 @@ function SpacingPageContent() {
               "НЕ використовуй --pryt-brand-scale-* напряму",
             ]}
           />
-        </ShowcaseSection>
-      </ShowcasePageLayout>
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection
+          section="related-components"
+          description="Інші foundation-сторінки."
+        >
+          <ShowcaseDocRelated
+            links={[
+              { label: "Colors", path: "colors" },
+              { label: "Typography", path: "typography" },
+              { label: "Radius", path: "radius" },
+              { label: "Grid", path: "grid" },
+            ]}
+          />
+        </ShowcaseDocSection>
+      </ShowcaseDocPage>
     </div>
   );
 }

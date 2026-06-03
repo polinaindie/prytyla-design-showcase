@@ -106,9 +106,26 @@
   min-width: 0;
 }
 
+/* Figma 1162:35251 — «Інші напрями» secondary CTA */
+.otherDirectionsButton {
+  width: 10.75rem;
+}
+
 .menuToggle {
   flex-shrink: 0;
   padding-inline: var(--space-large);
+}
+
+/* Figma 273:4412 — tablet bar donate CTA */
+.barDonate {
+  flex-shrink: 0;
+  width: 8.1875rem;
+}
+
+/* Wide bar donate CTA «Допомогти війську» */
+.donateWideButton {
+  flex-shrink: 0;
+  width: 11.375rem;
 }
 
 .compactDonate {
@@ -129,6 +146,43 @@
   max-width: 41.375rem;
   padding-block-start: var(--space-2xlarge);
   padding-inline: var(--space-2xlarge);
+}
+
+/* Figma 1162:35251 — laptop: compact nav row, 14px links, 16px gaps, logo 223×32 */
+.laptop .nav {
+  flex: 0 0 auto;
+  justify-content: flex-start;
+  gap: var(--space-large);
+  font-size: var(--font-size-body-small);
+}
+
+.laptop .actions {
+  flex-shrink: 0;
+  gap: var(--space-large);
+}
+
+.laptop .ctas {
+  gap: var(--space-small);
+}
+
+.laptop .logoLink {
+  flex-shrink: 0;
+  max-width: 13.9375rem;
+  overflow: hidden;
+}
+
+.laptop .logoLink > span {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.laptop .logoLink img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: 2rem;
+  object-fit: contain;
+  object-position: left center;
 }
 
 /* Figma 125:7779 — mobile logo 195×28; room for «Меню» */
@@ -167,10 +221,12 @@
   object-position: left center;
 }
 
-/* Figma 127:9887 — tablet bar 64px */
+/* Figma 127:9887 / 125:7777 — compact bar 64px, 10px vertical inset (no space token) */
+.mobile .bar,
 .tablet .bar {
-  min-height: var(--size-4xlarge);
-  height: var(--size-4xlarge);
+  min-height: var(--size-6xlarge);
+  height: var(--size-6xlarge);
+  padding-block: 0.625rem;
 }
 
 .mobile .row,
@@ -187,14 +243,38 @@
   gap: 0;
 }
 
+/* Figma 127:9886 — tablet: lang ↔ CTAs 24px, CTAs gap 12px */
+.tablet .actions {
+  gap: var(--space-2xlarge);
+}
+
+.tablet .ctas {
+  gap: var(--space-medium);
+}
+
+/* Figma 273:4358 — mobile «Меню» */
+.mobile .menuToggle {
+  width: 6.5625rem;
+}
+
+/* Figma 273:4394 — tablet «Меню» */
+.tablet .menuToggle {
+  width: 7.5625rem;
+}
+
 /* Desktop About / Other directions — один shell (3:7188, 3:7270) */
 .shellOpenDesktop {
-  gap: var(--space-small);
-  padding-block: var(--space-small);
-  padding-inline: var(--space-medium);
+  gap: var(--space-xsmall);
+  padding-block: var(--space-xsmall);
+  padding-inline: var(--space-small);
   border: var(--border-width-small) solid var(--border-default);
   border-radius: var(--radius-medium);
   background: var(--surface-subtle-info);
+}
+
+.shellOpenDesktop .barEmbedded {
+  height: var(--size-5xlarge);
+  min-height: var(--size-5xlarge);
 }
 
 .barEmbedded {
@@ -216,33 +296,99 @@
 .openPanelBody {
   box-sizing: border-box;
   width: 100%;
-  padding: var(--space-2xlarge);
+  padding-block: var(--space-2xlarge);
+  padding-inline: var(--space-2xlarge);
+}
+
+/* Figma 1162:35251 — laptop: cards full width, footer below (text fits in row) */
+.laptop .aboutPanelLayout {
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: var(--space-2xlarge);
+}
+
+.laptop .aboutPanelLayout .cardsRow {
+  flex: 1 1 100%;
+  width: 100%;
+}
+
+.laptop .panelAside {
+  flex: 1 1 100%;
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+}
+
+.laptop .panelAside .footer {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-medium);
+  width: 100%;
+}
+
+.laptop .panelAside .socialRow {
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  gap: var(--space-medium);
+  width: auto;
+}
+
+.laptop .panelAside .contactRow {
+  flex: 0 1 auto;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: var(--space-small);
+  min-width: 0;
+  width: auto;
+}
+
+.laptop .panelAside .contactChip {
+  width: auto;
+  max-width: none;
+  flex-shrink: 0;
 }
 
 .aboutPanelLayout {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
+  flex-wrap: nowrap;
+  align-items: center;
   gap: var(--space-3xlarge);
+  min-width: 0;
 }
 
 .cardsRow {
   display: flex;
-  flex: 1 1 auto;
-  flex-wrap: wrap;
+  flex: 1 1 0;
+  flex-wrap: nowrap;
   gap: var(--space-2xlarge);
   min-width: 0;
 }
 
-.cardsRow > * {
-  flex: 1 1 12.5rem;
-  min-width: 12.5rem;
+.aboutPanelLayout .cardsRow > * {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: none;
+  width: 100%;
 }
 
 .panelAside {
-  flex: 0 0 auto;
+  flex: 0 0 19.125rem;
   width: 19.125rem;
-  max-width: 100%;
+  min-width: 19.125rem;
+}
+
+.panelAside .footer {
+  gap: var(--space-small);
+  width: 100%;
+}
+
+.panelAside .socialRow {
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  gap: 0;
+  width: 100%;
 }
 
 .directionsPanel {
@@ -260,8 +406,8 @@
 
 /* Mobile/tablet open — Figma 1149:24142 / 1150:24953 */
 .shellCompactOpen {
-  gap: var(--space-2xlarge);
-  padding-block: var(--space-small) var(--space-large);
+  gap: var(--space-xlarge);
+  padding-block: var(--space-none) var(--space-2xlarge);
   padding-inline: var(--space-medium);
   border: var(--border-width-small) solid var(--border-default);
   border-radius: var(--radius-medium);
@@ -481,8 +627,8 @@
 }
 
 .mobile .drawerFooter .socialLink {
-  width: 2.25rem;
-  height: 2.25rem;
+  width: var(--size-4xlarge);
+  height: var(--size-4xlarge);
   flex-shrink: 0;
 }
 
@@ -494,7 +640,7 @@
 .footer {
   display: flex;
   flex-direction: column;
-  gap: var(--space-small);
+  gap: var(--space-medium);
   min-width: 0;
 }
 
@@ -529,7 +675,7 @@
 .contactRow {
   display: flex;
   flex-direction: column;
-  gap: var(--space-medium);
+  gap: var(--space-small);
   min-width: 0;
 }
 

@@ -1,4 +1,4 @@
-/* Figma Main project 3:7322 — hero + glass progress panel */
+/* Figma Main project 16:10164 — hero + glass progress panel */
 
 .root {
   position: relative;
@@ -217,29 +217,45 @@
   outline-offset: 2px;
 }
 
-/* ——— Desktop 1440×831 ——— */
+/* ——— Desktop / Laptop (Figma 16:10164 — 1560×955, hero 1392/783 @ 1440) ——— */
 
 .desktop {
-  padding: var(--space-2xlarge);
+  padding-block-start: var(--space-2xlarge);
+  padding-inline: var(--space-2xlarge);
+  padding-block-end: var(--space-7xlarge);
 }
 
 .desktop .hero {
   aspect-ratio: 1392 / 783;
   padding-block-end: var(--space-2xlarge);
-  padding-inline: 25.375rem;
+  /* Figma px 406 max; fluid inset when frame < 1392px hero */
+  padding-inline: min(
+    25.375rem,
+    max(var(--space-large), calc((100% - 36.25rem) / 2))
+  );
 }
 
 .desktop .heroContent {
+  flex-shrink: 0;
+  width: 100%;
   max-width: 36.25rem;
   gap: var(--space-2xlarge);
 }
 
+.desktop .glassPanel {
+  width: fit-content;
+  max-width: 100%;
+  align-self: center;
+}
+
 .desktop .panelBody {
   gap: var(--space-3xlarge);
+  width: auto;
 }
 
 .desktop .statsBlock {
-  flex: 1 1 auto;
+  flex: 0 0 auto;
+  width: auto;
   min-height: 3.625rem;
 }
 
@@ -250,6 +266,7 @@
 .desktop .amounts {
   gap: var(--space-2xlarge);
   justify-content: flex-start;
+  width: auto;
 }
 
 .desktop .donateBtn {

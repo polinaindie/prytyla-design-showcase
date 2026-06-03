@@ -15,3 +15,8 @@
   pointer-events: none;
   user-select: none;
 }
+
+/* Full-color /brand/logo-*.svg → solid white on dark surfaces */
+.inverse .image {
+  filter: brightness(0) saturate(100%) invert(1);
+}

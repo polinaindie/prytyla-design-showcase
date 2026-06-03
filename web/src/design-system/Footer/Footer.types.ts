@@ -1,4 +1,5 @@
 import type { HTMLAttributes } from "react";
+import type { LogoLanguage } from "../Logo";
 
 export type FooterSize = "desktop" | "tablet" | "mobile";
 
@@ -38,6 +39,10 @@ export type FooterProps = Omit<HTMLAttributes<HTMLElement>, "children"> & {
   email?: string;
   emailHref?: string;
   copyright?: string;
+  /** Figma Logo — uk | en (`/brand/logo-*.svg`). */
+  logoLanguage?: LogoLanguage;
+  /** Посилання з логотипу. */
+  logoHref?: string;
   /** Powered by (OpenTech + SoftServe), default showcase asset. */
   poweredBySrc?: string;
   poweredByAlt?: string;

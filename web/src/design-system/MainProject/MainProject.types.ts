@@ -1,6 +1,6 @@
 import type { HTMLAttributes } from "react";
 
-/** Figma Main project 3:7322 — featured hero зі збором. */
+/** Figma Main project 16:10164 — featured hero зі збором. */
 export type MainProjectSize = "desktop" | "tablet" | "mobile";
 
 export type MainProjectProps = Omit<HTMLAttributes<HTMLElement>, "children"> & {

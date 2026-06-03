@@ -5,8 +5,7 @@
 }
 
 .table {
-  width: 100%;
-  border-collapse: collapse;
+border-collapse: collapse;
   font-size: var(--font-size-body-small);
 }
 

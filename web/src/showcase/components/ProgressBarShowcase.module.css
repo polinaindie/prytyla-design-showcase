@@ -1,7 +1,4 @@
 .pageRoot {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2xlarge);
   color: var(--text-default);
 }
 
@@ -9,8 +6,24 @@
   color: var(--text-inverse);
 }
 
+.galleryCaption {
+  margin: 0 0 var(--space-small);
+  font-size: var(--font-size-body-small);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.galleryCaption:not(:first-child) {
+  margin-top: var(--space-2xlarge);
+}
+
+.note {
+  margin: var(--space-medium) 0 0;
+  font-size: var(--font-size-body-small);
+  color: var(--text-muted);
+}
+
 .preview {
-  width: 100%;
   max-width: 21.25rem;
   padding: var(--space-large);
   border: var(--border-width-small) solid var(--border-default);
@@ -43,8 +56,7 @@
 }
 
 .rangeInput {
-  width: 100%;
-  accent-color: var(--accent-primary);
+accent-color: var(--accent-primary);
 }
 
 .rangeMeta {

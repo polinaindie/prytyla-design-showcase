@@ -84,7 +84,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-small);
-  width: 100%;
 }
 
 .chip {

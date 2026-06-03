@@ -1,122 +1,117 @@
+import { useMemo } from "react";
 import { SubTag, Tag } from "../../design-system/Tag";
 import {
-  ShowcaseCodeBlock,
-  ShowcaseDoDont,
+  ShowcaseDocBulletList,
+  ShowcaseDocLivePreview,
+  ShowcaseDocPage,
+  ShowcaseDocPropertiesTable,
+  ShowcaseDocRelated,
+  ShowcaseDocSection,
+  ShowcaseDocTokenUsageTable,
+  ShowcaseDocUsageGuidelines,
   ShowcaseMatrix,
-  ShowcasePageLayout,
   ShowcasePreview,
-  ShowcasePropsTable,
-  ShowcaseSection,
   ShowcaseThemeProvider,
-  ShowcaseTokensList,
-  type TokenUsage,
+  type DocPropertyRow,
   useShowcaseTheme,
 } from "../primitives";
+import { useCssVarValues } from "../tokens/useCssVarValues";
 import styles from "./TagShowcase.module.css";
 
-const QUICK_EXAMPLE = `import { SubTag, Tag } from '@/design-system/Tag';
+const FIGMA_TAG_URL =
+  "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=3-7429";
 
-<Tag>Гуманітарний</Tag>
-<SubTag>Проєкт</SubTag>`;
+const LIVE_PREVIEW_CODE = `import { Tag } from "@/design-system/Tag";
 
-const TAG_PROPS = [
-  {
-    name: "children",
-    type: "ReactNode",
-    required: true,
-    description: "Текст тега (Figma Tag Label).",
-  },
-  {
-    name: "className",
-    type: "string",
-    description: "Додатковий клас на <span>.",
-  },
-];
-
-const SUBTAG_PROPS = [
-  {
-    name: "children",
-    type: "ReactNode",
-    required: true,
-    description: "Текст (Figma SubTag, напр. «Проєкт»).",
-  },
-  {
-    name: "className",
-    type: "string",
-    description: "Додатковий клас на <span>.",
-  },
-];
-
-const TAG_TOKENS: TokenUsage[] = [
-  {
-    category: "Surface",
-    name: "--surface-badge",
-    usedIn: "Default (#e7e7e7, Figma surface/tag-default)",
-  },
-  {
-    category: "Surface",
-    name: "--surface-subtle-info",
-    usedIn: "Hover (#ceecff, Figma surface/tag-info)",
-  },
-  { category: "Text", name: "--text-muted", usedIn: "Label (#5d5d5d)" },
-  {
-    category: "Typography",
-    name: "--font-size-body-small",
-    usedIn: "Body small 14px",
-  },
-  {
-    category: "Layout",
-    name: "--space-xsmall, --space-small, --radius-round",
-    usedIn: "Padding 4×8px, pill radius",
-  },
-];
-
-const SUBTAG_TOKENS: TokenUsage[] = [
-  {
-    category: "Text",
-    name: "--text-muted",
-    usedIn: "Default (#5d5d5d, Figma text/secondary)",
-  },
-  {
-    category: "Text",
-    name: "--text-default",
-    usedIn: "Hover / Variant2 (#1f1f1f, Figma text/dark) + underline",
-  },
-  {
-    category: "Typography",
-    name: "--font-size-body-small",
-    usedIn: "Body small 14px",
-  },
-  {
-    category: "Layout",
-    name: "--border-width-small",
-    usedIn: "Separator 1px",
-  },
-];
+<Tag>Гуманітарний</Tag>`;
 
 const TAG_EXAMPLES = ["Гуманітарний", "Освіта", "Медицина", "Завершено"];
+
+const PROPERTY_ROWS: DocPropertyRow[] = [
+  {
+    property: "Tag.children",
+    type: "ReactNode",
+    typeKind: "TEXT",
+    optionsDefault: "—",
+    description: "Текст pill-тега (Figma Tag Label).",
+  },
+  {
+    property: "Tag.className",
+    type: "string",
+    typeKind: "TEXT",
+    optionsDefault: "—",
+    description: "Додатковий клас на <span>.",
+  },
+  {
+    property: "SubTag.children",
+    type: "ReactNode",
+    typeKind: "TEXT",
+    optionsDefault: "—",
+    description: "Текст SubTag (напр. «Проєкт»).",
+  },
+  {
+    property: "SubTag.className",
+    type: "string",
+    typeKind: "TEXT",
+    optionsDefault: "—",
+    description: "Додатковий клас на <span>.",
+  },
+];
+
+const TOKEN_USAGE_SAMPLE = [
+  { element: "Tag", property: "background", token: "--surface-badge" },
+  { element: "Tag", property: "background (hover)", token: "--surface-subtle-info" },
+  { element: "Tag", property: "color", token: "--text-muted" },
+  { element: "Tag", property: "font-size", token: "--font-size-body-small" },
+  { element: "Tag", property: "padding", token: "--space-xsmall, --space-small" },
+  { element: "Tag", property: "border-radius", token: "--radius-round" },
+  { element: "SubTag", property: "color", token: "--text-muted" },
+  { element: "SubTag", property: "color (hover)", token: "--text-default" },
+  { element: "SubTag", property: "underline", token: "--border-width-small" },
+] as const;
 
 function TagShowcasePage() {
   const { theme } = useShowcaseTheme();
 
+  const usageValues = useCssVarValues(
+    useMemo(() => TOKEN_USAGE_SAMPLE.map((row) => row.token), []),
+  );
+
+  const tokenUsageRows = TOKEN_USAGE_SAMPLE.map((row) => ({
+    element: row.element,
+    property: row.property,
+    token: row.token,
+    value: usageValues[row.token] ?? "—",
+  }));
+
   return (
     <div className={styles.pageRoot} data-showcase-theme={theme}>
-      <ShowcasePageLayout
+      <ShowcaseDocPage
         title="Tag"
-        description="Tag (3:7429) — pill з hover. SubTag (3:7422) — текстова мітка, підкреслення на hover. Для toggle-фільтрів — Filter Chip."
+        description="Tag — pill-категорія з hover. SubTag — текстова мітка з підкресленням на hover."
+        status="stable"
+        version="1.0"
+        updatedAt="2026-05-22"
+        figmaUrl={FIGMA_TAG_URL}
+        showViewportBar={false}
       >
+        <ShowcaseDocSection
+          section="live-preview"
+          description="Tag — статична мітка категорії (без dismiss)."
+        >
+          <ShowcaseDocLivePreview
+            caption="Tag · Default · hover → --surface-subtle-info."
+            code={LIVE_PREVIEW_CODE}
+          >
+            <Tag>Гуманітарний</Tag>
+          </ShowcaseDocLivePreview>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Quick example">
-          <ShowcaseCodeBlock code={QUICK_EXAMPLE} language="tsx" />
-        </ShowcaseSection>
-
-        <ShowcaseSection title="Tag" description="Figma 3:7429 — Default · Hover.">
-          <ShowcasePreview>
-            <Tag>Tag Label</Tag>
-          </ShowcasePreview>
-        </ShowcaseSection>
-
-        <ShowcaseSection title="Tag — examples">
+        <ShowcaseDocSection
+          section="variants-gallery"
+          description="Tag pill + SubTag; hover — наведи курсор."
+        >
+          <p className={styles.galleryCaption}>Tag · приклади категорій</p>
           <ShowcaseMatrix
             columns={TAG_EXAMPLES}
             rows={[
@@ -125,47 +120,69 @@ function TagShowcasePage() {
               },
             ]}
           />
-        </ShowcaseSection>
 
-        <ShowcaseSection title="Tag — tokens">
-          <ShowcaseTokensList tokens={TAG_TOKENS} />
-        </ShowcaseSection>
-
-        <ShowcaseSection title="Tag — props">
-          <ShowcasePropsTable props={TAG_PROPS} />
-        </ShowcaseSection>
-
-        <ShowcaseSection
-          title="SubTag"
-          description="Figma 3:7422 — Default · Hover (Variant2 у Figma, наведи курсор)."
-        >
-          <ShowcasePreview>
+          <p className={styles.galleryCaption}>
+            SubTag · Figma 3:7422 · hover → underline + --text-default
+          </p>
+          <ShowcasePreview className={styles.preview}>
             <SubTag>Проєкт</SubTag>
           </ShowcasePreview>
-        </ShowcaseSection>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="SubTag — tokens">
-          <ShowcaseTokensList tokens={SUBTAG_TOKENS} />
-        </ShowcaseSection>
+        <ShowcaseDocSection
+          section="properties"
+          description="Tag і SubTag — окремі експорти з design-system/Tag."
+        >
+          <ShowcaseDocPropertiesTable rows={PROPERTY_ROWS} />
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="SubTag — props">
-          <ShowcasePropsTable props={SUBTAG_PROPS} />
-        </ShowcaseSection>
+        <ShowcaseDocSection section="token-usage">
+          <ShowcaseDocTokenUsageTable rows={tokenUsageRows} />
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Guidelines">
-          <ShowcaseDoDont
-            do={[
-              "Tag — категорії з pill-фоном; hover → блакитний.",
-              "SubTag — вторинна мітка (напр. «Проєкт»); hover → підкреслення.",
-            ]}
-            dont={[
-              "НЕ плутай Tag з Badge, Filter Chip або SubTag.",
-              "НЕ додавай variant/active — у Figma лише Default + Hover.",
-              "НЕ хардкодуй кольори чи 1px лінії поза токенами.",
+        <ShowcaseDocSection section="accessibility">
+          <ShowcaseDocBulletList
+            items={[
+              "Tag і SubTag — <span>, декоративні; не інтерактивні (немає onClick).",
+              "Якщо тег веде на фільтр — обгортай у <button> або <a> з батька.",
+              "Не покладайтесь лише на колір hover — текст label залишається читабельним.",
             ]}
           />
-        </ShowcaseSection>
-      </ShowcasePageLayout>
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="usage-guidelines">
+          <ShowcaseDocUsageGuidelines
+            do={[
+              "Tag — категорії на картках (pill + hover блакитний)",
+              "SubTag — вторинна мітка («Проєкт») з underline на hover",
+              "Filter Chip — для toggle-фільтрів списку",
+            ]}
+            dont={[
+              "Не плутай Tag з Badge (×), Filter Chip (active), SubTag",
+              "Не додавай variant/active — лише Default + CSS hover",
+              "Не хардкодуй кольори поза токенами",
+            ]}
+            alternatives={[
+              { label: "Badge", path: "badge", note: "тег із dismiss" },
+              { label: "Filter Chip", path: "filter-chip", note: "фільтр з active" },
+            ]}
+          />
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="related-components">
+          <ShowcaseDocRelated
+            related={[
+              { label: "Badge", path: "badge" },
+              { label: "Filter Chip", path: "filter-chip" },
+            ]}
+            usedWith={[
+              { label: "Project Card", path: "project-card" },
+              { label: "News Card", path: "news-card" },
+              { label: "Media Card", path: "media-card" },
+            ]}
+          />
+        </ShowcaseDocSection>
+      </ShowcaseDocPage>
     </div>
   );
 }

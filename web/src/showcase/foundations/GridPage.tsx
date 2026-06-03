@@ -1,42 +1,88 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import {
   ShowcaseCodeBlock,
+  ShowcaseDocBulletList,
+  ShowcaseDocPage,
+  ShowcaseDocPropertiesTable,
+  ShowcaseDocRelated,
+  ShowcaseDocSection,
+  ShowcaseDocTokenUsageTable,
   ShowcaseDoDont,
-  ShowcasePageLayout,
-  ShowcaseSection,
   ShowcaseThemeProvider,
-  ShowcaseTokensList,
   useShowcaseTheme,
-  type TokenUsage,
 } from "../primitives";
 import styles from "./GridPage.module.css";
+import { useCssVarValues } from "../tokens/useCssVarValues";
 
-const QUICK_EXAMPLE = `<div className="container">
-  <div className="grid">
-    <div className="col-span-12">Full width</div>
-    <div className="col-span-6">Half</div>
-    <div className="col-span-6">Half</div>
-  </div>
-</div>`;
+const FIGMA_FILE_URL =
+  "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive";
 
-const TOKENS_USED: TokenUsage[] = [
-  { category: "Grid", name: "--grid-gutter", usedIn: "Gap між колонками (24px)" },
+const GRID_TOKEN_VARS = [
+  "--grid-gutter",
+  "--grid-columns-mobile",
+  "--grid-columns-tablet",
+  "--grid-columns-desktop",
+  "--container-tablet",
+  "--container-desktop",
+  "--container-desktop-xl",
+] as const;
+
+const TOKEN_USAGE_SAMPLE = [
+  { element: ".grid", property: "gap", token: "--grid-gutter" },
   {
-    category: "Grid",
-    name: "--grid-columns-mobile / tablet / desktop",
-    usedIn: "Кількість колонок .grid",
+    element: ".grid",
+    property: "grid-template-columns",
+    token: "--grid-columns-mobile",
   },
   {
-    category: "Grid",
-    name: "--container-mobile",
-    usedIn: "Mobile — fluid до 343px (документовано; cap у макеті)",
+    element: ".grid (tablet)",
+    property: "grid-template-columns",
+    token: "--grid-columns-tablet",
   },
-  { category: "Grid", name: "--container-tablet", usedIn: "Tablet max-width 760px" },
-  { category: "Grid", name: "--container-desktop", usedIn: "Desktop max-width 1440px" },
   {
-    category: "Grid",
-    name: "--container-desktop-xl",
-    usedIn: "Desktop XL max-width 1920px",
+    element: ".grid (desktop)",
+    property: "grid-template-columns",
+    token: "--grid-columns-desktop",
+  },
+  { element: ".container", property: "max-width", token: "--container-tablet" },
+  { element: ".container", property: "max-width", token: "--container-desktop" },
+  {
+    element: ".container",
+    property: "max-width",
+    token: "--container-desktop-xl",
+  },
+] as const;
+
+const GRID_PROPERTIES = [
+  {
+    property: "Breakpoints",
+    type: "layout",
+    optionsDefault: "768 / 1024 / 1920px",
+    description: "У @media — hardcoded px; решта розмірів через CSS variables.",
+  },
+  {
+    property: "Columns",
+    type: "responsive",
+    optionsDefault: "4 / 8 / 12",
+    description: "Mobile, tablet, desktop — --grid-columns-* на .grid.",
+  },
+  {
+    property: "Gutter",
+    type: "token",
+    optionsDefault: "--grid-gutter",
+    description: "Відстань між колонками (24px у поточній збірці).",
+  },
+  {
+    property: "Container",
+    type: "token",
+    optionsDefault: "--container-*",
+    description: "max-width на .container; центрування margin-inline: auto.",
+  },
+  {
+    property: "Utilities",
+    type: "class",
+    optionsDefault: ".container · .grid · .col-span-N",
+    description: "Імпорт grid.css у застосунку; не дублюй layout у flex для page shell.",
   },
 ];
 
@@ -187,6 +233,8 @@ function GridPageContent() {
     typeof window !== "undefined" ? window.innerWidth : 375,
   );
 
+  const usageValues = useCssVarValues(GRID_TOKEN_VARS);
+
   useEffect(() => {
     const onResize = () => setViewportWidth(window.innerWidth);
     onResize();
@@ -209,188 +257,220 @@ function GridPageContent() {
     return () => observer.disconnect();
   }, []);
 
-  const activeBp = resolveBreakpoint(viewportWidth);
+  const activeBp = useMemo(
+    () => resolveBreakpoint(viewportWidth),
+    [viewportWidth],
+  );
+
+  const tokenUsageRows = TOKEN_USAGE_SAMPLE.map((row) => ({
+    ...row,
+    value: usageValues[row.token] ?? "—",
+  }));
 
   return (
     <div className={styles.pageRoot} data-showcase-theme={theme}>
-      <ShowcasePageLayout
-        title="Grid System"
-        description="Центрований контейнер і 4 / 8 / 12 колонки з gutter 24px. Breakpoints 768 / 1024 / 1920px — у @media (hardcoded); решта — CSS variables з tokens.css."
+      <ShowcaseDocPage
+        title="Grid"
+        description="Центрований контейнер і 4 / 8 / 12 колонки з gutter 24px. Breakpoints 768 / 1024 / 1920px — у @media; решта — CSS variables з tokens.css."
+        status="stable"
+        updatedAt="2026-05-22"
+        figmaUrl={FIGMA_FILE_URL}
+        showViewportBar={false}
       >
-
-        <p className={styles.viewportBanner} aria-live="polite">
-          Current viewport: <strong>{viewportWidth}px</strong> → {activeBp.label} (
-          {activeBp.columns} cols, container {activeBp.container})
-        </p>
-
-        <ShowcaseSection title="Quick example">
-          <ShowcaseCodeBlock code={QUICK_EXAMPLE} language="tsx" />
-        </ShowcaseSection>
-
-        <ShowcaseSection
-          title="Breakpoints"
-          description="Center grid — контент центрується через margin-inline: auto на .container."
+        <ShowcaseDocSection
+          section="variants-gallery"
+          title="Grid gallery"
+          description="Breakpoints, live overlay і приклади col-span. Центрований .container — margin-inline: auto."
         >
-          <div className={styles.tableWrap}>
-            <table className={styles.table}>
-              <thead>
-                <tr>
-                  <th>Breakpoint</th>
-                  <th>Range</th>
-                  <th>Columns</th>
-                  <th>Container</th>
-                  <th>Gutter</th>
-                </tr>
-              </thead>
-              <tbody>
-                {BREAKPOINTS.map((row) => (
-                  <tr key={row.id}>
-                    <td>{row.label}</td>
-                    <td>{row.range}</td>
-                    <td>{row.columns}</td>
-                    <td>{row.container}</td>
-                    <td>24px</td>
+          <p className={styles.viewportNote} aria-live="polite">
+            Viewport: <strong>{viewportWidth}px</strong> → {activeBp.label} (
+            {activeBp.columns} cols, container {activeBp.container})
+          </p>
+
+          <div className={styles.galleryPart}>
+            <h3 className={styles.gallerySubheading}>Breakpoints</h3>
+            <div className={styles.tableWrap}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th scope="col">Breakpoint</th>
+                    <th scope="col">Range</th>
+                    <th scope="col">Columns</th>
+                    <th scope="col">Container</th>
+                    <th scope="col">Gutter</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {BREAKPOINTS.map((row) => (
+                    <tr key={row.id}>
+                      <td>{row.label}</td>
+                      <td>{row.range}</td>
+                      <td>{row.columns}</td>
+                      <td>{row.container}</td>
+                      <td>24px</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </ShowcaseSection>
 
-        <ShowcaseSection
-          title="Live grid overlay"
-          description="Контейнер на всю ширину preview; колонки та gutter відповідають поточній ширині (ResizeObserver)."
-        >
-          <div className={styles.overlayPanel} ref={overlayRef}>
-            <GridOverlay width={overlayWidth} />
+          <div className={styles.galleryPart}>
+            <h3 className={styles.gallerySubheading}>Live grid overlay</h3>
+            <p className={styles.galleryLead}>
+              Колонки та gutter відповідають ширині панелі (ResizeObserver).
+            </p>
+            <div className={styles.overlayPanel} ref={overlayRef}>
+              <GridOverlay width={overlayWidth} />
+            </div>
           </div>
-        </ShowcaseSection>
 
-        <ShowcaseSection
-          title="Examples"
-          description="Окремі preview на mobile / tablet / desktop — col-span під кількість колонок breakpoint."
-        >
-          <div className={styles.exampleList}>
-            <LayoutExample
-              title="Full width"
-              code={`<div className="col-span-4">  {/* mobile */}
+          <div className={styles.galleryPart}>
+            <h3 className={styles.gallerySubheading}>Layout examples</h3>
+            <p className={styles.galleryLead}>
+              Окремі preview на mobile / tablet / desktop — col-span під breakpoint.
+            </p>
+            <div className={styles.exampleList}>
+              <LayoutExample
+                title="Full width"
+                code={`<div className="col-span-4">  {/* mobile */}
 <div className="col-span-8">  {/* tablet */}
 <div className="col-span-12"> {/* desktop */}`}
-              mobile={
-                <div className={`col-span-4 ${styles.exampleCell}`}>col-span-4</div>
-              }
-              tablet={
-                <div className={`col-span-8 ${styles.exampleCell}`}>col-span-8</div>
-              }
-              desktop={
-                <div className={`col-span-12 ${styles.exampleCell}`}>col-span-12</div>
-              }
-            />
+                mobile={
+                  <div className={`col-span-4 ${styles.exampleCell}`}>col-span-4</div>
+                }
+                tablet={
+                  <div className={`col-span-8 ${styles.exampleCell}`}>col-span-8</div>
+                }
+                desktop={
+                  <div className={`col-span-12 ${styles.exampleCell}`}>col-span-12</div>
+                }
+              />
 
-            <LayoutExample
-              title="Half / Half"
-              code={`<div className="col-span-2">…</div>  {/* mobile 2+2 */}
+              <LayoutExample
+                title="Half / Half"
+                code={`<div className="col-span-2">…</div>  {/* mobile 2+2 */}
 <div className="col-span-4">…</div>  {/* tablet */}
 <div className="col-span-6">…</div>  {/* desktop */}`}
-              mobile={
-                <>
-                  <div className={`col-span-2 ${styles.exampleCell}`}>2</div>
-                  <div className={`col-span-2 ${styles.exampleCell}`}>2</div>
-                </>
-              }
-              tablet={
-                <>
-                  <div className={`col-span-4 ${styles.exampleCell}`}>4</div>
-                  <div className={`col-span-4 ${styles.exampleCell}`}>4</div>
-                </>
-              }
-              desktop={
-                <>
-                  <div className={`col-span-6 ${styles.exampleCell}`}>6</div>
-                  <div className={`col-span-6 ${styles.exampleCell}`}>6</div>
-                </>
-              }
-            />
+                mobile={
+                  <>
+                    <div className={`col-span-2 ${styles.exampleCell}`}>2</div>
+                    <div className={`col-span-2 ${styles.exampleCell}`}>2</div>
+                  </>
+                }
+                tablet={
+                  <>
+                    <div className={`col-span-4 ${styles.exampleCell}`}>4</div>
+                    <div className={`col-span-4 ${styles.exampleCell}`}>4</div>
+                  </>
+                }
+                desktop={
+                  <>
+                    <div className={`col-span-6 ${styles.exampleCell}`}>6</div>
+                    <div className={`col-span-6 ${styles.exampleCell}`}>6</div>
+                  </>
+                }
+              />
 
-            <LayoutExample
-              title="Thirds"
-              code={`col-span-4 (desktop) · col-span-2 (tablet, 3×) · col-span-2 (mobile, 2+1 wrap)`}
-              mobile={
-                <>
-                  <div className={`col-span-2 ${styles.exampleCell}`}>2</div>
-                  <div className={`col-span-2 ${styles.exampleCell}`}>2</div>
-                </>
-              }
-              tablet={
-                <>
-                  <div className={`col-span-2 ${styles.exampleCell}`}>2</div>
-                  <div className={`col-span-2 ${styles.exampleCell}`}>2</div>
-                  <div className={`col-span-2 ${styles.exampleCell}`}>2</div>
-                </>
-              }
-              desktop={
-                <>
-                  <div className={`col-span-4 ${styles.exampleCell}`}>4</div>
-                  <div className={`col-span-4 ${styles.exampleCell}`}>4</div>
-                  <div className={`col-span-4 ${styles.exampleCell}`}>4</div>
-                </>
-              }
-            />
+              <LayoutExample
+                title="Thirds"
+                code={`col-span-4 (desktop) · col-span-2 (tablet, 3×) · col-span-2 (mobile, 2+1 wrap)`}
+                mobile={
+                  <>
+                    <div className={`col-span-2 ${styles.exampleCell}`}>2</div>
+                    <div className={`col-span-2 ${styles.exampleCell}`}>2</div>
+                  </>
+                }
+                tablet={
+                  <>
+                    <div className={`col-span-2 ${styles.exampleCell}`}>2</div>
+                    <div className={`col-span-2 ${styles.exampleCell}`}>2</div>
+                    <div className={`col-span-2 ${styles.exampleCell}`}>2</div>
+                  </>
+                }
+                desktop={
+                  <>
+                    <div className={`col-span-4 ${styles.exampleCell}`}>4</div>
+                    <div className={`col-span-4 ${styles.exampleCell}`}>4</div>
+                    <div className={`col-span-4 ${styles.exampleCell}`}>4</div>
+                  </>
+                }
+              />
 
-            <LayoutExample
-              title="Sidebar layout"
-              code={`Sidebar col-span-4 + main col-span-8 (desktop)`}
-              mobile={
-                <>
+              <LayoutExample
+                title="Sidebar layout"
+                code={`Sidebar col-span-4 + main col-span-8 (desktop)`}
+                mobile={
                   <div className={`col-span-4 ${styles.exampleCell}`}>4</div>
-                </>
-              }
-              tablet={
-                <>
-                  <div className={`col-span-2 ${styles.exampleCell}`}>2</div>
-                  <div className={`col-span-6 ${styles.exampleCell}`}>6</div>
-                </>
-              }
-              desktop={
-                <>
-                  <div className={`col-span-4 ${styles.exampleCell}`}>4</div>
-                  <div className={`col-span-8 ${styles.exampleCell}`}>8</div>
-                </>
-              }
-            />
+                }
+                tablet={
+                  <>
+                    <div className={`col-span-2 ${styles.exampleCell}`}>2</div>
+                    <div className={`col-span-6 ${styles.exampleCell}`}>6</div>
+                  </>
+                }
+                desktop={
+                  <>
+                    <div className={`col-span-4 ${styles.exampleCell}`}>4</div>
+                    <div className={`col-span-8 ${styles.exampleCell}`}>8</div>
+                  </>
+                }
+              />
 
-            <LayoutExample
-              title="Card grid"
-              code={`3× col-span-4 на desktop; 2× col-span-2 mobile`}
-              mobile={
-                <>
-                  <div className={`col-span-2 ${styles.exampleCell}`}>Card</div>
-                  <div className={`col-span-2 ${styles.exampleCell}`}>Card</div>
-                </>
-              }
-              tablet={
-                <>
-                  <div className={`col-span-2 ${styles.exampleCell}`}>Card</div>
-                  <div className={`col-span-2 ${styles.exampleCell}`}>Card</div>
-                  <div className={`col-span-2 ${styles.exampleCell}`}>Card</div>
-                </>
-              }
-              desktop={
-                <>
-                  <div className={`col-span-4 ${styles.exampleCell}`}>Card</div>
-                  <div className={`col-span-4 ${styles.exampleCell}`}>Card</div>
-                  <div className={`col-span-4 ${styles.exampleCell}`}>Card</div>
-                </>
-              }
-            />
+              <LayoutExample
+                title="Card grid"
+                code={`3× col-span-4 на desktop; 2× col-span-2 mobile`}
+                mobile={
+                  <>
+                    <div className={`col-span-2 ${styles.exampleCell}`}>Card</div>
+                    <div className={`col-span-2 ${styles.exampleCell}`}>Card</div>
+                  </>
+                }
+                tablet={
+                  <>
+                    <div className={`col-span-2 ${styles.exampleCell}`}>Card</div>
+                    <div className={`col-span-2 ${styles.exampleCell}`}>Card</div>
+                    <div className={`col-span-2 ${styles.exampleCell}`}>Card</div>
+                  </>
+                }
+                desktop={
+                  <>
+                    <div className={`col-span-4 ${styles.exampleCell}`}>Card</div>
+                    <div className={`col-span-4 ${styles.exampleCell}`}>Card</div>
+                    <div className={`col-span-4 ${styles.exampleCell}`}>Card</div>
+                  </>
+                }
+              />
+            </div>
           </div>
-        </ShowcaseSection>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Tokens used">
-          <ShowcaseTokensList tokens={TOKENS_USED} />
-        </ShowcaseSection>
+        <ShowcaseDocSection
+          section="properties"
+          title="Properties & token usage"
+          description="Breakpoints і CSS variables для layout utilities."
+        >
+          <div className={styles.propertiesStack}>
+            <ShowcaseDocPropertiesTable rows={GRID_PROPERTIES} />
+            <ShowcaseDocTokenUsageTable rows={tokenUsageRows} />
+          </div>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Guidelines">
+        <ShowcaseDocSection
+          section="accessibility"
+          description="Сітка впливає на порядок читання та передбачуваність layout."
+        >
+          <ShowcaseDocBulletList
+            items={[
+              "DOM-порядок колонок має відповідати візуальному порядку читання (особливо sidebar + main).",
+              "Не покладайтесь лише на колір комірок overlay — підписи breakpoint обов'язкові.",
+              "На вузьких viewport перевіряй col-span: mobile має максимум 4 колонки.",
+              "Горизонтальний scroll сторінки через overflow на .container — анти-патерн.",
+            ]}
+          />
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="usage-guidelines">
           <ShowcaseDoDont
             do={[
               "Завжди обгортай сторінку у .container",
@@ -398,13 +478,27 @@ function GridPageContent() {
               "Думай mobile-first (4 col → 8 col → 12 col)",
             ]}
             dont={[
-              "НЕ хардкодуй ширини у px",
-              "НЕ використовуй .col-span-12 на mobile (там тільки 4 колонки)",
+              "НЕ хардкодуй ширини контейнера у px",
+              "НЕ використовуй .col-span-12 на mobile (там лише 4 колонки)",
               "НЕ змішуй grid з flex для page layout",
             ]}
           />
-        </ShowcaseSection>
-      </ShowcasePageLayout>
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection
+          section="related-components"
+          description="Інші foundation-сторінки."
+        >
+          <ShowcaseDocRelated
+            links={[
+              { label: "Colors", path: "colors" },
+              { label: "Typography", path: "typography" },
+              { label: "Spacing", path: "spacing" },
+              { label: "Radius", path: "radius" },
+            ]}
+          />
+        </ShowcaseDocSection>
+      </ShowcaseDocPage>
     </div>
   );
 }

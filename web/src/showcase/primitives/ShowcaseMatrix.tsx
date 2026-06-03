@@ -1,6 +1,6 @@
 import { isValidElement, useEffect, useRef, type ReactNode } from "react";
 import { useShowcaseViewport } from "../ShowcaseViewportContext";
-import { showcaseViewportFrameStyle } from "./showcaseViewportFrame";
+import { showcaseTypographyVars } from "../showcaseTypography";
 import styles from "./ShowcaseMatrix.module.css";
 
 export type ShowcaseMatrixAlign = "start" | "center" | "end";
@@ -128,7 +128,7 @@ export function ShowcaseMatrix({
                       <div className={styles.cellViewport}>
                         <div
                           className={bodyClass}
-                          style={showcaseViewportFrameStyle(viewportWidth)}
+                          style={showcaseTypographyVars(viewportWidth)}
                           data-showcase-typography={typographyMode}
                         >
                           {children}

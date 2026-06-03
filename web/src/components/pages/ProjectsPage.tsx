@@ -1,6 +1,10 @@
 import { useState } from "react";
 import styles from "./ProjectsPage.module.css";
 import { assets } from "../../figmaAssets";
+import {
+  POWERED_BY_LOGOS_ALT,
+  SUBPAGE_HERO_POWERED_BY_SRC,
+} from "../../design-system/shared/poweredByLogos";
 
 type ProjectItem = {
   title: string;
@@ -328,9 +332,13 @@ export function ProjectsPage() {
                   © {new Date().getFullYear()} Благодійний фонд Сергія Притули. Всі права
                   захищені.
                 </p>
-                <div className={styles.credit}>
-                  <img src={assets.creditLogo} alt="Open Tech" />
-                </div>
+                <img
+                  className={styles.credit}
+                  src={SUBPAGE_HERO_POWERED_BY_SRC}
+                  alt={POWERED_BY_LOGOS_ALT}
+                  decoding="async"
+                  draggable={false}
+                />
               </div>
             </div>
           </div>

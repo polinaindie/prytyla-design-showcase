@@ -1,5 +1,5 @@
 import { useEffect, useId, useRef, useState } from "react";
-import { IconChevronDown10 } from "../Icons";
+import { IconChevronDown10, IconDropdownArrow10 } from "../Icons";
 import { CurrencyOption } from "./CurrencyOption";
 import type { CurrencySelectProps } from "./CurrencySelect.types";
 import styles from "./CurrencySelect.module.css";
@@ -10,6 +10,7 @@ export function CurrencySelect({
   onChange,
   disabled = false,
   className,
+  appearance = "chip",
   open: openControlled,
   onOpenChange,
   defaultOpen = false,
@@ -53,7 +54,33 @@ export function CurrencySelect({
     };
   }, [open]);
 
-  const rootClass = [styles.root, className].filter(Boolean).join(" ");
+  const rootClass = [
+    styles.root,
+    appearance === "amount" ? styles.rootAmount : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const triggerClass = [
+    styles.trigger,
+    appearance === "amount" ? styles.triggerAmount : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  const chevronClass = [
+    appearance === "amount" ? styles.arrowAmount : styles.chevron,
+    !appearance || appearance === "chip"
+      ? open
+        ? styles.chevronOpen
+        : ""
+      : open
+        ? styles.arrowAmountOpen
+        : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   const toggleOpen = () => {
     if (disabled) return;
@@ -64,7 +91,7 @@ export function CurrencySelect({
     <div className={rootClass} ref={rootRef}>
       <button
         type="button"
-        className={styles.trigger}
+        className={triggerClass}
         disabled={disabled}
         aria-expanded={open}
         aria-haspopup="listbox"
@@ -72,13 +99,11 @@ export function CurrencySelect({
         onClick={toggleOpen}
       >
         <span className={styles.code}>{selected?.code ?? value}</span>
-        <IconChevronDown10
-          size={10}
-          className={[styles.chevron, open ? styles.chevronOpen : ""]
-            .filter(Boolean)
-            .join(" ")}
-          aria-hidden
-        />
+        {appearance === "amount" ? (
+          <IconDropdownArrow10 size={10} className={chevronClass} aria-hidden />
+        ) : (
+          <IconChevronDown10 size={10} className={chevronClass} aria-hidden />
+        )}
       </button>
       {open ? (
         <ul

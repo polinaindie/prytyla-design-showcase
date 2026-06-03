@@ -1,20 +1,28 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { LinkCard } from "../../design-system/LinkCard";
 import {
-  ShowcaseCodeBlock,
-  ShowcaseDoDont,
+  ShowcaseDocBulletList,
+  ShowcaseDocLivePreview,
+  ShowcaseDocPage,
+  ShowcaseDocPropertiesTable,
+  ShowcaseDocRelated,
+  ShowcaseDocSection,
+  ShowcaseDocTokenUsageTable,
+  ShowcaseDocUsageGuidelines,
   ShowcaseMatrix,
-  ShowcasePageLayout,
-  ShowcasePropsTable,
-  ShowcaseSection,
   ShowcaseThemeProvider,
-  ShowcaseTokensList,
-  type TokenUsage,
+  type DocPropertyRow,
+  type ShowcaseDocSizeOption,
+  SHOWCASE_DOC_SIZE_OPTIONS_TWO,
   useShowcaseTheme,
 } from "../primitives";
+import { useCssVarValues } from "../tokens/useCssVarValues";
 import styles from "./LinkCardShowcase.module.css";
 
-const QUICK_EXAMPLE = `import { LinkCard } from '@/design-system/LinkCard';
+const FIGMA_URL =
+  "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=40-12193";
+
+const LIVE_PREVIEW_CODE = `import { LinkCard } from "@/design-system/LinkCard";
 
 <LinkCard
   href="/reports"
@@ -23,128 +31,205 @@ const QUICK_EXAMPLE = `import { LinkCard } from '@/design-system/LinkCard';
   size="desktop"
 />`;
 
-const PROPS = [
-  { name: "title", type: "string", required: true, description: "Підпис картки." },
+const PROPERTY_ROWS: DocPropertyRow[] = [
   {
-    name: "illustration",
-    type: "Illustration3DVariant",
-    required: true,
-    description: "3D-ілюстрація зліва.",
+    property: "title",
+    type: "string",
+    typeKind: "TEXT",
+    optionsDefault: "required",
+    description: "Підпис картки.",
   },
   {
-    name: "size",
+    property: "illustration",
+    type: "Illustration3DVariant",
+    typeKind: "INSTANCE_SWAP",
+    optionsDefault: "required",
+    description: "3D-ілюстрація зліва (Illustration3D).",
+  },
+  {
+    property: "href",
+    type: "string",
+    typeKind: "TEXT",
+    optionsDefault: "required",
+    description: "URL посилання (<a>).",
+  },
+  {
+    property: "size",
     type: '"desktop" | "mobile"',
-    default: '"desktop"',
+    typeKind: "VARIANT",
+    optionsDefault: '"desktop"',
     description: "Desktop — зі стрілкою; mobile — компактна без стрілки.",
   },
-  { name: "href", type: "string", required: true, description: "URL посилання." },
+  {
+    property: "showIllustration",
+    type: "boolean",
+    typeKind: "BOOLEAN",
+    optionsDefault: "true",
+    description: "false — mobile text-only (Menu drawer).",
+  },
+  {
+    property: "titleSize",
+    type: '"desktop" | "mobile"',
+    typeKind: "VARIANT",
+    optionsDefault: "from size",
+    description: "Override font-size title (Figma mobile-open).",
+  },
 ];
 
-const TOKENS_USED: TokenUsage[] = [
-  {
-    category: "Color",
-    name: "--accent-primary",
-    usedIn: "Текст і стрілка (Figma text/accent)",
-  },
-  {
-    category: "Surface",
-    name: "--surface-page",
-    usedIn: "Hover (Figma section-warm ≈ orange-20)",
-  },
-  {
-    category: "Typography",
-    name: "--font-size-body-large, --font-size-caption",
-    usedIn: "Desktop 20px / mobile 12px",
-  },
-  {
-    category: "Layout",
-    name: "--space-6xlarge, --radius-large, --radius-medium",
-    usedIn: "Padding, radius",
-  },
-];
+const TOKEN_USAGE_SAMPLE = [
+  { element: "Root", property: "color", token: "--accent-primary" },
+  { element: "Root", property: "background", token: "rgba(255,255,255,0.6)" },
+  { element: "Hover", property: "background", token: "--surface-page" },
+  { element: "Desktop title", property: "font-size", token: "--font-size-body-large" },
+  { element: "Mobile title", property: "font-size", token: "--font-size-caption" },
+  { element: "Desktop", property: "border-radius", token: "--radius-large" },
+  { element: "Mobile", property: "border-radius", token: "--radius-medium" },
+  { element: "Focus", property: "outline", token: "--border-focus" },
+] as const;
 
 function LinkCardShowcasePage() {
   const { theme } = useShowcaseTheme();
-  const [copied, setCopied] = useState(false);
+  const [previewSize, setPreviewSize] = useState<ShowcaseDocSizeOption>("desktop");
 
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(QUICK_EXAMPLE);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
-    } catch {
-      /* ignore */
-    }
-  };
+  const tokenKeys = useMemo(
+    () =>
+      TOKEN_USAGE_SAMPLE.map((row) => row.token).filter((t) => t.startsWith("--")),
+    [],
+  );
+
+  const usageValues = useCssVarValues(tokenKeys);
+
+  const tokenUsageRows = TOKEN_USAGE_SAMPLE.map((row) => ({
+    element: row.element,
+    property: row.property,
+    token: row.token,
+    value: row.token.startsWith("--")
+      ? (usageValues[row.token] ?? "—")
+      : row.token,
+  }));
 
   return (
     <div className={styles.pageRoot} data-showcase-theme={theme}>
-      {copied ? (
-        <p className={styles.toast} aria-live="polite">
-          Copied!
-        </p>
-      ) : null}
-
-      <ShowcasePageLayout
+      <ShowcaseDocPage
         title="Link Card"
-        description="Картка-посилання з 3D-ілюстрацією. Figma Link card (40:12193)."
+        description="Картка-посилання з 3D-ілюстрацією; desktop зі стрілкою, mobile компактна."
+        status="stable"
+        version="1.0"
+        updatedAt="2026-05-22"
+        figmaUrl={FIGMA_URL}
+        showViewportBar={false}
       >
+        <ShowcaseDocSection
+          section="live-preview"
+          description="Desktop — hover зменшує ілюстрацію та змінює фон."
+        >
+          <ShowcaseDocLivePreview
+            caption={`size=${previewSize} · illustration=annualReports · hover — CSS.`}
+            code={LIVE_PREVIEW_CODE}
+            previewSize={previewSize}
+            onPreviewSizeChange={setPreviewSize}
+            previewSizeOptions={SHOWCASE_DOC_SIZE_OPTIONS_TWO}
+          >
+            <LinkCard
+              href="#"
+              title={previewSize === "mobile" ? "Звітність" : "Звітність фонду"}
+              illustration="annualReports"
+              size={previewSize as "desktop" | "mobile"}
+            />
+          </ShowcaseDocLivePreview>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Quick example">
-          <ShowcaseCodeBlock code={QUICK_EXAMPLE} />
-          <button type="button" onClick={handleCopy}>
-            Copy snippet
-          </button>
-        </ShowcaseSection>
-
-        <ShowcaseSection
-          title="Розміри"
-          description="Наведи на desktop — hover (фон + менша ілюстрація). Mobile без стрілки."
+        <ShowcaseDocSection
+          section="variants-gallery"
+          description="Default vs Hover на desktop."
         >
           <ShowcaseMatrix
-            columns={["Desktop", "Mobile"]}
+            columns={["Default", "Hover (наведіть курсор)"]}
             rows={[
               {
                 cells: [
                   <LinkCard
+                    key="d"
                     href="#"
                     title="Звітність фонду"
                     illustration="annualReports"
                     size="desktop"
                   />,
                   <LinkCard
+                    key="h"
                     href="#"
-                    title="Звітність"
+                    title="Звітність фонду"
                     illustration="annualReports"
-                    size="mobile"
+                    size="desktop"
+                    aria-label="Звітність — наведіть для hover"
                   />,
                 ],
               },
             ]}
           />
-        </ShowcaseSection>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Props">
-          <ShowcasePropsTable props={PROPS} />
-        </ShowcaseSection>
+        <ShowcaseDocSection section="properties">
+          <ShowcaseDocPropertiesTable rows={PROPERTY_ROWS} />
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Tokens">
-          <ShowcaseTokensList tokens={TOKENS_USED} />
-        </ShowcaseSection>
+        <ShowcaseDocSection section="token-usage">
+          <ShowcaseDocTokenUsageTable rows={tokenUsageRows} />
+          <p className={styles.note}>
+            Default glass rgba(255,255,255,0.6) — approved exception; desktop
+            padding використовує --pryt-brand-scale-* (layout).
+          </p>
+        </ShowcaseDocSection>
 
-        <ShowcaseSection title="Guidelines">
-          <ShowcaseDoDont
-            do={[
-              "Hover — CSS (:hover), фон --surface-page.",
-              "Desktop — Icon/40/Arrow-Left (у Figma вказує вправо); mobile без стрілки.",
-            ]}
-            dont={[
-              "Не додавай prop state=\"Hover\" — лише інтерактивний hover.",
-              "Не підставляй raw img замість Illustration3D.",
+        <ShowcaseDocSection section="accessibility">
+          <ShowcaseDocBulletList
+            items={[
+              "Нативний <a href> — title як текст посилання.",
+              "Стрілка desktop — aria-hidden (декоративна).",
+              "Focus-visible: outline --border-focus.",
+              "Зовнішні URL: target + rel з батька.",
             ]}
           />
-        </ShowcaseSection>
-      </ShowcasePageLayout>
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="usage-guidelines">
+          <ShowcaseDocUsageGuidelines
+            do={[
+              "Hover лише CSS — фон --surface-page",
+              "Illustration3D variant з каталогу /showcase/illustration-3d",
+              "Desktop у сітках звітності; mobile у Menu drawer",
+            ]}
+            dont={[
+              "Не додавай prop state=Hover",
+              "Не підставляй raw img замість Illustration3D",
+              "Не плутай з Directions External Links (list row)",
+            ]}
+            alternatives={[
+              {
+                label: "Directions External Links",
+                path: "directions-external-links",
+                note: "numbered list row",
+              },
+            ]}
+          />
+        </ShowcaseDocSection>
+
+        <ShowcaseDocSection section="related-components">
+          <ShowcaseDocRelated
+            related={[
+              { label: "Illustration 3D", path: "illustration-3d" },
+              {
+                label: "Directions External Links",
+                path: "directions-external-links",
+              },
+            ]}
+            usedWith={[
+              { label: "Menu", path: "menu" },
+              { label: "Sub Page Hero", path: "sub-page-hero" },
+            ]}
+          />
+        </ShowcaseDocSection>
+      </ShowcaseDocPage>
     </div>
   );
 }
