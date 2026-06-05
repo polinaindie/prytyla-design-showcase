@@ -1,5 +1,6 @@
 import { SubTag } from "../Tag/SubTag";
 import { Tag } from "../Tag/Tag";
+import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import type { NewsCardProps } from "./NewsCard.types";
 import styles from "./NewsCard.module.css";
 
@@ -55,7 +56,7 @@ export function NewsCard(props: NewsCardProps) {
         <div className={styles.imagePan}>
           <img
             className={styles.image}
-            src={imageSrc}
+            src={publicAssetUrl(imageSrc)}
             alt={imageAlt}
             decoding="async"
             draggable={false}

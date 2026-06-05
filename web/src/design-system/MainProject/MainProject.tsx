@@ -1,4 +1,5 @@
 import { ProgressBar } from "../ProgressBar";
+import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import type { MainProjectProps } from "./MainProject.types";
 import styles from "./MainProject.module.css";
 
@@ -44,7 +45,7 @@ export function MainProject({
         <div className={styles.imageMotion}>
           <img
             className={styles.image}
-            src={imageSrc}
+            src={publicAssetUrl(imageSrc)}
             alt={imageAlt}
             decoding="async"
             draggable={false}

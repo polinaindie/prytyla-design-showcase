@@ -7,6 +7,7 @@ import {
   type KeyboardEvent,
 } from "react";
 import { IconChevronRight20 } from "../Icons";
+import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import type { PhotoGalleryProps } from "./PhotoGallery.types";
 import styles from "./PhotoGallery.module.css";
 
@@ -151,7 +152,7 @@ export function PhotoGallery({
         <div className={styles.mainFrame}>
           <img
             className={styles.mainImage}
-            src={currentItem.src}
+            src={publicAssetUrl(currentItem.src)}
             alt={currentItem.alt ?? currentItem.caption}
             decoding="async"
             draggable={false}
@@ -204,7 +205,7 @@ export function PhotoGallery({
               >
                 <img
                   className={styles.mobileImage}
-                  src={item.src}
+                  src={publicAssetUrl(item.src)}
                   alt={item.alt ?? item.caption}
                   decoding="async"
                   draggable={false}
@@ -242,7 +243,7 @@ export function PhotoGallery({
               >
                 <img
                   className={styles.thumbnailImage}
-                  src={item.src}
+                  src={publicAssetUrl(item.src)}
                   alt=""
                   decoding="async"
                   draggable={false}

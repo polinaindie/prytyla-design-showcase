@@ -1,4 +1,5 @@
 import type { AnchorHTMLAttributes, HTMLAttributes } from "react";
+import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import type { MemorandumPartnerCardProps } from "./MemorandumPartnerCard.types";
 import styles from "./MemorandumPartnerCard.module.css";
 
@@ -9,7 +10,7 @@ export function MemorandumPartnerCard(props: MemorandumPartnerCardProps) {
   const content = (
     <img
       className={styles.logo}
-      src={logoSrc}
+      src={publicAssetUrl(logoSrc)}
       alt={logoAlt}
       decoding="async"
       draggable={false}

@@ -13,6 +13,7 @@ import {
   IconArrowRightDouble10,
   IconClose,
 } from "../Icons";
+import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import type { EvidenceViewerProps } from "./EvidenceViewer.types";
 import styles from "./EvidenceViewer.module.css";
 
@@ -215,7 +216,7 @@ export function EvidenceViewer({
               <img
                 className={styles.mediaImage}
                 data-zoomed={zoomed || undefined}
-                src={currentItem.src}
+                src={publicAssetUrl(currentItem.src)}
                 alt={currentItem.alt ?? title}
                 decoding="async"
                 draggable={false}

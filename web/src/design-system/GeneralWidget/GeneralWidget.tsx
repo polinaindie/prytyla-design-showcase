@@ -16,6 +16,7 @@ import { useGeneralWidgetPageScroll } from "./useGeneralWidgetPageScroll";
 import { useStableProgressSectionHeight } from "./useStableProgressSectionHeight";
 import { GENERAL_WIDGET_IMAGE_MAX_H } from "./generalWidgetScroll";
 import { Button } from "../Button";
+import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import { Checkbox } from "../Checkbox";
 import { ChipPaymentType } from "../ChipPaymentType";
 import { CurrencySelect } from "../CurrencySelect";
@@ -154,7 +155,7 @@ function ProgressBlock({
         <img
           className={thumbClass}
           style={thumbStyle}
-          src={thumbSrc}
+          src={publicAssetUrl(thumbSrc ?? "")}
           alt={thumbAlt ?? ""}
         />
       ) : null}
@@ -960,7 +961,7 @@ export function GeneralWidget({
           <div className={styles.hero}>
             <img
               className={styles.heroImage}
-              src={hero.src}
+              src={publicAssetUrl(hero.src)}
               alt={hero.alt}
             />
           </div>
@@ -1108,7 +1109,7 @@ export function GeneralWidget({
             <div className={styles.articleHeroLayer} style={heroLayerStyle}>
               <img
                 className={styles.heroImage}
-                src={hero.src}
+                src={publicAssetUrl(hero.src)}
                 alt={hero.alt}
               />
             </div>
@@ -1251,7 +1252,7 @@ export function GeneralWidget({
         <div className={styles.hero}>
           <img
             className={styles.heroImage}
-            src={hero.src}
+            src={publicAssetUrl(hero.src)}
             alt={hero.alt}
           />
         </div>

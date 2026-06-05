@@ -1,4 +1,5 @@
 import { IconArrowUpRight10, IconArrowUpRight32 } from "../Icons";
+import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import type { MediaCardProps } from "./MediaCard.types";
 import styles from "./MediaCard.module.css";
 
@@ -27,7 +28,7 @@ export function MediaCard({
           <div className={styles.logoDefault}>
             <img
               className={styles.logoImage}
-              src={logoSrc}
+              src={publicAssetUrl(logoSrc)}
               alt={logoAlt}
               decoding="async"
               draggable={false}
@@ -40,7 +41,7 @@ export function MediaCard({
             <div className={styles.logoCompact}>
               <img
                 className={styles.logoImage}
-                src={logoSrc}
+                src={publicAssetUrl(logoSrc)}
                 alt=""
                 aria-hidden
                 decoding="async"

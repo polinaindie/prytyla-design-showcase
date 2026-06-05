@@ -1,4 +1,5 @@
 import type { AnchorHTMLAttributes, HTMLAttributes } from "react";
+import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import type { PartnerCardProps } from "./PartnerCard.types";
 import styles from "./PartnerCard.module.css";
 
@@ -34,7 +35,7 @@ export function PartnerCard(props: PartnerCardProps) {
           (logoSrc ? (
             <img
               className={styles.logo}
-              src={logoSrc}
+              src={publicAssetUrl(logoSrc)}
               alt={logoAlt ?? ""}
               decoding="async"
               draggable={false}

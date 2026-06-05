@@ -12,6 +12,7 @@ import {
   POWERED_BY_LOGOS_ALT,
   POWERED_BY_LOGOS_SRC,
 } from "../shared/poweredByLogos";
+import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import type {
   FooterProps,
   FooterSocialLink,
@@ -202,7 +203,7 @@ export function Footer({
             <p className={styles.copyright}>{copyright}</p>
             <img
               className={styles.poweredBy}
-              src={poweredBySrc}
+              src={publicAssetUrl(poweredBySrc)}
               alt={poweredByAlt}
               decoding="async"
               draggable={false}

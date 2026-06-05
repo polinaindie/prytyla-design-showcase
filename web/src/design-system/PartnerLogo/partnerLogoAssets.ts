@@ -67,7 +67,7 @@ export const PARTNER_LOGO_ASSETS: Record<PartnerLogoVariant, PartnerLogoAsset> =
     defaultAlt: "ПриватБанк",
   },
   wog: {
-    src: "/brand/partner-logos/wog.png",
+    src: "/brand/partner-logos/wog.svg",
     defaultAlt: "WOG",
   },
   uniqa: {

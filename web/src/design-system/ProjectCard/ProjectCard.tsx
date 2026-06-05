@@ -1,4 +1,5 @@
 import { ProgressBar } from "../ProgressBar";
+import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import type { ProjectCardProps } from "./ProjectCard.types";
 import styles from "./ProjectCard.module.css";
 
@@ -45,7 +46,7 @@ export function ProjectCard({
           <div className={styles.imageMotion}>
             <img
               className={styles.image}
-              src={imageSrc}
+              src={publicAssetUrl(imageSrc)}
               alt={imageAlt}
               decoding="async"
               draggable={false}

@@ -3,12 +3,13 @@
  * (e.g. `/prytyla-design-showcase/` on GitHub Pages).
  */
 export function publicAssetUrl(path: string): string {
-  const clean = path.replace(/^\//, "");
+  if (!path) return path;
+  if (/^(https?:|data:|blob:)/.test(path)) return path;
+
   const base = import.meta.env.BASE_URL;
+  if (base && base !== "/" && path.startsWith(base)) return path;
 
-  if (!base || base === "/") {
-    return `/${clean}`;
-  }
-
+  const clean = path.replace(/^\//, "");
+  if (!base || base === "/") return `/${clean}`;
   return `${base}${clean}`;
 }
