@@ -68,6 +68,9 @@ VariableID:166:4094	Alias	bg/inverse-strong	COLOR	alias:VariableID:161:3681
 VariableID:166:4095	Alias	bg/badge	COLOR	alias:VariableID:161:3640
 VariableID:166:4096	Alias	bg/accent	COLOR	alias:VariableID:161:3699
 VariableID:166:4097	Alias	bg/info	COLOR	alias:VariableID:161:3683
+VariableID:cal:range1	Alias	bg/range-highlight	COLOR	alias:VariableID:161:3683
+VariableID:ev:overlay1	Alias	bg/overlay	COLOR	rgba(15, 15, 15, 0.6)
+VariableID:cal:shadow1	Alias	shadow/popover	STRING	0px 4px 3px rgba(0, 0, 0, 0.1), 0px 2px 2px rgba(0, 0, 0, 0.1)
 VariableID:208:3689	Alias	text/primary	COLOR	alias:VariableID:161:3681
 VariableID:208:3690	Alias	text/secondary	COLOR	alias:VariableID:161:3677
 VariableID:208:3691	Alias	text/tertiary	COLOR	alias:VariableID:161:3675
@@ -134,6 +137,7 @@ VariableID:219:3771	Brand	Scale/1600	FLOAT	64
 VariableID:219:3772	Brand	Scale/2000	FLOAT	80
 VariableID:219:3773	Brand	Scale/2400	FLOAT	96
 VariableID:219:3774	Brand	Scale/3200	FLOAT	128
+VariableID:299:0011	Brand	Scale/550	FLOAT	22
 VariableID:219:3777	Alias	radius/none	FLOAT	alias:VariableID:208:3756
 VariableID:219:3778	Alias	radius/small	FLOAT	alias:VariableID:208:3757
 VariableID:219:3779	Alias	radius/medium	FLOAT	alias:VariableID:208:3758
@@ -159,9 +163,11 @@ VariableID:219:3826	Alias	space/5xlarge	FLOAT	alias:VariableID:219:3769
 VariableID:219:3827	Alias	space/6xlarge	FLOAT	alias:VariableID:219:3771
 VariableID:219:3828	Alias	space/7xlarge	FLOAT	alias:VariableID:219:3772
 VariableID:219:3829	Alias	space/8xlarge	FLOAT	alias:VariableID:219:3773
+VariableID:299:0012	Alias	space/chart-card-x	FLOAT	alias:VariableID:208:3763
 VariableID:16:9984	Alias	spacing/card-progress-gap	FLOAT	14
 VariableID:219:3831	Alias	size/xsmall	FLOAT	alias:VariableID:208:3757
 VariableID:299:0010	Alias	size/2xsmall	FLOAT	10
+VariableID:299:0013	Alias	size/chart-bar	FLOAT	alias:VariableID:299:0011
 VariableID:219:3832	Alias	size/small	FLOAT	alias:VariableID:208:3760
 VariableID:219:3833	Alias	size/medium	FLOAT	alias:VariableID:208:3761
 VariableID:219:3834	Alias	size/large	FLOAT	alias:VariableID:208:3762

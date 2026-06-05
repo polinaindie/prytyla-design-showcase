@@ -57,6 +57,7 @@ export {
 } from "../ShowcaseViewportContext";
 export {
   figmaComponentSizeBinaryForViewportWidth,
+  sortControlLayoutForViewportWidth,
   figmaComponentSizeForViewportWidth,
   menuSizeForViewportWidth,
   typographyModeForWidth,

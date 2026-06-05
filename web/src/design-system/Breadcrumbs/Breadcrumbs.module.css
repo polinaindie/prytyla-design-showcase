@@ -1,0 +1,85 @@
+/* Figma Breadcrumbs 997:20030 — Body/Small, gap-tight, Breadcrumb Arrow 3:6956 */
+
+.root {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.list {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--spacing-gap-tight);
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  container-type: inline-size;
+}
+
+.item {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--spacing-gap-tight);
+  min-width: 0;
+}
+
+.item:last-child {
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.link,
+.current {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-small);
+  font-weight: 400;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+.link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.link:hover {
+  color: var(--text-default);
+}
+
+.link:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-small);
+}
+
+.current {
+  color: var(--text-default);
+}
+
+/* Long page title truncates when track is narrow (Figma < 768); fluid in any constrained width. */
+@container (max-width: 767px) {
+  .item:last-child {
+    overflow: hidden;
+    max-width: 100%;
+  }
+
+  .item:last-child .current {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.separator {
+  flex-shrink: 0;
+  color: var(--icon-muted);
+}

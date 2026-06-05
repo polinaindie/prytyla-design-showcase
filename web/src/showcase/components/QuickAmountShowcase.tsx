@@ -9,8 +9,6 @@ import {
   ShowcaseDocSection,
   ShowcaseDocTokenUsageTable,
   ShowcaseDocUsageGuidelines,
-  ShowcaseMatrix,
-  ShowcasePreview,
   ShowcaseThemeProvider,
   type DocPropertyRow,
   useShowcaseTheme,
@@ -61,6 +59,7 @@ const PROPERTY_ROWS: DocPropertyRow[] = [
 const TOKEN_USAGE_SAMPLE = [
   { element: "Root", property: "background", token: "--surface-subtle-neutral" },
   { element: "Root", property: "border", token: "--border-default" },
+  { element: "Hover", property: "background", token: "--surface-page" },
   { element: "Hover", property: "border / shadow", token: "--accent-secondary" },
   { element: "Amount", property: "color", token: "--text-default" },
   { element: "Currency", property: "color", token: "--text-muted" },
@@ -98,54 +97,18 @@ function QuickAmountShowcasePage() {
       >
         <ShowcaseDocSection
           section="live-preview"
-          description="Ряд типових preset сум у donate widget."
+          description="Ряд типових preset сум у donate widget; hover — CSS."
         >
           <ShowcaseDocLivePreview
-            caption="amount=500 · currency=UAH · hover — CSS на другій пілюлі в gallery."
+            caption="amounts 100–5000 · currency=UAH · hover — наведи на пілюлю."
             code={LIVE_PREVIEW_CODE}
           >
-            <QuickAmount amount={500} />
-          </ShowcaseDocLivePreview>
-        </ShowcaseDocSection>
-
-        <ShowcaseDocSection
-          section="variants-gallery"
-          description="Default / hover (наведи); ряд preset; disabled."
-        >
-          <p className={styles.galleryCaption}>
-            Preset row · amounts 100–5000
-          </p>
-          <ShowcasePreview className={styles.preview}>
             <div className={styles.row}>
               {DEMO_AMOUNTS.map((value) => (
                 <QuickAmount key={value} amount={value} />
               ))}
             </div>
-          </ShowcasePreview>
-
-          <p className={styles.galleryCaption}>
-            Default vs Hover · наведи на другу пілюлю
-          </p>
-          <ShowcaseMatrix
-            columns={["Default", "Hover"]}
-            rows={[
-              {
-                cells: [
-                  <QuickAmount key="d" amount={500} />,
-                  <QuickAmount
-                    key="h"
-                    amount={500}
-                    aria-label="500 гривень — наведіть для hover"
-                  />,
-                ],
-              },
-            ]}
-          />
-
-          <p className={styles.galleryCaption}>disabled=true</p>
-          <ShowcasePreview className={styles.preview}>
-            <QuickAmount amount={500} disabled />
-          </ShowcasePreview>
+          </ShowcaseDocLivePreview>
         </ShowcaseDocSection>
 
         <ShowcaseDocSection section="properties">

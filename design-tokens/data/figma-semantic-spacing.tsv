@@ -1,0 +1,31 @@
+# Prytula-Responsive — Semantic spacing (FLOAT, px via Brand Scale/* step).
+# Modes: Mobile (<768), Tablet (768–1023), Desktop (1024+). Synced from Figma 2026-06-04.
+# Step → px: 100=4, 150=6, 200=8, 250=10, 300=12, 350=14, 400=16, 450=18, 500=20, 600=24, 800=32, 1000=40, 1100=56, 1200=48, 1600=64, 2000=80, 2400=96
+# Regenerate CSS: npm run build:tokens
+VariableID	Collection	Name	Type	Mobile	Tablet	Desktop
+VariableID:sem:001	Semantic	spacing/section-y-default	FLOAT	64	80	96
+VariableID:sem:002	Semantic	spacing/section-y-tight	FLOAT	48	64	80
+VariableID:sem:003	Semantic	spacing/section-x	FLOAT	16	16	24
+VariableID:sem:004	Semantic	spacing/banner-tight	FLOAT	32	32	32
+VariableID:sem:005	Semantic	spacing/banner-default	FLOAT	24	32	40
+VariableID:sem:006	Semantic	spacing/banner-emphasized	FLOAT	24	32	48
+VariableID:sem:007	Semantic	spacing/card-compact	FLOAT	12	12	12
+VariableID:sem:008	Semantic	spacing/card-standard	FLOAT	16	16	16
+VariableID:sem:009	Semantic	spacing/card-medium-tight	FLOAT	20	20	20
+VariableID:sem:010	Semantic	spacing/card-medium	FLOAT	16	16	24
+VariableID:sem:011	Semantic	spacing/card-spacious	FLOAT	16	16	32
+VariableID:sem:012	Semantic	spacing/card-content-gap	FLOAT	20	20	20
+VariableID:sem:013	Semantic	spacing/gap-xs	FLOAT	4	4	4
+VariableID:sem:014	Semantic	spacing/gap-sm	FLOAT	8	8	8
+VariableID:sem:015	Semantic	spacing/gap-md	FLOAT	12	12	12
+VariableID:sem:016	Semantic	spacing/gap-lg	FLOAT	16	16	24
+VariableID:sem:017	Semantic	spacing/gap-xl	FLOAT	16	24	32
+VariableID:sem:018	Semantic	spacing/gap-2xl	FLOAT	32	48	64
+VariableID:sem:019	Semantic	spacing/gap-hero-heading	FLOAT	18	18	18
+VariableID:sem:020	Semantic	spacing/gap-tight	FLOAT	10	10	10
+VariableID:sem:021	Semantic	spacing/gap-xxs	FLOAT	6	6	6
+VariableID:sem:022	Semantic	spacing/button-height	FLOAT	56	56	56
+VariableID:sem:023	Semantic	spacing/button-px	FLOAT	24	24	24
+VariableID:sem:024	Semantic	spacing/button-py	FLOAT	10	10	10
+VariableID:sem:025	Semantic	spacing/card-progress-gap	FLOAT	14	14	14
+VariableID:sem:026	Semantic	spacing/footer-padding-top	FLOAT	64	64	64

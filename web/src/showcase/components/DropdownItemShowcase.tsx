@@ -9,7 +9,6 @@ import {
   ShowcaseDocSection,
   ShowcaseDocTokenUsageTable,
   ShowcaseDocUsageGuidelines,
-  ShowcasePreview,
   ShowcaseThemeProvider,
   type DocPropertyRow,
   useShowcaseTheme,
@@ -110,42 +109,6 @@ function DropdownItemShowcasePage() {
               ))}
             </ul>
           </ShowcaseDocLivePreview>
-        </ShowcaseDocSection>
-
-        <ShowcaseDocSection
-          section="variants-gallery"
-          description="Default / hover (CSS) / disabled у списку."
-        >
-          <p className={styles.galleryCaption}>
-            Interactive menu · width від контейнера (145px Figma ref)
-          </p>
-          <ShowcasePreview className={styles.preview}>
-            <ul className={styles.menu}>
-              {SORT_OPTIONS.map((label) => (
-                <li key={label}>
-                  <DropdownItem
-                    onClick={() => setSelected(label)}
-                    aria-current={selected === label ? "true" : undefined}
-                  >
-                    {label}
-                  </DropdownItem>
-                </li>
-              ))}
-            </ul>
-            <p className={styles.cellLabel}>Обрано: {selected}</p>
-          </ShowcasePreview>
-
-          <p className={styles.galleryCaption}>disabled=true · останній пункт</p>
-          <ShowcasePreview className={styles.preview}>
-            <ul className={styles.menu}>
-              <li>
-                <DropdownItem>Enabled row</DropdownItem>
-              </li>
-              <li>
-                <DropdownItem disabled>Disabled row</DropdownItem>
-              </li>
-            </ul>
-          </ShowcasePreview>
         </ShowcaseDocSection>
 
         <ShowcaseDocSection section="properties">

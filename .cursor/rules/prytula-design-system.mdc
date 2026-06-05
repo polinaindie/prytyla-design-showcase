@@ -132,10 +132,13 @@ Five Mapped tokens share the **same CSS variable name** as their Alias target. `
 
 ---
 
-## Alias tokens (76) — public API
+## Alias tokens (78) — public API
 
-### bg (10)
-`bg/page` → `--bg-page` · `bg/surface` → `--bg-surface` · `bg/subtle-info` → `--bg-subtle-info` · `bg/subtle-accent` → `--bg-subtle-accent` · `bg/subtle-neutral` → `--bg-subtle-neutral` · `bg/inverse` → `--bg-inverse` · `bg/inverse-strong` → `--bg-inverse-strong` · `bg/badge` → `--bg-badge` · `bg/accent` → `--bg-accent` · `bg/info` → `--bg-info`
+### bg (11)
+`bg/page` → `--bg-page` · `bg/surface` → `--bg-surface` · `bg/subtle-info` → `--bg-subtle-info` · `bg/subtle-accent` → `--bg-subtle-accent` · `bg/subtle-neutral` → `--bg-subtle-neutral` · `bg/inverse` → `--bg-inverse` · `bg/inverse-strong` → `--bg-inverse-strong` · `bg/badge` → `--bg-badge` · `bg/accent` → `--bg-accent` · `bg/info` → `--bg-info` · `bg/range-highlight` → `--bg-range-highlight` (→ blue/100)
+
+### shadow (1)
+`shadow/popover` → `--shadow-popover` (calendar picker, popovers)
 
 ### text (8)
 `text/primary` → `--text-primary` · `text/secondary` → `--text-secondary` · `text/tertiary` → `--text-tertiary` · `text/disabled` → `--text-disabled` · `text/inverse` → `--text-inverse` · `text/inverse-muted` → `--text-inverse-muted` · `text/link` → `--text-link` · `text/on-accent` → `--text-on-accent`
@@ -153,7 +156,7 @@ Five Mapped tokens share the **same CSS variable name** as their Alias target. `
 `feedback/success` → `--feedback-success` · `feedback/success-bg` → `--feedback-success-bg` · `feedback/error` → `--feedback-error` · `feedback/error-bg` → `--feedback-error-bg` · `feedback/warning` → `--feedback-warning` · `feedback/warning-bg` → `--feedback-warning-bg` · `feedback/info` → `--feedback-info` · `feedback/info-bg` → `--feedback-info-bg`
 
 ### space (15)
-`space/none` → `--space-none` · `space/3xsmall` → `--space-3xsmall` · `space/2xsmall` → `--space-2xsmall` · `space/xsmall` → `--space-xsmall` · `space/small` → `--space-small` · `space/medium` → `--space-medium` · `space/large` → `--space-large` · `space/xlarge` → `--space-xlarge` · `space/2xlarge` → `--space-2xlarge` · `space/3xlarge` → `--space-3xlarge` · `space/4xlarge` → `--space-4xlarge` · `space/5xlarge` → `--space-5xlarge` · `space/6xlarge` → `--space-6xlarge` · `space/7xlarge` → `--space-7xlarge` · `space/8xlarge` → `--space-8xlarge`
+`space/none` → `--space-none` · `space/3xsmall` → `--space-3xsmall` · `space/2xsmall` → `--space-2xsmall` · `space/xsmall` → `--space-xsmall` · `space/small` → `--space-small` · `space/medium` → `--space-medium` · `space/large` → `--space-large` · `space/xlarge` → `--space-xlarge` · `space/2xlarge` → `--space-2xlarge` · `space/3xlarge` → `--space-3xlarge` · `space/4xlarge` → `--space-4xlarge` · `space/5xlarge` → `--space-5xlarge` · `space/6xlarge` → `--space-6xlarge` · `space/7xlarge` → `--space-7xlarge` · `space/8xlarge` → `--space-8xlarge` · `space/chart-card-x` → `--space-chart-card-x` (28px, Impact chart card horizontal padding)
 
 ### radius (7)
 `radius/none` → `--radius-none` · `radius/small` → `--radius-small` · `radius/medium` → `--radius-medium` · `radius/large` → `--radius-large` · `radius/xlarge` → `--radius-xlarge` · `radius/2xlarge` → `--radius-2xlarge` · `radius/round` → `--radius-round`
@@ -162,7 +165,7 @@ Five Mapped tokens share the **same CSS variable name** as their Alias target. `
 `border-width/none` → `--border-width-none` · `border-width/small` → `--border-width-small` · `border-width/medium` → `--border-width-medium`
 
 ### size (10)
-`size/xsmall` → `--size-xsmall` · `size/small` → `--size-small` · `size/medium` → `--size-medium` · `size/large` → `--size-large` · `size/xlarge` → `--size-xlarge` · `size/2xlarge` → `--size-2xlarge` · `size/3xlarge` → `--size-3xlarge` · `size/4xlarge` → `--size-4xlarge` · `size/5xlarge` → `--size-5xlarge` · `size/6xlarge` → `--size-6xlarge`
+`size/xsmall` → `--size-xsmall` · `size/small` → `--size-small` · `size/medium` → `--size-medium` · `size/large` → `--size-large` · `size/xlarge` → `--size-xlarge` · `size/2xlarge` → `--size-2xlarge` · `size/3xlarge` → `--size-3xlarge` · `size/4xlarge` → `--size-4xlarge` · `size/5xlarge` → `--size-5xlarge` · `size/6xlarge` → `--size-6xlarge` · `size/chart-bar` → `--size-chart-bar` (22px, Impact chart row height)
 
 ---
 

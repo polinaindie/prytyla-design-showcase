@@ -1,3 +1,4 @@
+export { IconBreadcrumbArrow7 } from "./IconBreadcrumbArrow7";
 export { IconChevronDown10 } from "./IconChevronDown10";
 export { IconDropdownArrow10 } from "./IconDropdownArrow10";
 export { IconArrowLeft10 } from "./IconArrowLeft10";

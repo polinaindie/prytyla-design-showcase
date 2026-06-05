@@ -9,7 +9,6 @@ import {
   ShowcaseDocSection,
   ShowcaseDocTokenUsageTable,
   ShowcaseDocUsageGuidelines,
-  ShowcasePreview,
   ShowcaseThemeProvider,
   type DocPropertyRow,
   useShowcaseTheme,
@@ -127,44 +126,11 @@ function CurrencySelectShowcasePage() {
           description="Закритий тригер; клік відкриває listbox."
         >
           <ShowcaseDocLivePreview
-            caption="value=USD · open=false · 9 options in menu."
+            caption={`value=${value} · 9 options · клік відкриває listbox · Escape / click outside закриває.`}
             code={LIVE_PREVIEW_CODE}
           >
             <CurrencySelect options={options} value={value} onChange={setValue} />
           </ShowcaseDocLivePreview>
-        </ShowcaseDocSection>
-
-        <ShowcaseDocSection
-          section="variants-gallery"
-          description="Стани open / disabled; hover на пунктах — CSS."
-        >
-          <p className={styles.galleryCaption}>open=true · controlled</p>
-          <ShowcasePreview className={styles.preview}>
-            <CurrencySelect
-              options={options}
-              value="EUR"
-              onChange={() => {}}
-              open
-              onOpenChange={() => {}}
-            />
-          </ShowcasePreview>
-
-          <p className={styles.galleryCaption}>disabled=true</p>
-          <ShowcasePreview className={styles.preview}>
-            <CurrencySelect
-              options={options}
-              value="USD"
-              onChange={() => {}}
-              disabled
-            />
-          </ShowcasePreview>
-
-          <p className={styles.galleryCaption}>
-            Interactive · value={value} · click outside / Escape closes
-          </p>
-          <ShowcasePreview className={styles.preview}>
-            <CurrencySelect options={options} value={value} onChange={setValue} />
-          </ShowcasePreview>
         </ShowcaseDocSection>
 
         <ShowcaseDocSection section="properties">

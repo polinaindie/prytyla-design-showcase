@@ -1,0 +1,26 @@
+.pageRoot {
+  min-width: 0;
+}
+
+.livePreviewPanel {
+  padding: var(--space-3xlarge);
+  background: var(--surface-subtle-neutral);
+}
+
+.variants {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xlarge);
+}
+
+.variantBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-small);
+}
+
+.variantLabel {
+  margin: 0;
+  font-size: var(--font-size-caption);
+  color: var(--text-secondary);
+}

@@ -1,10 +1,10 @@
-/* 48px preview artboard (3rem layout chrome) */
+/* 48px preview artboard — Scale/1200 */
 .previewBox {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 3rem;
-  height: 3rem;
+  width: var(--pryt-brand-scale-1200);
+  height: var(--pryt-brand-scale-1200);
   flex-shrink: 0;
 }
 
@@ -46,7 +46,7 @@
   color: var(--text-inverse);
 }
 
-/* Cell min-width per category — TODO: tokenize showcase cell widths */
+/* Cell min-width: icon artboard + padding (--space-large) + label */
 .gridBase {
   display: grid;
   gap: var(--space-medium);
@@ -54,26 +54,41 @@
 }
 
 .gridTiny {
-  grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(calc(var(--pryt-brand-scale-2000) + var(--space-small)), 1fr)
+  );
 }
 
 .gridSmall {
-  grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(var(--pryt-brand-scale-2400), 1fr)
+  );
 }
 
 .gridUi,
 .gridSocial,
 .gridPayment,
 .gridBrand {
-  grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(calc(var(--pryt-brand-scale-2400) + var(--space-small)), 1fr)
+  );
 }
 
 .gridLarge {
-  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(var(--pryt-brand-scale-3200), 1fr)
+  );
 }
 
 .gridIllustration {
-  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(calc(var(--pryt-brand-scale-3200) + var(--space-large)), 1fr)
+  );
 }
 
 .searchCount {

@@ -3,9 +3,11 @@ import type { GeneralWidgetPaymentTab } from "./GeneralWidget.types";
 /** px — діапазон scrollY для повної анімації collapse (t = clamp(y / RANGE, 0, 1)) */
 export const GENERAL_WIDGET_SCROLL_RANGE = 260;
 
-/** Figma 915:14314 — desktop/laptop article card */
+/** Figma 915:14314 — wide desktop / desktop / laptop article card */
 export const GENERAL_WIDGET_ARTICLE_DESKTOP_WIDTH_PX = 329;
-/** Mobile article — fluid container, ширина 343px */
+/** Figma 947:14263 (full) · 1107:26075 (collapsed) — tablet article */
+export const GENERAL_WIDGET_ARTICLE_TABLET_WIDTH_PX = 736;
+/** Figma 947:19185 — mobile article fluid container */
 export const GENERAL_WIDGET_ARTICLE_MOBILE_WIDTH_PX = 343;
 
 export const GENERAL_WIDGET_IMAGE_MAX_H = 374;

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Accordion, AccordionItem } from "../../design-system/Accordion";
 import {
   ShowcaseDocBulletList,
@@ -11,7 +11,10 @@ import {
   ShowcaseDocUsageGuidelines,
   ShowcasePreview,
   ShowcaseThemeProvider,
+  showcaseViewportName,
+  showcaseViewportWidth,
   type DocPropertyRow,
+  type ShowcaseViewportId,
   useShowcaseTheme,
 } from "../primitives";
 import { useCssVarValues } from "../tokens/useCssVarValues";
@@ -93,7 +96,7 @@ const PROPERTY_ROWS: DocPropertyRow[] = [
 ];
 
 const TOKEN_USAGE_SAMPLE = [
-  { element: "Item", property: "background (hover/open)", token: "--accent-highlight" },
+  { element: "Item", property: "background (hover)", token: "--accent-highlight" },
   { element: "Item", property: "border", token: "--border-strong" },
   { element: "Question", property: "color", token: "--text-default" },
   { element: "Question", property: "font-size", token: "--font-size-heading-h4" },
@@ -127,6 +130,10 @@ function FaqList() {
 
 function AccordionShowcasePage() {
   const { theme } = useShowcaseTheme();
+  const [previewViewportId, setPreviewViewportId] =
+    useState<ShowcaseViewportId>("1440");
+
+  const previewWidth = showcaseViewportWidth(previewViewportId);
 
   const usageValues = useCssVarValues(
     useMemo(() => TOKEN_USAGE_SAMPLE.map((row) => row.token), []),
@@ -152,12 +159,14 @@ function AccordionShowcasePage() {
       >
         <ShowcaseDocSection
           section="live-preview"
-          description="Типовий FAQ-блок; max-width 920px (Figma desktop)."
+          description="Ширина frame — Wide desktop … Mobile; FAQ max-width 920px у контенті."
         >
           <ShowcaseDocLivePreview
-            caption="Accordion group · один open · hover на заголовку — CSS."
+            caption={`${showcaseViewportName(previewViewportId)} (${previewWidth}px) · Accordion group · hover — CSS.`}
             code={LIVE_PREVIEW_CODE}
-            constrainWidth
+            previewViewport
+            previewViewportId={previewViewportId}
+            onPreviewViewportChange={setPreviewViewportId}
           >
             <div className={styles.list}>
               <FaqList />
@@ -177,7 +186,7 @@ function AccordionShowcasePage() {
               <p>Контент прихований.</p>
             </AccordionItem>
             <AccordionItem question="Відкритий пункт (Opened)" defaultOpen>
-              <p>Контент видимий; фон --accent-highlight.</p>
+              <p>Контент видимий; фон прозорий (лише hover — --accent-highlight).</p>
             </AccordionItem>
           </ShowcasePreview>
 
@@ -200,7 +209,7 @@ function AccordionShowcasePage() {
             items={[
               "Header — <button> з aria-expanded, aria-controls.",
               "Panel — role=region, aria-labelledby, hidden коли закритий.",
-              "Chevron — aria-hidden; стан через aria-expanded.",
+              "IconDropdown 20×20 — aria-hidden; open — rotate 180°; стан через aria-expanded.",
               "Keyboard: Tab до header, Enter/Space toggle.",
             ]}
           />
@@ -214,7 +223,7 @@ function AccordionShowcasePage() {
               "Відповідь — ReactNode (параграфи, списки, посилання)",
             ]}
             dont={[
-              "Не додавай props state/variant — Hover/Opened у CSS",
+              "Не додавай props state/variant — Hover у CSS; opened без заливки",
               "Не хардкодуй жовтий фон — --accent-highlight",
               "Не вкладай кнопки в заголовок",
             ]}

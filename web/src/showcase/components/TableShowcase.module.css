@@ -1,0 +1,41 @@
+.pageRoot {
+  color: var(--text-default);
+}
+
+.pageRoot[data-showcase-theme="dark"] {
+  color: var(--text-inverse);
+}
+
+.livePreviewPanel {
+  width: 100%;
+  overflow: visible;
+}
+
+.livePreviewInset {
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--space-large);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  background: var(--surface-page);
+}
+
+.cellMatrix {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
+}
+
+.cellRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+.cellRowLabel {
+  width: 100%;
+  margin: 0 0 var(--space-xsmall);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-caption);
+  color: var(--text-muted);
+}

@@ -1,0 +1,69 @@
+.root {
+  position: relative;
+  width: 100%;
+}
+
+.fullWidth {
+  max-width: none;
+}
+
+.fieldTrigger {
+  cursor: pointer;
+}
+
+.fieldTrigger label {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-small);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+.fieldTrigger input {
+  cursor: pointer;
+  caret-color: transparent;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-medium);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--text-default);
+}
+
+.fieldTrigger input::placeholder {
+  color: var(--text-disabled);
+}
+
+.popover {
+  z-index: 1000;
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.popoverPortal {
+  position: fixed;
+}
+
+.popoverInline {
+  position: relative;
+  margin-top: var(--space-xsmall);
+}
+
+/* Tablet+ — два місяці в ряд (ширше поля). */
+.popoverRow {
+  width: max-content;
+  min-width: 100%;
+  max-width: min(100vw - var(--space-large) * 2, 40rem);
+}
+
+/* Mobile — два місяці в колонку, ширина як у поля. */
+.popoverColumn {
+  width: 100%;
+}
+
+.popoverPicker {
+  width: 100%;
+  box-sizing: border-box;
+}

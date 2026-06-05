@@ -83,6 +83,11 @@ export type GeneralWidgetProps = {
    * Morph лишається через header; форма не обрізається.
    */
   articleScrollNaturalLayout?: boolean;
+  /**
+   * layout=article: ширина колонки статті (Figma).
+   * mobile — morph t=1 → VeryShort (1107:24593); desktop — Short (287:15090).
+   */
+  articleColumn?: "desktop" | "tablet" | "mobile";
   /** Прогрес зверху (Figma Progressbar=On) — лише layout=full */
   showProgress?: boolean;
   progress?: GeneralWidgetProgress;

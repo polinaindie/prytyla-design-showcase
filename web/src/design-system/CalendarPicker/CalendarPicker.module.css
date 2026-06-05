@@ -1,0 +1,236 @@
+/* Figma Calendar Picker 1311:31695 (desktop row) · 1307:35685 (mobile column) */
+
+.root {
+  box-sizing: border-box;
+  padding: var(--spacing-gap-md);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  background: var(--surface-default);
+  box-shadow: var(--shadow-popover);
+}
+
+.monthsRow {
+  display: flex;
+  gap: var(--spacing-gap-lg);
+  align-items: stretch;
+}
+
+.monthsColumn {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-lg);
+  align-items: stretch;
+}
+
+.monthDivider {
+  flex-shrink: 0;
+  height: var(--border-width-small);
+  border: none;
+  margin: 0;
+  background: var(--border-default);
+}
+
+.monthDividerVertical {
+  flex-shrink: 0;
+  align-self: stretch;
+  width: var(--border-width-small);
+  border: none;
+  margin: 0;
+  background: var(--border-default);
+}
+
+.month {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: var(--spacing-gap-lg);
+  min-width: 0;
+}
+
+.monthHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xsmall);
+  padding: 0 var(--space-xsmall);
+}
+
+.monthTitle {
+  flex: 1;
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-small);
+  font-weight: 400;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--text-default);
+}
+
+.navButton {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--pryt-brand-scale-700);
+  height: var(--pryt-brand-scale-700);
+  margin: 0;
+  padding: var(--border-width-small);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  background: transparent;
+  color: var(--icon-default);
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.navButton:hover:not(:disabled) {
+  opacity: 1;
+  background: var(--surface-subtle-neutral);
+}
+
+.navButton:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: 2px;
+  opacity: 1;
+}
+
+.navButton:disabled {
+  cursor: not-allowed;
+}
+
+.navSpacer {
+  flex-shrink: 0;
+  width: var(--pryt-brand-scale-700);
+  height: var(--pryt-brand-scale-700);
+}
+
+.navSpacerMuted {
+  flex-shrink: 0;
+  width: var(--pryt-brand-scale-700);
+  height: var(--pryt-brand-scale-700);
+  border-radius: var(--radius-medium);
+  opacity: 0.5;
+}
+
+.chevronPrev {
+  transform: rotate(90deg);
+}
+
+.chevronNext {
+  transform: rotate(-90deg);
+}
+
+.monthGrid {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.weekHeader {
+  display: flex;
+  width: 100%;
+}
+
+.weekday {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0 var(--space-small);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-small);
+  font-weight: 300;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.weeks {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-sm);
+  padding-top: var(--spacing-gap-sm);
+}
+
+.weekRow {
+  display: flex;
+  width: 100%;
+}
+
+.dayCell {
+  display: flex;
+  flex: 1 1 0;
+  min-width: 0;
+  height: var(--size-xlarge);
+  min-height: var(--size-xlarge);
+}
+
+.dayCellInRange {
+  background: var(--bg-range-highlight);
+}
+
+.dayCellRangeStart {
+  border-top-left-radius: var(--radius-medium);
+  border-bottom-left-radius: var(--radius-medium);
+}
+
+.dayCellRangeEnd {
+  border-top-right-radius: var(--radius-medium);
+  border-bottom-right-radius: var(--radius-medium);
+}
+
+.dayCellRangeSingle {
+  border-radius: var(--radius-medium);
+}
+
+.dayButton {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: var(--spacing-gap-xxs) var(--space-small);
+  border: none;
+  border-radius: var(--radius-medium);
+  background: transparent;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-small);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--text-default);
+  cursor: pointer;
+}
+
+.dayButton:hover {
+  background: var(--surface-subtle-neutral);
+}
+
+.dayButton:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: 1px;
+  z-index: 1;
+}
+
+.dayOutside {
+  color: var(--text-secondary);
+}
+
+.dayInRange {
+  background: var(--bg-range-highlight);
+}
+
+.dayInRange:hover {
+  background: var(--bg-range-highlight);
+}
+
+.daySelected {
+  background: var(--bg-inverse-strong);
+  color: var(--text-on-inverse);
+}
+
+.daySelected:hover {
+  background: var(--bg-inverse-strong);
+  color: var(--text-on-inverse);
+}

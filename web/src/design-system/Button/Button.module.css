@@ -38,6 +38,130 @@
   color: currentColor;
 }
 
+/* Animated arrows (24) — internal horizontal / external diagonal (як LinkCard) */
+.iconArrowWrap {
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+  width: var(--size-large);
+  height: var(--size-large);
+  color: currentColor;
+}
+
+/* Arrow-Right — горизонтальний зсув (LinkCard internal) */
+.iconArrowTrackInternal {
+  --btn-arrow-gap: var(--space-small);
+  display: flex;
+  gap: var(--btn-arrow-gap);
+  width: calc(var(--size-large) * 2 + var(--btn-arrow-gap));
+  transform: translateX(
+    calc(-1 * (var(--size-large) + var(--btn-arrow-gap)))
+  );
+  transition: transform 300ms ease-out;
+}
+
+.iconArrowInternal {
+  flex-shrink: 0;
+  transform: rotate(180deg);
+}
+
+.iconArrowInternal svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Arrow-Up-Right — діагональний зсув (LinkCard external) */
+.iconArrowTrackExternal {
+  --btn-arrow-gap: var(--space-small);
+  --btn-arrow-step: calc(var(--size-large) + var(--btn-arrow-gap));
+  position: absolute;
+  top: calc(-1 * var(--btn-arrow-step));
+  left: 0;
+  width: calc(var(--size-large) * 2 + var(--btn-arrow-gap));
+  height: calc(var(--size-large) * 2 + var(--btn-arrow-gap));
+  transform: translate(0, 0);
+  transition: transform 300ms ease-out;
+}
+
+.iconArrowExternalLead,
+.iconArrowExternalFollow {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-large);
+  height: var(--size-large);
+  pointer-events: none;
+}
+
+.iconArrowExternalLead {
+  transform: translate(
+    calc(-1 * var(--btn-arrow-step)),
+    var(--btn-arrow-step)
+  );
+}
+
+.iconArrowExternalLead svg,
+.iconArrowExternalFollow svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (hover: hover) {
+  .primaryLight:hover:not(:disabled) .iconArrowTrackInternal,
+  .primaryLight:focus-visible .iconArrowTrackInternal,
+  .primaryDark:hover:not(:disabled) .iconArrowTrackInternal,
+  .primaryDark:focus-visible .iconArrowTrackInternal,
+  .secondaryLight:hover:not(:disabled) .iconArrowTrackInternal,
+  .secondaryLight:focus-visible .iconArrowTrackInternal,
+  .secondaryDark:hover:not(:disabled) .iconArrowTrackInternal,
+  .secondaryDark:focus-visible .iconArrowTrackInternal {
+    transform: translateX(0);
+  }
+
+  .primaryLight:hover:not(:disabled) .iconArrowTrackExternal,
+  .primaryLight:focus-visible .iconArrowTrackExternal,
+  .primaryDark:hover:not(:disabled) .iconArrowTrackExternal,
+  .primaryDark:focus-visible .iconArrowTrackExternal,
+  .secondaryLight:hover:not(:disabled) .iconArrowTrackExternal,
+  .secondaryLight:focus-visible .iconArrowTrackExternal,
+  .secondaryDark:hover:not(:disabled) .iconArrowTrackExternal,
+  .secondaryDark:focus-visible .iconArrowTrackExternal {
+    transform: translate(
+      var(--btn-arrow-step),
+      calc(-1 * var(--btn-arrow-step))
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iconArrowTrackInternal {
+    width: var(--size-large);
+    transform: translateX(0);
+    transition: none;
+  }
+
+  .iconArrowTrackInternal .iconArrowInternal:last-child {
+    display: none;
+  }
+
+  .iconArrowTrackExternal {
+    top: 0;
+    width: var(--size-large);
+    height: var(--size-large);
+    transform: translate(0, 0);
+    transition: none;
+  }
+
+  .iconArrowExternalLead {
+    display: none;
+  }
+}
+
 .gradientDefs {
   position: absolute;
   width: 0;
@@ -302,10 +426,11 @@
 }
 
 .navOutline[data-active="true"]:not(:disabled) {
-  border-width: var(--border-width-medium);
-  border-color: var(--border-strong);
   padding-left: var(--space-large);
   padding-right: var(--space-large);
+  border-width: var(--border-width-medium);
+  border-color: var(--border-strong);
+  background: transparent;
 }
 
 .navOutline[data-active="true"]:not(:disabled) .navLabel {

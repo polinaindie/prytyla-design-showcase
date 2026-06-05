@@ -176,15 +176,6 @@
   max-width: 100%;
 }
 
-.laptop .logoLink img {
-  display: block;
-  width: auto;
-  max-width: 100%;
-  height: 2rem;
-  object-fit: contain;
-  object-position: left center;
-}
-
 /* Figma 125:7779 — mobile logo 195×28; room for «Меню» */
 .mobile .logoLink {
   flex: 1 1 0;
@@ -209,16 +200,6 @@
 .tablet .logoLink > span {
   min-width: 0;
   max-width: 12.1875rem;
-}
-
-.mobile .logoLink img,
-.tablet .logoLink img {
-  display: block;
-  width: auto;
-  max-width: 100%;
-  height: 1.75rem;
-  object-fit: contain;
-  object-position: left center;
 }
 
 /* Figma 127:9887 / 125:7777 — compact bar 64px, 10px vertical inset (no space token) */

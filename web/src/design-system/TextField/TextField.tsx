@@ -33,9 +33,12 @@ export function TextField({
     .filter(Boolean)
     .join(" ");
 
+  const hasTrailing = Boolean(trailingIcon || error);
+
   const innerClass = [
     styles.inner,
-    !trailingIcon && !error && styles.innerNoTrailing,
+    !leadingIcon && styles.innerPadStart,
+    !hasTrailing && styles.innerPadEnd,
   ]
     .filter(Boolean)
     .join(" ");

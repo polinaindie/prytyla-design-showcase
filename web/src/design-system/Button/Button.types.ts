@@ -25,6 +25,13 @@ export type ButtonNavAppearance = "outline" | "ghost";
 /** Native `<button type>` — not the visual variant. */
 export type ButtonHtmlType = "button" | "submit" | "reset";
 
+/**
+ * CTA arrow for primary/secondary (default right slot).
+ * `internal` — Arrow-Right, horizontal slide (як LinkCard internal).
+ * `external` — Arrow-Up-Right, diagonal slide (як LinkCard external).
+ */
+export type ButtonLinkTarget = "internal" | "external";
+
 type ButtonPropsBase = {
   children: ReactNode;
   /** @default false */
@@ -33,10 +40,21 @@ type ButtonPropsBase = {
   leftIcon?: ReactNode;
   /** Special (donate): default right slot is Icon/Vprytyl (Figma 1363:36104). */
   rightIcon?: ReactNode;
-  /** @default true — special ignores unless `leftIcon` is set */
+  /**
+   * Ліва іконка; не комбінуй з `showRightIcon` — лише один слот.
+   * @default false
+   */
   showLeftIcon?: boolean;
-  /** @default true */
+  /**
+   * Права іконка (стрілка або `rightIcon`).
+   * @default true для primary/secondary
+   */
   showRightIcon?: boolean;
+  /**
+   * Тип посилання для дефолтної стрілки (primary/secondary).
+   * @default "internal"
+   */
+  linkTarget?: ButtonLinkTarget;
   htmlType?: ButtonHtmlType;
 };
 

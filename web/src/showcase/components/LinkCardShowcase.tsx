@@ -9,11 +9,13 @@ import {
   ShowcaseDocSection,
   ShowcaseDocTokenUsageTable,
   ShowcaseDocUsageGuidelines,
-  ShowcaseMatrix,
   ShowcaseThemeProvider,
+  figmaComponentSizeBinaryForViewportWidth,
+  showcaseViewportName,
+  showcaseViewportWidth,
   type DocPropertyRow,
-  type ShowcaseDocSizeOption,
-  SHOWCASE_DOC_SIZE_OPTIONS_TWO,
+  type ShowcaseDocSwitchOption,
+  type ShowcaseViewportId,
   useShowcaseTheme,
 } from "../primitives";
 import { useCssVarValues } from "../tokens/useCssVarValues";
@@ -22,7 +24,7 @@ import styles from "./LinkCardShowcase.module.css";
 const FIGMA_URL =
   "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=40-12193";
 
-const LIVE_PREVIEW_CODE = `import { LinkCard } from "@/design-system/LinkCard";
+const LIVE_PREVIEW_CODE_INTERNAL = `import { LinkCard } from "@/design-system/LinkCard";
 
 <LinkCard
   href="/reports"
@@ -30,6 +32,25 @@ const LIVE_PREVIEW_CODE = `import { LinkCard } from "@/design-system/LinkCard";
   illustration="annualReports"
   size="desktop"
 />`;
+
+const LIVE_PREVIEW_CODE_EXTERNAL = `import { LinkCard } from "@/design-system/LinkCard";
+
+<LinkCard
+  href="https://registry.example.gov.ua/foundation-reports"
+  target="_blank"
+  rel="noopener noreferrer"
+  external
+  title="Публічний реєстр звітності"
+  illustration="statistic"
+  size="desktop"
+/>`;
+
+const PREVIEW_LINK_OPTIONS = [
+  { value: "internal", label: "Внутрішнє" },
+  { value: "external", label: "Зовнішнє" },
+] as const satisfies readonly ShowcaseDocSwitchOption<string>[];
+
+type LinkCardPreviewLink = (typeof PREVIEW_LINK_OPTIONS)[number]["value"];
 
 const PROPERTY_ROWS: DocPropertyRow[] = [
   {
@@ -74,6 +95,14 @@ const PROPERTY_ROWS: DocPropertyRow[] = [
     optionsDefault: "from size",
     description: "Override font-size title (Figma mobile-open).",
   },
+  {
+    property: "external",
+    type: "boolean",
+    typeKind: "BOOLEAN",
+    optionsDefault: "false",
+    description:
+      "Desktop: Icon/40/Arrow-Up-Right + діагональна анімація (знизу-ліворуч → вгору-праворуч).",
+  },
 ];
 
 const TOKEN_USAGE_SAMPLE = [
@@ -89,7 +118,17 @@ const TOKEN_USAGE_SAMPLE = [
 
 function LinkCardShowcasePage() {
   const { theme } = useShowcaseTheme();
-  const [previewSize, setPreviewSize] = useState<ShowcaseDocSizeOption>("desktop");
+  const [previewViewportId, setPreviewViewportId] =
+    useState<ShowcaseViewportId>("1440");
+  const [previewLinkKind, setPreviewLinkKind] =
+    useState<LinkCardPreviewLink>("internal");
+
+  const previewWidth = showcaseViewportWidth(previewViewportId);
+  const previewSize = figmaComponentSizeBinaryForViewportWidth(previewWidth);
+  const isExternal = previewLinkKind === "external";
+  const livePreviewCode = isExternal
+    ? LIVE_PREVIEW_CODE_EXTERNAL
+    : LIVE_PREVIEW_CODE_INTERNAL;
 
   const tokenKeys = useMemo(
     () =>
@@ -121,52 +160,48 @@ function LinkCardShowcasePage() {
       >
         <ShowcaseDocSection
           section="live-preview"
-          description="Desktop — hover зменшує ілюстрацію та змінює фон."
+          description="Ширина frame — Wide desktop … Mobile; перемикач Внутрішнє / Зовнішнє; Figma size desktop|mobile підбирається автоматично."
         >
           <ShowcaseDocLivePreview
-            caption={`size=${previewSize} · illustration=annualReports · hover — CSS.`}
-            code={LIVE_PREVIEW_CODE}
-            previewSize={previewSize}
-            onPreviewSizeChange={setPreviewSize}
-            previewSizeOptions={SHOWCASE_DOC_SIZE_OPTIONS_TWO}
+            caption={`${showcaseViewportName(previewViewportId)} (${previewWidth}px) · link=${previewLinkKind} · size=${previewSize} · hover — CSS.`}
+            code={livePreviewCode}
+            previewValue={previewLinkKind}
+            onPreviewValueChange={(value) =>
+              setPreviewLinkKind(value as LinkCardPreviewLink)
+            }
+            previewLabeledOptions={PREVIEW_LINK_OPTIONS}
+            previewViewport
+            previewViewportId={previewViewportId}
+            onPreviewViewportChange={setPreviewViewportId}
+            flush
           >
-            <LinkCard
-              href="#"
-              title={previewSize === "mobile" ? "Звітність" : "Звітність фонду"}
-              illustration="annualReports"
-              size={previewSize as "desktop" | "mobile"}
-            />
+            <div className={styles.livePreviewSlot}>
+              {isExternal ? (
+                <LinkCard
+                  href="https://registry.example.gov.ua/foundation-reports"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  external
+                  title={
+                    previewSize === "mobile"
+                      ? "Реєстр звітності"
+                      : "Публічний реєстр звітності"
+                  }
+                  illustration="statistic"
+                  size={previewSize as "desktop" | "mobile"}
+                />
+              ) : (
+                <LinkCard
+                  href="#"
+                  title={
+                    previewSize === "mobile" ? "Звітність" : "Звітність фонду"
+                  }
+                  illustration="annualReports"
+                  size={previewSize as "desktop" | "mobile"}
+                />
+              )}
+            </div>
           </ShowcaseDocLivePreview>
-        </ShowcaseDocSection>
-
-        <ShowcaseDocSection
-          section="variants-gallery"
-          description="Default vs Hover на desktop."
-        >
-          <ShowcaseMatrix
-            columns={["Default", "Hover (наведіть курсор)"]}
-            rows={[
-              {
-                cells: [
-                  <LinkCard
-                    key="d"
-                    href="#"
-                    title="Звітність фонду"
-                    illustration="annualReports"
-                    size="desktop"
-                  />,
-                  <LinkCard
-                    key="h"
-                    href="#"
-                    title="Звітність фонду"
-                    illustration="annualReports"
-                    size="desktop"
-                    aria-label="Звітність — наведіть для hover"
-                  />,
-                ],
-              },
-            ]}
-          />
         </ShowcaseDocSection>
 
         <ShowcaseDocSection section="properties">
@@ -185,7 +220,7 @@ function LinkCardShowcasePage() {
           <ShowcaseDocBulletList
             items={[
               "Нативний <a href> — title як текст посилання.",
-              "Стрілка desktop — aria-hidden (декоративна).",
+              "Стрілка desktop — aria-hidden; internal — Arrow-Right (→), external — Arrow-Up-Right (↗).",
               "Focus-visible: outline --border-focus.",
               "Зовнішні URL: target + rel з батька.",
             ]}

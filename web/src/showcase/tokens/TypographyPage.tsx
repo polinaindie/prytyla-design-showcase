@@ -11,16 +11,19 @@ import {
   ShowcaseDocSection,
   ShowcaseDocTokenUsageTable,
   ShowcaseDoDont,
+  ShowcaseDocViewportSwitch,
   ShowcaseTablesRow,
   ShowcaseThemeProvider,
   ShowcaseTokenTable,
-  ShowcaseViewportBar,
+  showcaseViewportName,
+  showcaseViewportWidth,
   useShowcaseSearch,
   useShowcaseTheme,
+  type ShowcaseViewportId,
 } from "../primitives";
-import { useShowcaseViewport } from "../ShowcaseViewportContext";
 import {
   showcaseTypographyVars,
+  typographyModeForWidth,
   type ShowcaseTypographyMode,
 } from "../showcaseTypography";
 import shared from "./tokensShared.module.css";
@@ -79,9 +82,9 @@ const TYPOGRAPHY_PROPERTIES = [
   {
     property: "Showcase viewport",
     type: "preview control",
-    optionsDefault: `Mobile · Tablet · Desktop (${typographyBreakpoints.desktopMin}+)`,
+    optionsDefault: "Wide desktop · Desktop · Laptop · Tablet · Mobile",
     description:
-      "Панель «Ширина» біля semantic sizes змінює effective breakpoint для px у таблиці.",
+      "Перемикачі ширини біля semantic sizes — ті самі, що в live preview компонентів (1920 … 375).",
   },
 ];
 
@@ -186,12 +189,16 @@ function FamilyCopyBlock({ token, label, onCopy, children }: FamilyCopyProps) {
 function TypographyPageContent() {
   const { theme } = useShowcaseTheme();
   const { query } = useShowcaseSearch();
-  const { viewportWidth, typographyMode } = useShowcaseViewport();
+  const [previewViewportId, setPreviewViewportId] =
+    useState<ShowcaseViewportId>("1440");
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
 
+  const previewWidth = showcaseViewportWidth(previewViewportId);
+  const typographyMode = typographyModeForWidth(previewWidth);
+
   const typographyFrameStyle = useMemo(
-    () => showcaseTypographyVars(viewportWidth) as CSSProperties,
-    [viewportWidth],
+    () => showcaseTypographyVars(previewWidth) as CSSProperties,
+    [previewWidth],
   );
 
   const candidates = useMemo(() => FONT_SIZE_CANDIDATES, []);
@@ -389,12 +396,16 @@ function TypographyPageContent() {
                               <p className={styles.slotCaption}>
                                 Semantic font sizes (responsive)
                               </p>
-                              <ShowcaseViewportBar className={styles.viewportInline} />
+                              <ShowcaseDocViewportSwitch
+                                value={previewViewportId}
+                                onChange={setPreviewViewportId}
+                                aria-label="Ширина preview"
+                              />
                             </div>
                             <p className={styles.slotHint}>
-                              Figma Semantic · Mobile &lt; {typographyBreakpoints.tabletMin} ·
-                              Tablet · Desktop {typographyBreakpoints.desktopMin}+ — px у
-                              Value для активної ширини.
+                              {showcaseViewportName(previewViewportId)} ({previewWidth}px) ·{" "}
+                              {typographyMode} · @media {typographyBreakpoints.tabletMin} /{" "}
+                              {typographyBreakpoints.desktopMin} — px у Value для обраної ширини.
                             </p>
                             <div
                               className={styles.typographyFrame}

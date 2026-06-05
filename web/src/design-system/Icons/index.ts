@@ -12,8 +12,10 @@ export { IconArrowLeft } from "./IconArrowLeft";
 export { IconArrowUpRight } from "./IconArrowUpRight";
 export { IconError } from "./IconError";
 export { IconDocumentView } from "./IconDocumentView";
+export { IconPhotos } from "./IconPhotos";
 
 export {
+  IconBreadcrumbArrow7,
   IconChevronDown10,
   IconDropdownArrow10,
   IconArrowLeft10,

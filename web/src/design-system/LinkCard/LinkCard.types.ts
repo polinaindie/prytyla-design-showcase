@@ -18,5 +18,11 @@ export type LinkCardProps = Omit<
   size?: LinkCardSize;
   /** When set, overrides title font size from `size` (Figma mobile-open cards). */
   titleSize?: LinkCardTitleSize;
+  /**
+   * Зовнішнє посилання — desktop-стрілка Arrow-Up-Right з діагональною
+   * анімацією (з нижнього лівого до верхнього правого).
+   * @default false
+   */
+  external?: boolean;
   href: string;
 };

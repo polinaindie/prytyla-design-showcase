@@ -9,8 +9,6 @@ import {
   ShowcaseDocSection,
   ShowcaseDocTokenUsageTable,
   ShowcaseDocUsageGuidelines,
-  ShowcaseMatrix,
-  ShowcasePreview,
   ShowcaseThemeProvider,
   type DocPropertyRow,
   useShowcaseTheme,
@@ -21,9 +19,22 @@ import styles from "./ChipPaymentTypeShowcase.module.css";
 const FIGMA_URL =
   "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=284-14412";
 
-const LIVE_PREVIEW_CODE = `import { ChipPaymentType } from "@/design-system/ChipPaymentType";
+const LIVE_PREVIEW_CODE = `const [selected, setSelected] = useState<"plain" | "badge" | null>(null);
 
-<ChipPaymentType state="selected" recommendBadge>
+const toggle = (id: "plain" | "badge") =>
+  setSelected((current) => (current === id ? null : id));
+
+<ChipPaymentType
+  state={selected === "plain" ? "selected" : "default"}
+  onClick={() => toggle("plain")}
+>
+  Щомісяця
+</ChipPaymentType>
+<ChipPaymentType
+  state={selected === "badge" ? "selected" : "default"}
+  recommendBadge
+  onClick={() => toggle("badge")}
+>
   Щомісяця
 </ChipPaymentType>`;
 
@@ -74,11 +85,11 @@ const PROPERTY_ROWS: DocPropertyRow[] = [
 
 const TOKEN_USAGE_SAMPLE = [
   { element: "Root", property: "background", token: "--surface-default" },
-  { element: "Selected", property: "background", token: "--surface-page" },
+  { element: "Hover / selected", property: "background", token: "--surface-page" },
   { element: "Root", property: "border", token: "--border-default" },
-  { element: "Selected", property: "border-color", token: "--accent-secondary" },
+  { element: "Hover / selected", property: "border-color", token: "--accent-secondary" },
   { element: "Root", property: "color", token: "--text-muted" },
-  { element: "Selected", property: "color", token: "--text-default" },
+  { element: "Hover / selected", property: "color", token: "--text-default" },
   { element: "Root", property: "font-size", token: "--font-size-caption-medium" },
   { element: "Root", property: "padding", token: "--size-2xsmall, --space-medium" },
   { element: "Root", property: "border-radius", token: "--radius-large" },
@@ -88,9 +99,15 @@ const TOKEN_USAGE_SAMPLE = [
   { element: "Focus", property: "outline", token: "--border-focus" },
 ] as const;
 
+type PreviewSelection = "plain" | "badge" | null;
+
 function ChipPaymentTypeShowcasePage() {
   const { theme } = useShowcaseTheme();
-  const [selected, setSelected] = useState<"monthly" | "once">("monthly");
+  const [selected, setSelected] = useState<PreviewSelection>(null);
+
+  const toggle = (id: Exclude<PreviewSelection, null>) => {
+    setSelected((current) => (current === id ? null : id));
+  };
 
   const usageValues = useCssVarValues(
     useMemo(() => TOKEN_USAGE_SAMPLE.map((row) => row.token), []),
@@ -116,73 +133,32 @@ function ChipPaymentTypeShowcasePage() {
       >
         <ShowcaseDocSection
           section="live-preview"
-          description="Обраний варіант з recommend badge — типовий donate flow."
+          description="Обидва з підписом «Щомісяця» — без бейджа і з «Найдієвіше»; клік toggle selected."
         >
           <ShowcaseDocLivePreview
-            caption="state=selected · recommendBadge=true · label=Щомісяця."
+            caption={`selected=${selected ?? "none"} · клік перемикає · hover/active — CSS.`}
             code={LIVE_PREVIEW_CODE}
           >
-            <ChipPaymentType state="selected" recommendBadge>
-              Щомісяця
-            </ChipPaymentType>
-          </ShowcaseDocLivePreview>
-        </ShowcaseDocSection>
-
-        <ShowcaseDocSection
-          section="variants-gallery"
-          description="State × recommendBadge; інтерактивна група вибору."
-        >
-          <p className={styles.galleryCaption}>
-            Property: state · Cols=recommendBadge false|true
-          </p>
-          <ShowcaseMatrix
-            columns={["Без бейджа", "З бейджем «Найдієвіше»"]}
-            rows={[
-              {
-                rowLabel: "Default",
-                cells: [
-                  <ChipPaymentType key="d0" state="default">
-                    Щомісяця
-                  </ChipPaymentType>,
-                  <ChipPaymentType key="d1" state="default" recommendBadge>
-                    Щомісяця
-                  </ChipPaymentType>,
-                ],
-              },
-              {
-                rowLabel: "Selected",
-                cells: [
-                  <ChipPaymentType key="s0" state="selected">
-                    Щомісяця
-                  </ChipPaymentType>,
-                  <ChipPaymentType key="s1" state="selected" recommendBadge>
-                    Щомісяця
-                  </ChipPaymentType>,
-                ],
-              },
-            ]}
-          />
-
-          <p className={styles.galleryCaption}>
-            Interactive · aria-pressed · один selected у групі
-          </p>
-          <ShowcasePreview className={styles.preview}>
-            <div className={styles.interactiveRow}>
+            <div
+              className={styles.livePreviewRow}
+              role="group"
+              aria-label="Тип платежу (демо)"
+            >
               <ChipPaymentType
-                state={selected === "monthly" ? "selected" : "default"}
-                recommendBadge
-                onClick={() => setSelected("monthly")}
+                state={selected === "plain" ? "selected" : "default"}
+                onClick={() => toggle("plain")}
               >
                 Щомісяця
               </ChipPaymentType>
               <ChipPaymentType
-                state={selected === "once" ? "selected" : "default"}
-                onClick={() => setSelected("once")}
+                state={selected === "badge" ? "selected" : "default"}
+                recommendBadge
+                onClick={() => toggle("badge")}
               >
-                Одноразово
+                Щомісяця
               </ChipPaymentType>
             </div>
-          </ShowcasePreview>
+          </ShowcaseDocLivePreview>
         </ShowcaseDocSection>
 
         <ShowcaseDocSection section="properties">
@@ -214,7 +190,8 @@ function ChipPaymentTypeShowcasePage() {
             do={[
               "state=selected для обраного способу оплати",
               "recommendBadge лише на рекомендованому варіанті (напр. щомісяця)",
-              "Flex/grid з достатнім gap — бейдж absolute, виходить за межі чіпа",
+              "selected через state + onClick; один обраний або toggle off повторним кліком",
+              "Hover / :active — CSS; у формі зазвичай без зняття вибору (як tab)",
             ]}
             dont={[
               "Не плутай з Filter Chip — pill без вертикальної іконки",

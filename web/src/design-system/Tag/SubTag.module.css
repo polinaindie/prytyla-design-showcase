@@ -30,10 +30,6 @@
   color: var(--text-default);
 }
 
-.root:hover .label {
-  margin-bottom: -1px;
-}
-
 .root:hover .underline {
   opacity: 1;
 }

@@ -96,22 +96,117 @@
 }
 
 .arrow {
+  position: relative;
   flex-shrink: 0;
+  overflow: hidden;
+  width: var(--pryt-brand-scale-1000);
+  height: var(--pryt-brand-scale-1000);
   color: var(--accent-primary);
-  transform: rotate(180deg) translateX(0);
-  transition: transform 0.2s ease;
+}
+
+.arrowTrack {
+  display: flex;
+  gap: var(--space-large);
+  width: calc(var(--pryt-brand-scale-1000) * 2 + var(--space-large));
+  transform: translateX(calc(-1 * (var(--pryt-brand-scale-1000) + var(--space-large))));
+  transition: transform 300ms ease-out;
+}
+
+.arrowIcon {
+  flex-shrink: 0;
+  transform: rotate(180deg);
+}
+
+/* Зовнішнє посилання — Arrow-Up-Right, зсув з нижнього лівого до верхнього правого */
+.arrowTrackExternal {
+  --link-card-arrow-gap: var(--space-large);
+  --link-card-arrow-step: calc(
+    var(--pryt-brand-scale-1000) + var(--link-card-arrow-gap)
+  );
+  position: absolute;
+  top: calc(-1 * var(--link-card-arrow-step));
+  left: 0;
+  width: calc(var(--pryt-brand-scale-1000) * 2 + var(--link-card-arrow-gap));
+  height: calc(var(--pryt-brand-scale-1000) * 2 + var(--link-card-arrow-gap));
+  transform: translate(0, 0);
+  transition: transform 300ms ease-out;
+}
+
+.arrowIconExternalLead,
+.arrowIconExternalFollow {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--pryt-brand-scale-1000);
+  height: var(--pryt-brand-scale-1000);
+  color: inherit;
+  pointer-events: none;
+}
+
+.arrowIconExternalLead {
+  left: 0;
+  bottom: 0;
+  transform: translate(
+    calc(-1 * var(--link-card-arrow-step)),
+    var(--link-card-arrow-step)
+  );
+}
+
+.arrowIconExternalFollow {
+  left: 0;
+  bottom: 0;
+}
+
+.arrowIconExternalLead svg,
+.arrowIconExternalFollow svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 @media (hover: hover) {
-  .desktop:hover .arrow,
-  .desktop:focus-visible .arrow {
-    transform: rotate(180deg) translateX(calc(-1 * var(--space-small)));
+  .desktop:hover .arrowTrack,
+  .desktop:focus-visible .arrowTrack {
+    transform: translateX(0);
+  }
+
+  .desktop.external:hover .arrowTrackExternal,
+  .desktop.external:focus-visible .arrowTrackExternal {
+    transform: translate(
+      var(--link-card-arrow-step),
+      calc(-1 * var(--link-card-arrow-step))
+    );
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .arrow {
+  .arrowTrack {
+    width: var(--pryt-brand-scale-1000);
+    transform: translateX(0);
     transition: none;
+  }
+
+  .arrowTrack .arrowIcon:last-child {
+    display: none;
+  }
+
+  .arrowTrackExternal {
+    top: 0;
+    width: var(--pryt-brand-scale-1000);
+    height: var(--pryt-brand-scale-1000);
+    transform: translate(0, 0);
+    transition: none;
+  }
+
+  .arrowIconExternalFollow {
+    display: none;
+  }
+
+  .arrowIconExternalLead {
+    left: 0;
+    bottom: 0;
+    transform: none;
   }
 }
 

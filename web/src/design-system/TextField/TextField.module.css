@@ -8,6 +8,7 @@
 }
 
 .root.fullWidth {
+  width: 100%;
   max-width: none;
 }
 
@@ -19,9 +20,7 @@
   border: var(--border-width-small) solid var(--border-default);
   border-radius: var(--radius-medium);
   background: var(--surface-default);
-  transition:
-    border-color 0.15s ease,
-    border-width 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .inner {
@@ -30,11 +29,16 @@
   align-items: stretch;
   gap: var(--space-xsmall);
   min-width: 0;
-  padding: var(--space-xsmall) var(--space-medium) var(--space-xsmall) 0;
+  padding-block: var(--space-xsmall);
+  padding-inline: 0;
 }
 
-.innerNoTrailing {
-  padding-right: var(--space-medium);
+.innerPadStart {
+  padding-left: var(--space-large);
+}
+
+.innerPadEnd {
+  padding-right: var(--space-large);
 }
 
 .label {
@@ -120,8 +124,8 @@
 }
 
 .root:focus-within:not(.disabled):not(.error) .control {
-  border-width: var(--border-width-medium);
   border-color: var(--border-strong);
+  box-shadow: inset 0 0 0 var(--border-width-small) var(--border-strong);
 }
 
 .root:focus-within:not(.disabled):not(.error) .label {

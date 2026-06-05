@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "../../design-system/Button";
 import {
   ShowcaseDocAnatomy,
@@ -8,14 +8,27 @@ import {
   ShowcaseDocPropertiesTable,
   ShowcaseDocRelated,
   ShowcaseDocSection,
+  ShowcaseDocSizeSwitch,
   ShowcaseDocTokenUsageTable,
   ShowcaseDocUsageGuidelines,
-  ShowcaseMatrix,
   ShowcasePreview,
   ShowcaseThemeProvider,
+  showcaseViewportName,
+  showcaseViewportWidth,
   type DocPropertyRow,
+  type ShowcaseViewportId,
 } from "../primitives";
+import { buttonShowcaseGridColumnsForViewportWidth } from "../showcaseTypography";
 import { useCssVarValues } from "../tokens/useCssVarValues";
+import {
+  BUTTON_SECTION_OPTIONS,
+  BUTTON_STATE_NAV_OPTIONS,
+  BUTTON_STATE_STANDARD_OPTIONS,
+  ButtonShowcaseCatalog,
+  buttonShowcaseSupportsStateFilter,
+  type ButtonShowcaseSection,
+  type ButtonShowcaseStateView,
+} from "./ButtonShowcaseCatalog";
 import styles from "./ButtonShowcase.module.css";
 
 const FIGMA_URL =
@@ -23,9 +36,9 @@ const FIGMA_URL =
 
 const LIVE_PREVIEW_CODE = `import { Button } from "@/design-system/Button";
 
-<Button variant="primary" theme="light">
-  Підтримати
-</Button>`;
+<Button variant="primary" theme="light">Підтримати</Button>
+<Button variant="primary" theme="special">Долучитись</Button>
+<Button variant="nav" navAppearance="outline">попередня</Button>`;
 
 const PROPERTY_ROWS: DocPropertyRow[] = [
   {
@@ -55,8 +68,17 @@ const PROPERTY_ROWS: DocPropertyRow[] = [
     property: "showLeftIcon / showRightIcon",
     type: "boolean",
     typeKind: "BOOLEAN",
-    optionsDefault: "true",
-    description: "Слоти іконок для primary/secondary/special.",
+    optionsDefault: "false / true",
+    description:
+      "Лише один слот: ліва або права іконка (не обидва). Special — лише `leftIcon` + showLeftIcon.",
+  },
+  {
+    property: "linkTarget",
+    type: "internal | external",
+    typeKind: "VARIANT",
+    optionsDefault: "internal",
+    description:
+      "Дефолтна стрілка primary/secondary: internal → Arrow-Right (горизонтальна анімація), external → Arrow-Up-Right (діагональ).",
   },
   {
     property: "contactType",
@@ -110,11 +132,28 @@ const TOKEN_USAGE_SAMPLE = [
   { element: "Contact light", property: "background", token: "--surface-contact-subtle" },
 ] as const;
 
-function OnDark({ children }: { children: React.ReactNode }) {
-  return <div className={styles.onDark}>{children}</div>;
-}
-
 function ButtonShowcasePage() {
+  const [section, setSection] = useState<ButtonShowcaseSection>("primary-secondary");
+  const [stateView, setStateView] =
+    useState<ButtonShowcaseStateView>("default");
+  const [previewViewportId, setPreviewViewportId] =
+    useState<ShowcaseViewportId>("1440");
+
+  const previewWidth = showcaseViewportWidth(previewViewportId);
+  const previewGridColumns =
+    buttonShowcaseGridColumnsForViewportWidth(previewWidth);
+
+  const showStateFilter = buttonShowcaseSupportsStateFilter(section);
+  const stateOptions =
+    section === "nav" ? BUTTON_STATE_NAV_OPTIONS : BUTTON_STATE_STANDARD_OPTIONS;
+
+  useEffect(() => {
+    setStateView("default");
+  }, [section]);
+
+  const sectionLabel =
+    BUTTON_SECTION_OPTIONS.find((o) => o.value === section)?.label ?? section;
+
   const usageValues = useCssVarValues(
     useMemo(() => TOKEN_USAGE_SAMPLE.map((row) => row.token), []),
   );
@@ -138,257 +177,40 @@ function ButtonShowcasePage() {
     >
       <ShowcaseDocSection
         section="live-preview"
-        description="Найчастіший випадок — primary на світлій поверхні."
+        description="Перемикачі зверху — тип і стан; у frame лише обрана група."
       >
         <ShowcaseDocLivePreview
-          caption="variant=primary · theme=light · default state (hover — CSS)."
+          caption={`${showcaseViewportName(previewViewportId)} (${previewWidth}px) · grid=${previewGridColumns} col · section=${sectionLabel}${showStateFilter ? ` · state=${stateView}` : ""} · hover — CSS.`}
           code={LIVE_PREVIEW_CODE}
+          previewViewport
+          previewViewportId={previewViewportId}
+          onPreviewViewportChange={setPreviewViewportId}
+          previewFrameWidth={previewWidth}
+          toolbarSwitchesExtra={
+            <ShowcaseDocSizeSwitch
+              value={section}
+              onChange={setSection}
+              labeledOptions={BUTTON_SECTION_OPTIONS}
+              aria-label="Тип кнопки"
+            />
+          }
+          previewActions={
+            showStateFilter ? (
+              <ShowcaseDocSizeSwitch
+                value={stateView}
+                onChange={setStateView}
+                labeledOptions={stateOptions}
+                aria-label="Стан кнопки"
+              />
+            ) : null
+          }
         >
-          <Button variant="primary" theme="light">
-            Підтримати
-          </Button>
+          <ButtonShowcaseCatalog
+            section={section}
+            stateView={stateView}
+            previewGridColumns={previewGridColumns}
+          />
         </ShowcaseDocLivePreview>
-      </ShowcaseDocSection>
-
-      <ShowcaseDocSection
-        section="variants-gallery"
-        description="Усі variant × theme; hover — наведи курсор."
-      >
-        <p className={styles.galleryCaption}>
-          Property: variant · Rows=primary|secondary · Cols=theme light|dark
-        </p>
-        <ShowcaseMatrix
-          columns={["Light", "Dark"]}
-          rows={[
-            {
-              rowLabel: "Primary",
-              cells: [
-                <Button key="pl" variant="primary" theme="light">
-                  Підтримати
-                </Button>,
-                <Button key="pd" variant="primary" theme="dark">
-                  Підтримати
-                </Button>,
-              ],
-            },
-            {
-              rowLabel: "Secondary",
-              cells: [
-                <Button key="sd" variant="secondary" theme="dark">
-                  Дізнатись більше
-                </Button>,
-                <OnDark key="sl">
-                  <Button variant="secondary" theme="light">
-                    Дізнатись більше
-                  </Button>
-                </OnDark>,
-              ],
-            },
-          ]}
-        />
-
-        <p className={styles.galleryCaption}>
-          variant=primary · theme=special · Cols=default|disabled
-        </p>
-        <ShowcaseMatrix
-          columns={["Default", "Disabled"]}
-          rows={[
-            {
-              cells: [
-                <Button
-                  key="s0"
-                  variant="primary"
-                  theme="special"
-                >
-                  Долучитись
-                </Button>,
-                <Button
-                  key="s1"
-                  variant="primary"
-                  theme="special"
-                  disabled
-                >
-                  Долучитись
-                </Button>,
-              ],
-            },
-          ]}
-        />
-
-        <p className={styles.galleryCaption}>
-          variant=contact · Rows=theme · Cols=email|phone
-        </p>
-        <ShowcaseMatrix
-          columns={["Email", "Phone"]}
-          rows={[
-            {
-              rowLabel: "Dark",
-              cells: [
-                <Button
-                  key="ce"
-                  variant="contact"
-                  theme="dark"
-                  contactType="email"
-                  href="mailto:info@prytula.org"
-                >
-                  info@prytula.org
-                </Button>,
-                <Button
-                  key="cp"
-                  variant="contact"
-                  theme="dark"
-                  contactType="phone"
-                  contactLabel="Гаряча лінія:"
-                  href="tel:+380000000000"
-                >
-                  0 800 000 000
-                </Button>,
-              ],
-            },
-            {
-              rowLabel: "Light",
-              cells: [
-                <OnDark key="cle">
-                  <Button
-                    variant="contact"
-                    theme="light"
-                    contactType="email"
-                    href="mailto:info@prytula.org"
-                  >
-                    info@prytula.org
-                  </Button>
-                </OnDark>,
-                <OnDark key="clp">
-                  <Button
-                    variant="contact"
-                    theme="light"
-                    contactType="phone"
-                    contactLabel="Гаряча лінія:"
-                    href="tel:+380000000000"
-                  >
-                    0 800 000 000
-                  </Button>
-                </OnDark>,
-              ],
-            },
-          ]}
-        />
-
-        <p className={styles.galleryCaption}>
-          variant=social · socialNetwork=facebook · 44×44 icon-only
-        </p>
-        <ShowcaseMatrix
-          columns={["Dark", "Light"]}
-          rows={[
-            {
-              cells: [
-                <Button
-                  key="soc-d"
-                  variant="social"
-                  theme="dark"
-                  socialNetwork="facebook"
-                  href="https://www.facebook.com/"
-                  aria-label="Facebook"
-                />,
-                <OnDark key="soc-l">
-                  <Button
-                    variant="social"
-                    theme="light"
-                    socialNetwork="facebook"
-                    href="https://www.facebook.com/"
-                    aria-label="Facebook"
-                  />
-                </OnDark>,
-              ],
-            },
-          ]}
-        />
-
-        <p className={styles.galleryCaption}>
-          variant=nav · Rows=outline|ghost · Cols=default|hover|disabled|active
-        </p>
-        <ShowcaseMatrix
-          columns={["Default", "Hover", "Disabled", "Active"]}
-          rows={[
-            {
-              rowLabel: "Outline",
-              cells: [
-                <Button key="no0" variant="nav" navAppearance="outline">
-                  попередня
-                </Button>,
-                <Button key="no1" variant="nav" navAppearance="outline">
-                  попередня
-                </Button>,
-                <Button key="no2" variant="nav" navAppearance="outline" disabled>
-                  попередня
-                </Button>,
-                <Button key="no3" variant="nav" navAppearance="outline" active>
-                  попередня
-                </Button>,
-              ],
-            },
-            {
-              rowLabel: "Ghost",
-              cells: [
-                <Button key="ng0" variant="nav" navAppearance="ghost">
-                  попередня
-                </Button>,
-                <Button key="ng1" variant="nav" navAppearance="ghost">
-                  попередня
-                </Button>,
-                <Button key="ng2" variant="nav" navAppearance="ghost" disabled>
-                  попередня
-                </Button>,
-                <Button key="ng3" variant="nav" navAppearance="ghost" active>
-                  попередня
-                </Button>,
-              ],
-            },
-          ]}
-        />
-
-        <p className={styles.galleryCaption}>
-          Icons · variant=primary · theme=light
-        </p>
-        <ShowcaseMatrix
-          columns={["Ліва", "Права", "Обидві", "Без іконок"]}
-          rows={[
-            {
-              cells: [
-                <Button
-                  key="il"
-                  variant="primary"
-                  theme="light"
-                  showLeftIcon
-                  showRightIcon={false}
-                >
-                  Ліва іконка
-                </Button>,
-                <Button
-                  key="ir"
-                  variant="primary"
-                  theme="light"
-                  showLeftIcon={false}
-                  showRightIcon
-                >
-                  Права іконка
-                </Button>,
-                <Button key="ib" variant="primary" theme="light">
-                  Обидві
-                </Button>,
-                <Button
-                  key="in"
-                  variant="primary"
-                  theme="light"
-                  showLeftIcon={false}
-                  showRightIcon={false}
-                >
-                  Без іконок
-                </Button>,
-              ],
-            },
-          ]}
-        />
       </ShowcaseDocSection>
 
       <ShowcaseDocSection
@@ -420,7 +242,7 @@ function ButtonShowcasePage() {
               description: "Special — gradient label + Icon/Vprytyl; hover → black.",
             },
           ]}
-          caption="Contact / nav / social мають іншу внутрішню структуру (див. variants gallery)."
+          caption="Contact / nav / social мають іншу внутрішню структуру (див. live preview)."
         />
       </ShowcaseDocSection>
 
@@ -438,74 +260,16 @@ function ButtonShowcasePage() {
 
       <ShowcaseDocSection
         section="states-interactions"
-        description="Disabled; hover/focus/pressed — CSS :hover та :focus-visible."
+        description="Hover, focus-visible, pressed — CSS; disabled — prop."
       >
-        <p className={styles.galleryCaption}>disabled=true · primary & secondary</p>
-        <ShowcaseMatrix
-          columns={[
-            "Primary light",
-            "Primary dark",
-            "Secondary dark",
-            "Secondary light",
-          ]}
-          rows={[
-            {
-              cells: [
-                <Button key="dpl" variant="primary" theme="light" disabled>
-                  Підтримати
-                </Button>,
-                <Button key="dpd" variant="primary" theme="dark" disabled>
-                  Підтримати
-                </Button>,
-                <Button key="dsd" variant="secondary" theme="dark" disabled>
-                  Дізнатись більше
-                </Button>,
-                <OnDark key="dsl">
-                  <Button variant="secondary" theme="light" disabled>
-                    Дізнатись більше
-                  </Button>
-                </OnDark>,
-              ],
-            },
-          ]}
-        />
         <ShowcaseDocBulletList
           items={[
-            "Hover не окремий проп — наведи курсор на live preview або matrix.",
+            "Hover і :active — CSS; окремого пропа немає (див. live preview).",
+            "Primary/secondary: internal — Arrow-Right (горизонтально); external — Arrow-Up-Right (діагонально).",
             "Nav: active=data-active на root; disabled зберігає outline border.",
             "Contact/Social: рендер <a>; disabled через aria-disabled.",
           ]}
         />
-      </ShowcaseDocSection>
-
-      <ShowcaseDocSection
-        section="sizes"
-        description="Висота через size-токени; окремих S/M/L пропів немає."
-      >
-        <ShowcasePreview className={styles.sizeRow}>
-          <div className={styles.sizeCell}>
-            <Button variant="primary" theme="light">
-              Primary
-            </Button>
-            <span className={styles.sizeCaption}>--size-4xlarge (44px)</span>
-          </div>
-          <div className={styles.sizeCell}>
-            <Button variant="nav" navAppearance="outline">
-              Nav
-            </Button>
-            <span className={styles.sizeCaption}>--size-2xlarge (36px)</span>
-          </div>
-          <div className={styles.sizeCell}>
-            <Button
-              variant="social"
-              theme="dark"
-              socialNetwork="facebook"
-              href="https://www.facebook.com/"
-              aria-label="Facebook"
-            />
-            <span className={styles.sizeCaption}>44×44 (--size-4xlarge)</span>
-          </div>
-        </ShowcasePreview>
       </ShowcaseDocSection>
 
       <ShowcaseDocSection section="accessibility">
@@ -547,39 +311,6 @@ function ButtonShowcasePage() {
             },
           ]}
         />
-      </ShowcaseDocSection>
-
-      <ShowcaseDocSection
-        section="examples"
-        description="Типові рецепти в продукті."
-      >
-        <p className={styles.galleryCaption}>Donate hero</p>
-        <ShowcasePreview className={styles.preview}>
-          <Button variant="primary" theme="special">
-            Долучитись
-          </Button>
-        </ShowcasePreview>
-
-        <p className={styles.galleryCaption}>Footer contact row</p>
-        <ShowcasePreview className={styles.preview}>
-          <div className={styles.row}>
-            <Button
-              variant="contact"
-              theme="dark"
-              contactType="email"
-              href="mailto:info@prytula.org"
-            >
-              info@prytula.org
-            </Button>
-            <Button
-              variant="social"
-              theme="dark"
-              socialNetwork="facebook"
-              href="https://www.facebook.com/"
-              aria-label="Facebook"
-            />
-          </div>
-        </ShowcasePreview>
       </ShowcaseDocSection>
 
       <ShowcaseDocSection section="related-components">

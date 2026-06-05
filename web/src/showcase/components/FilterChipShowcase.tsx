@@ -9,8 +9,6 @@ import {
   ShowcaseDocSection,
   ShowcaseDocTokenUsageTable,
   ShowcaseDocUsageGuidelines,
-  ShowcaseMatrix,
-  ShowcasePreview,
   ShowcaseThemeProvider,
   type DocPropertyRow,
   useShowcaseTheme,
@@ -104,39 +102,12 @@ function FilterChipShowcasePage() {
       >
         <ShowcaseDocSection
           section="live-preview"
-          description="Active chip у типовому ряді фільтрів."
+          description="Ряд фільтрів над списком; один active, gap 6px (Figma)."
         >
           <ShowcaseDocLivePreview
-            caption='state=active · label="Усі" · aria-pressed=true.'
+            caption={`activeIndex=${activeIndex} · label="${DEMO_LABELS[activeIndex]}" · aria-pressed на active.`}
             code={LIVE_PREVIEW_CODE}
           >
-            <FilterChip state="active">Усі</FilterChip>
-          </ShowcaseDocLivePreview>
-        </ShowcaseDocSection>
-
-        <ShowcaseDocSection
-          section="variants-gallery"
-          description="state default|active; інтерактивна група."
-        >
-          <p className={styles.galleryCaption}>Property: state · static</p>
-          <ShowcaseMatrix
-            columns={["Default", "Active"]}
-            rows={[
-              {
-                cells: [
-                  <FilterChip key="d">Гуманітарні</FilterChip>,
-                  <FilterChip key="a" state="active">
-                    Гуманітарні
-                  </FilterChip>,
-                ],
-              },
-            ]}
-          />
-
-          <p className={styles.galleryCaption}>
-            Filter row · один active · gap 6px (Figma)
-          </p>
-          <ShowcasePreview className={styles.preview}>
             <div className={styles.filterDemo}>
               {DEMO_LABELS.map((label, index) => (
                 <FilterChip
@@ -148,12 +119,7 @@ function FilterChipShowcasePage() {
                 </FilterChip>
               ))}
             </div>
-          </ShowcasePreview>
-
-          <p className={styles.galleryCaption}>disabled=true</p>
-          <ShowcasePreview className={styles.preview}>
-            <FilterChip disabled>Недоступно</FilterChip>
-          </ShowcasePreview>
+          </ShowcaseDocLivePreview>
         </ShowcaseDocSection>
 
         <ShowcaseDocSection section="properties">

@@ -1,0 +1,12 @@
+.pageRoot {
+  color: var(--text-default);
+}
+
+.pageRoot[data-showcase-theme="dark"] {
+  color: var(--text-inverse);
+}
+
+.livePreviewPanel {
+  width: 100%;
+  overflow: visible;
+}

@@ -87,6 +87,23 @@ export function figmaComponentSizeBinaryForViewportWidth(
   return width < 768 ? "mobile" : "desktop";
 }
 
+/** Sort Control — inline row (desktop) vs full-width bar (tablet/mobile, Figma 940:9610). */
+export function sortControlLayoutForViewportWidth(
+  width: number,
+): "inline" | "bar" {
+  return width < 1024 ? "bar" : "inline";
+}
+
+/** Button showcase live-preview grid columns by frame width. */
+export function buttonShowcaseGridColumnsForViewportWidth(
+  width: number,
+): 1 | 2 | 3 | 4 {
+  if (width < 768) return 1;
+  if (width < 1200) return 2;
+  if (width < 1440) return 3;
+  return 4;
+}
+
 export function showcaseTypographyVars(
   width: number,
 ): Record<string, string> {

@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 import {
   ShowcaseCodeBlock,
   ShowcaseDocBulletList,
+  ShowcaseDocLivePreview,
   ShowcaseDocPage,
   ShowcaseDocPropertiesTable,
   ShowcaseDocRelated,
@@ -9,6 +10,9 @@ import {
   ShowcaseDocTokenUsageTable,
   ShowcaseDoDont,
   ShowcaseThemeProvider,
+  showcaseViewportName,
+  showcaseViewportWidth,
+  type ShowcaseViewportId,
   useShowcaseTheme,
 } from "../primitives";
 import styles from "./GridPage.module.css";
@@ -225,42 +229,16 @@ function GridOverlay({ width }: { width: number }) {
 
 function GridPageContent() {
   const { theme } = useShowcaseTheme();
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const [overlayWidth, setOverlayWidth] = useState(
-    typeof window !== "undefined" ? window.innerWidth : 375,
-  );
-  const [viewportWidth, setViewportWidth] = useState(
-    typeof window !== "undefined" ? window.innerWidth : 375,
+  const [previewViewportId, setPreviewViewportId] =
+    useState<ShowcaseViewportId>("1440");
+
+  const previewWidth = showcaseViewportWidth(previewViewportId);
+  const activeBp = useMemo(
+    () => resolveBreakpoint(previewWidth),
+    [previewWidth],
   );
 
   const usageValues = useCssVarValues(GRID_TOKEN_VARS);
-
-  useEffect(() => {
-    const onResize = () => setViewportWidth(window.innerWidth);
-    onResize();
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-
-  useEffect(() => {
-    const node = overlayRef.current;
-    if (!node) return undefined;
-
-    const observer = new ResizeObserver((entries) => {
-      const entry = entries[0];
-      if (entry) setOverlayWidth(entry.contentRect.width);
-    });
-
-    observer.observe(node);
-    setOverlayWidth(node.getBoundingClientRect().width);
-
-    return () => observer.disconnect();
-  }, []);
-
-  const activeBp = useMemo(
-    () => resolveBreakpoint(viewportWidth),
-    [viewportWidth],
-  );
 
   const tokenUsageRows = TOKEN_USAGE_SAMPLE.map((row) => ({
     ...row,
@@ -282,11 +260,6 @@ function GridPageContent() {
           title="Grid gallery"
           description="Breakpoints, live overlay і приклади col-span. Центрований .container — margin-inline: auto."
         >
-          <p className={styles.viewportNote} aria-live="polite">
-            Viewport: <strong>{viewportWidth}px</strong> → {activeBp.label} (
-            {activeBp.columns} cols, container {activeBp.container})
-          </p>
-
           <div className={styles.galleryPart}>
             <h3 className={styles.gallerySubheading}>Breakpoints</h3>
             <div className={styles.tableWrap}>
@@ -318,11 +291,20 @@ function GridPageContent() {
           <div className={styles.galleryPart}>
             <h3 className={styles.gallerySubheading}>Live grid overlay</h3>
             <p className={styles.galleryLead}>
-              Колонки та gutter відповідають ширині панелі (ResizeObserver).
+              Ширина frame — перемикачі Wide desktop … Mobile; колонки та
+              container за breakpoint 768 / 1024 / 1920.
             </p>
-            <div className={styles.overlayPanel} ref={overlayRef}>
-              <GridOverlay width={overlayWidth} />
-            </div>
+            <ShowcaseDocLivePreview
+              caption={`${showcaseViewportName(previewViewportId)} (${previewWidth}px) · ${activeBp.label} · ${activeBp.columns} cols · container ${activeBp.container}.`}
+              previewViewport
+              previewViewportId={previewViewportId}
+              onPreviewViewportChange={setPreviewViewportId}
+              previewFrameWidth={previewWidth}
+            >
+              <div className={styles.overlayPanel}>
+                <GridOverlay width={previewWidth} />
+              </div>
+            </ShowcaseDocLivePreview>
           </div>
 
           <div className={styles.galleryPart}>

@@ -2,22 +2,30 @@
   width: 100%;
   overflow-x: auto;
   padding-bottom: var(--space-2xsmall);
+  border-radius: var(--radius-small);
 }
 
 .previewOuterScaled {
-  overflow-x: hidden;
+  overflow-x: auto;
+  overflow-y: visible;
 }
 
 .previewScaler {
-  overflow: hidden;
+  /* overflow-y: visible — popovers (DateRangeField, dropdowns) не обрізаються */
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .previewScalerScrollable {
   flex-shrink: 0;
+  height: fit-content;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .previewScalerScrollableScaled {
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: visible;
 }
 
 .previewOuterScrollable {

@@ -3,6 +3,7 @@ export type {
   ButtonContactProps,
   ButtonContactType,
   ButtonHtmlType,
+  ButtonLinkTarget,
   ButtonNavAppearance,
   ButtonNavProps,
   ButtonSocialNetwork,

@@ -6,15 +6,20 @@
   justify-content: space-between;
   box-sizing: border-box;
   width: 100%;
-  border: none;
-  border-top: var(--border-width-small) solid var(--border-strong);
-  border-bottom: var(--border-width-small) solid var(--border-strong);
+  border-style: solid;
+  border-color: var(--border-strong);
+  border-width: var(--border-width-small) 0;
   padding: var(--space-large);
   text-decoration: none;
   color: var(--text-default);
   background: transparent;
   cursor: pointer;
   transition: background 0.2s ease;
+}
+
+/* Сусідні рядки: зливаємо подвійну лінію між елементами в 1px */
+.root + .root {
+  margin-top: calc(-1 * var(--border-width-small));
 }
 
 /* Figma state/hover-list-row #ffeb85 → brand orange/200 (немає Alias) */
@@ -54,13 +59,9 @@
   word-break: break-word;
 }
 
-.icon {
-  flex-shrink: 0;
-  color: inherit;
-}
-
 /* Figma Size=Desktop — 684×96 */
 .desktop {
+  --del-arrow-size: var(--pryt-brand-scale-1600);
   min-height: 6rem;
 }
 
@@ -72,8 +73,93 @@
   font-size: var(--font-size-heading-h3);
 }
 
-/* Figma Size=Mobile — 343×64 */
+.arrow {
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+  width: var(--del-arrow-size);
+  height: var(--del-arrow-size);
+  color: inherit;
+}
+
+/* Arrow-Up-Right — діагональний зсув знизу-ліворуч → вгору-вправо (як LinkCard external) */
+.arrowTrack {
+  --del-arrow-gap: var(--space-large);
+  --del-arrow-step: calc(var(--del-arrow-size) + var(--del-arrow-gap));
+  position: absolute;
+  top: calc(-1 * var(--del-arrow-step));
+  left: 0;
+  width: calc(var(--del-arrow-size) * 2 + var(--del-arrow-gap));
+  height: calc(var(--del-arrow-size) * 2 + var(--del-arrow-gap));
+  transform: translate(0, 0);
+  transition: transform 300ms ease-out;
+}
+
+.arrowIconLead,
+.arrowIconFollow {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--del-arrow-size);
+  height: var(--del-arrow-size);
+  pointer-events: none;
+}
+
+.arrowIconLead {
+  left: 0;
+  bottom: 0;
+  transform: translate(
+    calc(-1 * var(--del-arrow-step)),
+    var(--del-arrow-step)
+  );
+}
+
+.arrowIconFollow {
+  left: 0;
+  bottom: 0;
+}
+
+.arrowIconLead svg,
+.arrowIconFollow svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+@media (hover: hover) {
+  .root:hover .arrowTrack,
+  .root:focus-visible .arrowTrack {
+    transform: translate(
+      var(--del-arrow-step),
+      calc(-1 * var(--del-arrow-step))
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arrowTrack {
+    top: 0;
+    width: var(--del-arrow-size);
+    height: var(--del-arrow-size);
+    transform: translate(0, 0);
+    transition: none;
+  }
+
+  .arrowIconFollow {
+    display: none;
+  }
+
+  .arrowIconLead {
+    left: 0;
+    bottom: 0;
+    transform: none;
+  }
+}
+
+/* Figma Size=Mobile — 343×64; icon 28px (Scale/700) */
 .mobile {
+  --del-arrow-size: var(--pryt-brand-scale-700);
   min-height: 4rem;
 }
 

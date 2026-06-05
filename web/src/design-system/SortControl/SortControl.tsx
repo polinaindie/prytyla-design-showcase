@@ -14,6 +14,7 @@ export function SortControl({
   value,
   onChange,
   label = "Сортування",
+  layout = "inline",
   count,
   disabled = false,
   className,
@@ -62,7 +63,13 @@ export function SortControl({
     };
   }, [open]);
 
-  const rootClass = [styles.root, className].filter(Boolean).join(" ");
+  const rootClass = [
+    styles.root,
+    layout === "bar" ? styles.rootBar : "",
+    className,
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   const toggleOpen = () => {
     if (disabled) return;
@@ -95,7 +102,12 @@ export function SortControl({
           <ul
             id={listboxId}
             role="listbox"
-            className={styles.menu}
+            className={[
+              styles.menu,
+              layout === "bar" ? styles.menuBar : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
             aria-label={label}
           >
             {options.map((option) => (

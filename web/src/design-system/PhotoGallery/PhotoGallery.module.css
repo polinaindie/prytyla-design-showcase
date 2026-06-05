@@ -1,0 +1,318 @@
+/* Figma Gallery — section 1812:37641 */
+
+.root {
+  container-type: inline-size;
+  container-name: photo-gallery;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-card-medium);
+  width: 100%;
+  min-width: 0;
+  /* TODO: add size/gallery-thumb-width (90px) and size/gallery-thumb-height (50px) tokens */
+  --photo-gallery-thumb-width: 5.625rem;
+  --photo-gallery-thumb-height: 3.125rem;
+  --photo-gallery-mobile-slide-width: 89%;
+  /* Figma Row 1810:37478 — 4 visible thumbs + partial 5th as scroll hint */
+  --photo-gallery-thumbs-visible: 4;
+  --photo-gallery-thumb-peek: calc(var(--photo-gallery-thumb-width) * 0.5);
+}
+
+.desktopStage {
+  position: relative;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  overflow: visible;
+}
+
+.mainFrame {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-large);
+  aspect-ratio: 1110 / 627;
+}
+
+.mainImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Nav buttons — same visual as Main News carousel (Button 292:5078, 40×40, icon 20px) */
+.navButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--pryt-brand-scale-1000);
+  height: var(--pryt-brand-scale-1000);
+  padding: var(--border-width-small);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-round);
+  background: var(--surface-default);
+  color: var(--text-default);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.navButton:hover:not(:disabled) {
+  background: var(--surface-page);
+}
+
+.navButton:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: var(--space-3xsmall);
+}
+
+.navButton:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.navSlot {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  transform: translateY(-50%);
+}
+
+.navPrev {
+  left: calc(var(--pryt-brand-scale-1000) / -2);
+  /* Figma chevron points right; rotate for the previous control */
+  transform: translateY(-50%) rotate(180deg);
+}
+
+.navNext {
+  right: calc(var(--pryt-brand-scale-1000) / -2);
+}
+
+.mobileStage {
+  display: none;
+  width: 100%;
+  min-width: 0;
+}
+
+.mobileViewport {
+  display: flex;
+  gap: var(--spacing-gap-sm);
+  width: 100%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.mobileViewport::-webkit-scrollbar {
+  display: none;
+}
+
+.mobileSlide {
+  flex: 0 0 var(--photo-gallery-mobile-slide-width);
+  scroll-snap-align: center;
+  padding: 0;
+  overflow: hidden;
+  border: none;
+  border-radius: var(--radius-large);
+  aspect-ratio: 334 / 221;
+  background: transparent;
+  cursor: pointer;
+}
+
+.mobileSlide:focus-visible {
+  outline: var(--border-width-small) solid var(--border-focus);
+  outline-offset: var(--space-3xsmall);
+}
+
+.mobileImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.meta {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--spacing-card-spacious);
+  width: 100%;
+  min-width: 0;
+}
+
+.caption {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-image-caption);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--text-default);
+  overflow-wrap: anywhere;
+}
+
+.thumbnails {
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: var(--spacing-gap-md);
+  min-width: 0;
+  max-width: 100%;
+  /* Many photos (5+): row overflows → horizontal scroll, scrollbar hidden */
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.thumbnails::-webkit-scrollbar {
+  display: none;
+}
+
+/* 5+ photos — 4 full thumbs + peek of the 5th; scroll for the rest */
+.root[data-many-thumbs] .thumbnails {
+  max-width: calc(
+    var(--photo-gallery-thumbs-visible) * var(--photo-gallery-thumb-width) +
+      (var(--photo-gallery-thumbs-visible) - 1) * var(--spacing-gap-md) +
+      var(--photo-gallery-thumb-peek)
+  );
+}
+
+.thumbnailBtn {
+  display: block;
+  flex-shrink: 0;
+  width: var(--photo-gallery-thumb-width);
+  height: var(--photo-gallery-thumb-height);
+  padding: 0;
+  overflow: hidden;
+  border: var(--border-width-small) solid transparent;
+  border-radius: var(--radius-medium);
+  background: transparent;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.thumbnailBtn:hover {
+  opacity: 0.72;
+}
+
+.thumbnailBtn:focus-visible {
+  outline: var(--border-width-small) solid var(--border-focus);
+  outline-offset: var(--space-3xsmall);
+}
+
+.thumbnailBtn[data-active="true"] {
+  border-width: var(--border-width-medium);
+  border-color: var(--accent-secondary);
+  opacity: 1;
+}
+
+.thumbnailImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Single photo — no thumbnails, mobile slide fills width (no scroll) */
+.root[data-single] {
+  --photo-gallery-mobile-slide-width: 100%;
+}
+
+.root[data-single] .thumbnails {
+  display: none;
+}
+
+/* Wide — 1920 / 1440 / 1200 */
+.root[data-viewport-tier="wide"] .mainFrame {
+  aspect-ratio: 1110 / 627;
+}
+
+.root[data-viewport-tier="wide"] .caption {
+  max-width: none;
+}
+
+/* Tablet — 768 */
+.root[data-viewport-tier="tablet"] .mainFrame {
+  aspect-ratio: 736 / 425;
+}
+
+.root[data-viewport-tier="tablet"] .caption {
+  max-width: 20.0625rem;
+}
+
+.root[data-viewport-tier="tablet"][data-many-thumbs] .thumbnails {
+  --photo-gallery-thumb-peek: 0px;
+}
+
+/* Mobile — 375: horizontal scroll only, no arrows */
+.root[data-viewport-tier="mobile"] .desktopStage {
+  display: none;
+}
+
+.root[data-viewport-tier="mobile"] .mobileStage {
+  display: block;
+}
+
+.root[data-viewport-tier="mobile"] .meta {
+  flex-direction: column;
+  gap: 0;
+}
+
+.root[data-viewport-tier="mobile"] .thumbnails {
+  display: none;
+}
+
+.root[data-viewport-tier="mobile"] .caption {
+  max-width: none;
+}
+
+/* Product — container queries when viewportTier is omitted */
+@container photo-gallery (max-width: 47.9375rem) {
+  .root:not([data-viewport-tier]) .desktopStage {
+    display: none;
+  }
+
+  .root:not([data-viewport-tier]) .mobileStage {
+    display: block;
+  }
+
+  .root:not([data-viewport-tier]) .meta {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .root:not([data-viewport-tier]) .thumbnails {
+    display: none;
+  }
+
+  .root:not([data-viewport-tier]) .caption {
+    max-width: none;
+  }
+}
+
+@container photo-gallery (min-width: 48rem) and (max-width: 63.9375rem) {
+  .root:not([data-viewport-tier]) .mainFrame {
+    aspect-ratio: 736 / 425;
+  }
+
+  .root:not([data-viewport-tier]) .caption {
+    max-width: 20.0625rem;
+  }
+
+  .root:not([data-viewport-tier])[data-many-thumbs] .thumbnails {
+    --photo-gallery-thumb-peek: 0px;
+  }
+}
+
+@container photo-gallery (min-width: 64rem) {
+  .root:not([data-viewport-tier]) .mainFrame {
+    aspect-ratio: 1110 / 627;
+  }
+
+  .root:not([data-viewport-tier]) .caption {
+    max-width: none;
+  }
+}

@@ -10,7 +10,6 @@ import {
   ShowcaseDocSection,
   ShowcaseDocTokenUsageTable,
   ShowcaseDocUsageGuidelines,
-  ShowcaseMatrix,
   ShowcaseThemeProvider,
   figmaComponentSizeBinaryForViewportWidth,
   showcaseViewportName,
@@ -149,49 +148,6 @@ function MediaCardShowcasePage() {
               <MediaCard {...DEMO} size={previewSize} />
             </div>
           </ShowcaseDocLivePreview>
-        </ShowcaseDocSection>
-
-        <ShowcaseDocSection
-          section="variants-gallery"
-          description="Default vs expanded — hover/desktop, active/mobile."
-        >
-          <ShowcaseMatrix
-            columns={[
-              "Desktop Default",
-              "Desktop Hover",
-              "Mobile Default",
-              "Mobile Active",
-            ]}
-            rows={[
-              {
-                cells: [
-                  <div key="d-def" className={styles.cellDark}>
-                    <MediaCard {...DEMO} aria-label="Desktop — логотип" />
-                  </div>,
-                  <div key="d-hov" className={styles.cellDark}>
-                    <MediaCard
-                      {...DEMO}
-                      aria-label="Desktop — наведіть курсор"
-                    />
-                  </div>,
-                  <div key="m-def" className={styles.cellDark}>
-                    <MediaCard
-                      {...DEMO}
-                      size="mobile"
-                      aria-label="Mobile — логотип"
-                    />
-                  </div>,
-                  <div key="m-act" className={styles.cellDark}>
-                    <MediaCard
-                      {...DEMO}
-                      size="mobile"
-                      aria-label="Mobile — натисніть"
-                    />
-                  </div>,
-                ],
-              },
-            ]}
-          />
         </ShowcaseDocSection>
 
         <ShowcaseDocSection section="properties">

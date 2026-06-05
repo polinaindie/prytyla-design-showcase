@@ -5,6 +5,17 @@
   position: relative;
 }
 
+.rootBar {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: var(--space-small);
+}
+
+.rootBar .value {
+  line-height: calc(18 / 14);
+}
+
 .label {
   font-family: Inter, system-ui, sans-serif;
   font-size: var(--font-size-body-medium);
@@ -73,4 +84,9 @@
   border-radius: var(--radius-medium);
   overflow: hidden;
   background: var(--surface-default);
+}
+
+.menuBar {
+  left: auto;
+  right: 0;
 }

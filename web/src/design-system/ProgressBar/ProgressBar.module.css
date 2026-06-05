@@ -49,7 +49,7 @@
   transform: translate(-50%, -50%);
 }
 
-.badgeDone {
+.badgeComplete {
   left: 100%;
   transform: translate(-100%, -50%);
   background: var(--accent-primary);

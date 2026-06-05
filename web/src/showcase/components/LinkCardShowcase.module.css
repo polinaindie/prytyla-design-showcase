@@ -2,10 +2,16 @@
   color: var(--text-default);
 }
 
-.galleryCaption {
-  margin: 0;
-  font-size: var(--font-size-body-small);
-  color: var(--text-muted);
+.livePreviewSlot {
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--space-3xlarge);
+  border-radius: var(--radius-medium);
+  background: var(--surface-subtle-neutral);
+}
+
+.pageRoot[data-showcase-theme="dark"] .livePreviewSlot {
+  background: var(--surface-inverse);
 }
 
 .note {

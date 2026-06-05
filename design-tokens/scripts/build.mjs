@@ -10,6 +10,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, "..");
 const TSV_PATH = path.join(ROOT, "data", "figma-variables.tsv");
 const SEMANTIC_TYPO_PATH = path.join(ROOT, "data", "figma-semantic-typography.tsv");
+const SEMANTIC_SPACING_PATH = path.join(ROOT, "data", "figma-semantic-spacing.tsv");
 const DIST = path.join(ROOT, "dist");
 const WEB_STYLES = path.join(ROOT, "..", "web", "src", "styles");
 
@@ -32,8 +33,8 @@ function aliasVar(name) {
   return `--${slugPath(name)}`;
 }
 
-/** Semantic font-size/heading-h1 → --font-size-heading-h1 */
-function semanticFontVar(name) {
+/** Semantic font-size/heading-h1 → --font-size-heading-h1; spacing/section-x → --spacing-section-x */
+function semanticModeVar(name) {
   return `--${slugPath(name)}`;
 }
 
@@ -197,42 +198,58 @@ function main() {
   const semanticTypoRows = parseSemanticTypographyRows(
     fs.readFileSync(SEMANTIC_TYPO_PATH, "utf8"),
   );
-
-  cssBlocks.push("");
-  cssBlocks.push(
-    `/* Semantic typography — responsive (Figma Semantic: Mobile default, Tablet ${BP_TABLET_MIN}+, Desktop ${BP_DESKTOP_MIN}+) */`,
+  const semanticSpacingRows = parseSemanticTypographyRows(
+    fs.readFileSync(SEMANTIC_SPACING_PATH, "utf8"),
   );
-  cssBlocks.push(`/* Source: design-tokens/data/figma-semantic-typography.tsv */`);
-  cssBlocks.push(`:root {`);
-  cssBlocks.push(`  /* Mobile (< ${BP_TABLET_MIN}) */`);
-  for (const row of semanticTypoRows) {
-    cssBlocks.push(`  ${semanticFontVar(row.name)}: ${row.mobile}px;`);
-  }
-  cssBlocks.push(`}`);
 
-  const tabletDecls = semanticTypoRows
-    .filter((row) => row.tablet !== row.mobile)
-    .map((row) => `  ${semanticFontVar(row.name)}: ${row.tablet}px;`);
-  if (tabletDecls.length > 0) {
+  function appendSemanticModeBlock(rows, label, sourceFile) {
     cssBlocks.push("");
-    cssBlocks.push(`@media (min-width: ${BP_TABLET_MIN}) {`);
-    cssBlocks.push(`  :root {`);
-    cssBlocks.push(...tabletDecls);
-    cssBlocks.push(`  }`);
+    cssBlocks.push(
+      `/* ${label} — responsive (Figma Semantic: Mobile default, Tablet ${BP_TABLET_MIN}+, Desktop ${BP_DESKTOP_MIN}+) */`,
+    );
+    cssBlocks.push(`/* Source: design-tokens/data/${sourceFile} */`);
+    cssBlocks.push(`:root {`);
+    cssBlocks.push(`  /* Mobile (< ${BP_TABLET_MIN}) */`);
+    for (const row of rows) {
+      cssBlocks.push(`  ${semanticModeVar(row.name)}: ${row.mobile}px;`);
+    }
     cssBlocks.push(`}`);
+
+    const tabletDecls = rows
+      .filter((row) => row.tablet !== row.mobile)
+      .map((row) => `  ${semanticModeVar(row.name)}: ${row.tablet}px;`);
+    if (tabletDecls.length > 0) {
+      cssBlocks.push("");
+      cssBlocks.push(`@media (min-width: ${BP_TABLET_MIN}) {`);
+      cssBlocks.push(`  :root {`);
+      cssBlocks.push(...tabletDecls);
+      cssBlocks.push(`  }`);
+      cssBlocks.push(`}`);
+    }
+
+    const desktopDecls = rows
+      .filter((row) => row.desktop !== row.tablet)
+      .map((row) => `  ${semanticModeVar(row.name)}: ${row.desktop}px;`);
+    if (desktopDecls.length > 0) {
+      cssBlocks.push("");
+      cssBlocks.push(`@media (min-width: ${BP_DESKTOP_MIN}) {`);
+      cssBlocks.push(`  :root {`);
+      cssBlocks.push(...desktopDecls);
+      cssBlocks.push(`  }`);
+      cssBlocks.push(`}`);
+    }
   }
 
-  const desktopDecls = semanticTypoRows
-    .filter((row) => row.desktop !== row.tablet)
-    .map((row) => `  ${semanticFontVar(row.name)}: ${row.desktop}px;`);
-  if (desktopDecls.length > 0) {
-    cssBlocks.push("");
-    cssBlocks.push(`@media (min-width: ${BP_DESKTOP_MIN}) {`);
-    cssBlocks.push(`  :root {`);
-    cssBlocks.push(...desktopDecls);
-    cssBlocks.push(`  }`);
-    cssBlocks.push(`}`);
-  }
+  appendSemanticModeBlock(
+    semanticTypoRows,
+    "Semantic typography",
+    "figma-semantic-typography.tsv",
+  );
+  appendSemanticModeBlock(
+    semanticSpacingRows,
+    "Semantic spacing",
+    "figma-semantic-spacing.tsv",
+  );
 
   cssBlocks.push("");
   cssBlocks.push(`/* Grid system (hardcoded, pending Figma sync) */`);
@@ -279,29 +296,45 @@ function main() {
   tsLines.push(`export type AliasToken = keyof typeof alias;`);
   tsLines.push(`export type MappedToken = keyof typeof mapped;`);
   tsLines.push("");
-  tsLines.push(`/** Figma Semantic font-size/* — responsive via CSS media queries */`);
-  tsLines.push(`export const semanticFontSize = {`);
-  for (const row of semanticTypoRows) {
-    tsLines.push(
-      `  ${JSON.stringify(row.name)}: ${JSON.stringify(`var(${semanticFontVar(row.name)})`)},`,
-    );
+  function appendSemanticTsExports(rows, constName, typeName, metaName) {
+    tsLines.push(`/** Figma Semantic — responsive via CSS media queries */`);
+    tsLines.push(`export const ${constName} = {`);
+    for (const row of rows) {
+      tsLines.push(
+        `  ${JSON.stringify(row.name)}: ${JSON.stringify(`var(${semanticModeVar(row.name)})`)},`,
+      );
+    }
+    tsLines.push(`} as const;`);
+    tsLines.push("");
+    tsLines.push(`export type ${typeName} = keyof typeof ${constName};`);
+    tsLines.push("");
+    tsLines.push(`export const ${metaName} = [`);
+    for (const row of rows) {
+      tsLines.push(
+        `  { figma: ${JSON.stringify(row.name)}, cssVar: ${JSON.stringify(semanticModeVar(row.name))}, mobile: ${row.mobile}, tablet: ${row.tablet}, desktop: ${row.desktop}, responsive: ${row.responsive} },`,
+      );
+    }
+    tsLines.push(`] as const;`);
+    tsLines.push("");
   }
-  tsLines.push(`} as const;`);
-  tsLines.push("");
-  tsLines.push(`export type SemanticFontSizeToken = keyof typeof semanticFontSize;`);
-  tsLines.push("");
-  tsLines.push(`export const semanticFontSizeMeta = [`);
-  for (const row of semanticTypoRows) {
-    tsLines.push(
-      `  { figma: ${JSON.stringify(row.name)}, cssVar: ${JSON.stringify(semanticFontVar(row.name))}, mobile: ${row.mobile}, tablet: ${row.tablet}, desktop: ${row.desktop}, responsive: ${row.responsive} },`,
-    );
-  }
-  tsLines.push(`] as const;`);
-  tsLines.push("");
+
+  appendSemanticTsExports(
+    semanticTypoRows,
+    "semanticFontSize",
+    "SemanticFontSizeToken",
+    "semanticFontSizeMeta",
+  );
+  appendSemanticTsExports(
+    semanticSpacingRows,
+    "semanticSpacing",
+    "SemanticSpacingToken",
+    "semanticSpacingMeta",
+  );
   tsLines.push(`export const typographyBreakpoints = {`);
   tsLines.push(`  tabletMin: ${JSON.stringify(BP_TABLET_MIN)},`);
   tsLines.push(`  desktopMin: ${JSON.stringify(BP_DESKTOP_MIN)},`);
   tsLines.push(`} as const;`);
+  tsLines.push(`export const spacingBreakpoints = typographyBreakpoints;`);
   tsLines.push("");
 
   fs.writeFileSync(path.join(DIST, "tokens.ts"), tsLines.join("\n"), "utf8");
@@ -311,6 +344,9 @@ function main() {
   console.log(`Wrote ${path.join("design-tokens", "dist", "tokens.ts")}`);
   console.log(
     `Semantic typography: ${semanticTypoRows.length} tokens (${semanticTypoRows.filter((r) => r.responsive).length} responsive)`,
+  );
+  console.log(
+    `Semantic spacing: ${semanticSpacingRows.length} tokens (${semanticSpacingRows.filter((r) => r.responsive).length} responsive)`,
   );
   if (dedupedMapped.length > 0) {
     console.log(`Mapped deduped with Alias (${dedupedMapped.length}):`);

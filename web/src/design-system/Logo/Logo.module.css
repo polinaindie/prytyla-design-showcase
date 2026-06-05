@@ -8,8 +8,9 @@
 .image {
   display: block;
   width: auto;
-  height: var(--logo-height, 2.875rem);
   max-width: 100%;
+  height: auto;
+  max-height: var(--logo-height, 2.875rem);
   object-fit: contain;
   object-position: left center;
   pointer-events: none;

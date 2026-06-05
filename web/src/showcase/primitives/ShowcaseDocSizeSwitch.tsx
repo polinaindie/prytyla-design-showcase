@@ -49,9 +49,14 @@ export function ShowcaseDocSizeSwitch<T extends string = ShowcaseDocSizeOption>(
 }: ShowcaseDocSizeSwitchProps<T>) {
   const items: readonly ShowcaseDocSwitchOption<T>[] =
     labeledOptions ?? (toSizeSwitchOptions(options) as ShowcaseDocSwitchOption<T>[]);
+  const segmented = labeledOptions !== undefined && labeledOptions.length > 0;
 
   return (
-    <div className={styles.root} role="group" aria-label={ariaLabel}>
+    <div
+      className={`${styles.root} ${segmented ? styles.rootSegmented : ""}`}
+      role="group"
+      aria-label={ariaLabel}
+    >
       {items.map((option) => (
         <button
           key={option.value}

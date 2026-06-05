@@ -155,25 +155,24 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-small);
+  gap: var(--space-medium);
+  margin-bottom: var(--space-small);
 }
 
 .slotCaption {
   margin: 0;
   font-size: var(--font-size-body-small);
   font-weight: 600;
-  line-height: 1.35;
-  color: var(--text-default);
+  color: var(--text-secondary);
 }
 
-.viewportInline {
-  margin-bottom: 0;
-  margin-left: auto;
+.pageRoot[data-showcase-theme="dark"] .slotCaption {
+  color: var(--text-on-inverse-muted);
 }
 
 .slotHint {
-  margin: 0;
-  font-size: var(--font-size-body-small);
+  margin: 0 0 var(--space-medium);
+  font-size: var(--font-size-caption);
   line-height: 1.45;
   color: var(--text-muted);
 }

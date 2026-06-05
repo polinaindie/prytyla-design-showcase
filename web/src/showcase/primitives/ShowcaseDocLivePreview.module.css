@@ -8,12 +8,13 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  overflow: visible;
 }
 
 .toolbar {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: var(--space-small);
   margin-bottom: var(--space-xsmall);
@@ -24,15 +25,15 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-medium);
-  flex: 1 1 auto;
-  min-width: 0;
+  margin-right: auto;
 }
 
 .toolbarActions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   justify-content: flex-end;
-  gap: var(--space-xsmall);
+  gap: var(--space-small);
   margin-left: auto;
 }
 
@@ -69,16 +70,18 @@
   align-items: center;
   justify-content: center;
   min-height: 12rem;
+  overflow: visible;
 }
 
 .frameScrollable {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   justify-content: flex-start;
   width: 100%;
   min-height: min-content;
-  padding-top: var(--border-width-small);
+  padding: var(--space-large);
+  overflow: visible;
 }
 
 .codeBlock {

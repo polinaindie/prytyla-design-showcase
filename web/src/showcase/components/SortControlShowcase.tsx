@@ -9,9 +9,12 @@ import {
   ShowcaseDocSection,
   ShowcaseDocTokenUsageTable,
   ShowcaseDocUsageGuidelines,
-  ShowcasePreview,
   ShowcaseThemeProvider,
+  showcaseViewportName,
+  showcaseViewportWidth,
+  sortControlLayoutForViewportWidth,
   type DocPropertyRow,
+  type ShowcaseViewportId,
   useShowcaseTheme,
 } from "../primitives";
 import { useCssVarValues } from "../tokens/useCssVarValues";
@@ -19,6 +22,9 @@ import styles from "./SortControlShowcase.module.css";
 
 const FIGMA_URL =
   "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=473-6498";
+
+const FIGMA_BAR_URL =
+  "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=940-9610";
 
 const OPTIONS = [
   { id: "active", label: "Активні проєкти" },
@@ -64,6 +70,14 @@ const PROPERTY_ROWS: DocPropertyRow[] = [
     description: "Статичний підпис зліва (muted).",
   },
   {
+    property: "layout",
+    type: '"inline" | "bar"',
+    typeKind: "VARIANT",
+    optionsDefault: '"inline"',
+    description:
+      "inline — label + тригер поруч (desktop). bar — width 100%, space-between (tablet/mobile, Figma Filter bar).",
+  },
+  {
     property: "count",
     type: "number",
     typeKind: "TEXT",
@@ -94,6 +108,11 @@ const TOKEN_USAGE_SAMPLE = [
 function SortControlShowcasePage() {
   const { theme } = useShowcaseTheme();
   const [value, setValue] = useState("active");
+  const [previewViewportId, setPreviewViewportId] =
+    useState<ShowcaseViewportId>("1440");
+
+  const previewWidth = showcaseViewportWidth(previewViewportId);
+  const previewLayout = sortControlLayoutForViewportWidth(previewWidth);
 
   const usageValues = useCssVarValues(
     useMemo(() => TOKEN_USAGE_SAMPLE.map((row) => row.token), []),
@@ -119,57 +138,32 @@ function SortControlShowcasePage() {
       >
         <ShowcaseDocSection
           section="live-preview"
-          description="Типовий рядок над сіткою проєктів."
+          description="Ширина frame — Wide desktop … Mobile; tablet/mobile — bar як у Filter & Sort (Figma 940:9610)."
         >
           <ShowcaseDocLivePreview
-            caption='value=active · count=16 · label="Сортування".'
+            caption={`${showcaseViewportName(previewViewportId)} (${previewWidth}px) · layout=${previewLayout} · value=active · count=16.`}
             code={LIVE_PREVIEW_CODE}
+            previewViewport
+            previewViewportId={previewViewportId}
+            onPreviewViewportChange={setPreviewViewportId}
           >
-            <SortControl
-              options={OPTIONS}
-              value={value}
-              onChange={setValue}
-              count={16}
-            />
+            <div className={styles.previewRow}>
+              <SortControl
+                options={OPTIONS}
+                value={value}
+                onChange={setValue}
+                count={16}
+                layout={previewLayout}
+              />
+            </div>
           </ShowcaseDocLivePreview>
-        </ShowcaseDocSection>
-
-        <ShowcaseDocSection
-          section="variants-gallery"
-          description="Закритий / open / без count."
-        >
-          <p className={styles.galleryCaption}>
-            Interactive · value={value}
+          <p className={styles.note}>
+            Bar layout (tablet/mobile):{" "}
+            <a href={FIGMA_BAR_URL} target="_blank" rel="noreferrer">
+              Figma 940:9610
+            </a>
+            .
           </p>
-          <ShowcasePreview className={styles.preview}>
-            <SortControl
-              options={OPTIONS}
-              value={value}
-              onChange={setValue}
-              count={16}
-            />
-          </ShowcasePreview>
-
-          <p className={styles.galleryCaption}>open=true · controlled</p>
-          <ShowcasePreview className={styles.preview}>
-            <SortControl
-              options={OPTIONS}
-              value="done"
-              onChange={() => {}}
-              count={8}
-              open
-              onOpenChange={() => {}}
-            />
-          </ShowcasePreview>
-
-          <p className={styles.galleryCaption}>count omitted</p>
-          <ShowcasePreview className={styles.preview}>
-            <SortControl
-              options={OPTIONS}
-              value="active"
-              onChange={() => {}}
-            />
-          </ShowcasePreview>
         </ShowcaseDocSection>
 
         <ShowcaseDocSection section="properties">
@@ -199,6 +193,7 @@ function SortControlShowcasePage() {
             do={[
               "Пункти — короткі label без числа в меню",
               "count на тригері для загальної кількості результатів",
+              "layout=\"bar\" у Filter & Sort на tablet/mobile (<1024px)",
               "Зміни стилю пункту — у DropdownItem",
             ]}
             dont={[

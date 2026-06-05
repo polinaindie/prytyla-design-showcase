@@ -6,23 +6,6 @@
   color: var(--text-inverse);
 }
 
-.preview {
-  padding: var(--space-3xlarge);
-  background: var(--surface-subtle-neutral);
-  border-radius: var(--radius-large);
-}
-
-.galleryCaption {
-  margin: 0 0 var(--space-small);
-  font-size: var(--font-size-body-small);
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.galleryCaption:not(:first-child) {
-  margin-top: var(--space-2xlarge);
-}
-
 .note {
   margin: var(--space-medium) 0 0;
   font-size: var(--font-size-body-small);
@@ -34,17 +17,4 @@
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-small);
-}
-
-.cell {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-small);
-}
-
-.cellLabel {
-  margin: 0;
-  font-size: var(--font-size-caption);
-  color: var(--text-muted);
 }

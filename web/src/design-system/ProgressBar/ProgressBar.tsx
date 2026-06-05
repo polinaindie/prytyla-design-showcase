@@ -16,17 +16,17 @@ export function ProgressBar({
   label,
 }: ProgressBarProps) {
   const resolvedVariant = resolveVariant(value, variant);
-  const isDone = resolvedVariant === "done";
+  const isComplete = value >= 100 || resolvedVariant === "done";
   const displayValue = Math.round(value);
   const fillPercent = Math.min(Math.max(value, 0), 100);
   const ariaLabel = label ?? `Прогрес: ${displayValue}%`;
 
   const rootClass = [styles.root, className].filter(Boolean).join(" ");
-  const badgeClass = [styles.badge, isDone ? styles.badgeDone : ""]
+  const badgeClass = [styles.badge, isComplete ? styles.badgeComplete : ""]
     .filter(Boolean)
     .join(" ");
 
-  const badgeStyle = isDone
+  const badgeStyle = isComplete
     ? undefined
     : { left: `${fillPercent}%` as const };
 
@@ -40,7 +40,7 @@ export function ProgressBar({
       aria-label={ariaLabel}
     >
       <div className={styles.track}>
-        {!isDone ? (
+        {!isComplete ? (
           <div
             className={styles.fill}
             style={{ width: `${fillPercent}%` }}

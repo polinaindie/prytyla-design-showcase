@@ -2,21 +2,8 @@
   position: relative;
 }
 
-.preview {
-  padding: var(--space-3xlarge);
-  background: var(--surface-subtle-neutral);
-  border-radius: var(--radius-large);
-}
-
-.galleryCaption {
-  margin: 0 0 var(--space-small);
-  font-size: var(--font-size-body-small);
-  font-weight: 600;
-  color: var(--text-secondary);
-}
-
-.galleryCaption:not(:first-child) {
-  margin-top: var(--space-2xlarge);
+.previewRow {
+  width: 100%;
 }
 
 .note {

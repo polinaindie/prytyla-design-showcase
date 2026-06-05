@@ -11,9 +11,11 @@ import {
   ShowcaseDocUsageGuidelines,
   ShowcasePreview,
   ShowcaseThemeProvider,
+  figmaComponentSizeBinaryForViewportWidth,
+  showcaseViewportName,
+  showcaseViewportWidth,
   type DocPropertyRow,
-  type ShowcaseDocSizeOption,
-  SHOWCASE_DOC_SIZE_OPTIONS_TWO,
+  type ShowcaseViewportId,
   useShowcaseTheme,
 } from "../primitives";
 import { useCssVarValues } from "../tokens/useCssVarValues";
@@ -64,7 +66,7 @@ const PROPERTY_ROWS: DocPropertyRow[] = [
     type: '"desktop" | "mobile"',
     typeKind: "VARIANT",
     optionsDefault: '"desktop"',
-    description: "Desktop 96px / mobile 64px min-height; різні font-size та icon.",
+    description: "Desktop 96px / mobile 64px min-height; icon 64px / 28px.",
   },
 ];
 
@@ -81,7 +83,11 @@ const TOKEN_USAGE_SAMPLE = [
 
 function DirectionsExternalLinksShowcasePage() {
   const { theme } = useShowcaseTheme();
-  const [previewSize, setPreviewSize] = useState<ShowcaseDocSizeOption>("desktop");
+  const [previewViewportId, setPreviewViewportId] =
+    useState<ShowcaseViewportId>("1440");
+
+  const previewWidth = showcaseViewportWidth(previewViewportId);
+  const previewSize = figmaComponentSizeBinaryForViewportWidth(previewWidth);
 
   const usageValues = useCssVarValues(
     useMemo(() => TOKEN_USAGE_SAMPLE.map((row) => row.token), []),
@@ -107,15 +113,14 @@ function DirectionsExternalLinksShowcasePage() {
       >
         <ShowcaseDocSection
           section="live-preview"
-          description="Desktop row — типовий елемент списку напрямів."
+          description="Ширина frame — Wide desktop … Mobile; Figma size desktop|mobile підбирається автоматично."
         >
           <ShowcaseDocLivePreview
-            caption={`size=${previewSize} · index="01" · hover — CSS.`}
+            caption={`${showcaseViewportName(previewViewportId)} (${previewWidth}px) · size=${previewSize} · index="01" · hover — фон + анімація стрілки.`}
             code={LIVE_PREVIEW_CODE}
-            constrainWidth
-            previewSize={previewSize}
-            onPreviewSizeChange={setPreviewSize}
-            previewSizeOptions={SHOWCASE_DOC_SIZE_OPTIONS_TWO}
+            previewViewport
+            previewViewportId={previewViewportId}
+            onPreviewViewportChange={setPreviewViewportId}
           >
             <DirectionsExternalLinks
               index="01"
@@ -153,7 +158,7 @@ function DirectionsExternalLinksShowcasePage() {
           <ShowcaseDocBulletList
             items={[
               "Нативний <a href> — семантичне посилання.",
-              "Іконка Arrow-Up-Right — aria-hidden.",
+              "Стрілка up-right (подвійна в track) — aria-hidden; анімація лише CSS.",
               "Зовнішні URL: target=\"_blank\" rel=\"noopener noreferrer\" з батька.",
               "Focus-visible: outline --border-focus.",
             ]}

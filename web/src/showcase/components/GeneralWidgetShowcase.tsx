@@ -7,6 +7,7 @@ import type { GeneralWidgetPaymentTab } from "../../design-system/GeneralWidget"
 import {
   GENERAL_WIDGET_ARTICLE_DESKTOP_WIDTH_PX,
   GENERAL_WIDGET_ARTICLE_MOBILE_WIDTH_PX,
+  GENERAL_WIDGET_ARTICLE_TABLET_WIDTH_PX,
   GENERAL_WIDGET_SCROLL_RANGE,
 } from "../../design-system/GeneralWidget/generalWidgetScroll";
 import { useArticleMorphDemo } from "./useArticleMorphDemo";
@@ -17,9 +18,9 @@ import {
   ShowcaseDocPropertiesTable,
   ShowcaseDocRelated,
   ShowcaseDocSection,
+  ShowcaseDocSizeSwitch,
   ShowcaseDocTokenUsageTable,
   ShowcaseDocUsageGuidelines,
-  ShowcaseMatrix,
   ShowcasePreview,
   ShowcaseThemeProvider,
   figmaComponentSizeForViewportWidth,
@@ -50,12 +51,9 @@ const FIGMA_MOBILE_FULL_URL =
 const FIGMA_MOBILE_COLLAPSED_URL =
   "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=1107-24593";
 
-/** Figma tablet article width (px) — 46rem */
-const FIGMA_TABLET_ARTICLE_WIDTH_PX = 736;
-
 function articleLivePreviewFrameWidth(previewWidth: number): number {
   if (previewWidth >= 768 && previewWidth < 1024) {
-    return FIGMA_TABLET_ARTICLE_WIDTH_PX;
+    return GENERAL_WIDGET_ARTICLE_TABLET_WIDTH_PX;
   }
   if (previewWidth < 768) {
     return GENERAL_WIDGET_ARTICLE_MOBILE_WIDTH_PX;
@@ -206,6 +204,71 @@ const DEMO_DONE_PROGRESS = {
   goalAmount: "35 000 000 ₴",
 };
 
+type GeneralWidgetVariantId =
+  | "once"
+  | "campaign"
+  | "subscription"
+  | "paymentInfo"
+  | "done"
+  | "veryShort";
+
+const VARIANT_GALLERY_OPTIONS: {
+  value: GeneralWidgetVariantId;
+  label: string;
+}[] = [
+  { value: "once", label: "Once" },
+  { value: "campaign", label: "Campaign" },
+  { value: "subscription", label: "Subscription" },
+  { value: "paymentInfo", label: "PaymentInfo" },
+  { value: "done", label: "Done" },
+  { value: "veryShort", label: "VeryShort" },
+];
+
+function GeneralWidgetVariantPreview({ variant }: { variant: GeneralWidgetVariantId }) {
+  switch (variant) {
+    case "once":
+      return (
+        <GeneralWidget
+          defaultPaymentTab="once"
+          hero={{ src: HERO_VARIANT, alt: "Hero" }}
+        />
+      );
+    case "campaign":
+      return (
+        <GeneralWidget
+          showSubscriptionTab={false}
+          defaultPaymentTab="once"
+          hero={{ src: HERO_VARIANT, alt: "Hero" }}
+        />
+      );
+    case "subscription":
+      return (
+        <GeneralWidget
+          defaultPaymentTab="subscription"
+          hero={{ src: HERO_VARIANT, alt: "Hero" }}
+        />
+      );
+    case "paymentInfo":
+      return (
+        <GeneralWidget
+          defaultPaymentTab="paymentInfo"
+          paymentInfoSections={DEFAULT_PAYMENT_INFO_SECTIONS}
+          hero={{ src: HERO_VARIANT, alt: "Hero" }}
+        />
+      );
+    case "done":
+      return (
+        <GeneralWidget
+          paymentType="done"
+          progress={DEMO_DONE_PROGRESS}
+          hero={{ src: HERO_VARIANT, alt: "Hero" }}
+        />
+      );
+    case "veryShort":
+      return <GeneralWidget layout="veryShort" progress={DEMO_PROGRESS} />;
+  }
+}
+
 type ArticleMorphPreviewProps = {
   scrollY: number;
   paymentTab: GeneralWidgetPaymentTab;
@@ -217,6 +280,7 @@ type ArticleMorphPreviewProps = {
   onQuickAmountClick: (value: number) => void;
   onPrimaryAction: () => void;
   showSubscriptionTab?: boolean;
+  articleColumn?: "desktop" | "tablet" | "mobile";
   articleScrollContainerRef?: RefObject<HTMLDivElement | null>;
   onScrollToFull?: () => void;
 };
@@ -232,6 +296,7 @@ function ArticleMorphPreview({
   onQuickAmountClick,
   onPrimaryAction,
   showSubscriptionTab = true,
+  articleColumn,
   articleScrollContainerRef,
   onScrollToFull,
 }: ArticleMorphPreviewProps) {
@@ -242,6 +307,7 @@ function ArticleMorphPreview({
       hero={{ src: HERO_ARTICLE, alt: "Hero" }}
       articleScrollOffset={scrollY}
       articleScrollNaturalLayout
+      articleColumn={articleColumn}
       articleScrollContainerRef={articleScrollContainerRef}
       onScrollToFull={onScrollToFull}
       showSubscriptionTab={showSubscriptionTab}
@@ -271,6 +337,8 @@ function GeneralWidgetShowcasePage() {
   );
   const [newsletterOptIn, setNewsletterOptIn] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [variantGalleryId, setVariantGalleryId] =
+    useState<GeneralWidgetVariantId>("once");
 
   const usageValues = useCssVarValues(
     useMemo(() => TOKEN_USAGE_SAMPLE.map((row) => row.token), []),
@@ -307,6 +375,9 @@ function GeneralWidgetShowcasePage() {
     }
   }, [livePaymentTab, isCollapsed, playCollapse]);
 
+  const articleColumn: ArticleMorphPreviewProps["articleColumn"] =
+    previewWidth >= 1024 ? "desktop" : previewWidth >= 768 ? "tablet" : "mobile";
+
   const articlePreviewProps: ArticleMorphPreviewProps = {
     scrollY,
     paymentTab: livePaymentTab,
@@ -318,12 +389,14 @@ function GeneralWidgetShowcasePage() {
     onQuickAmountClick: (value) => setAmount(String(value)),
     onPrimaryAction: () => setAmount(amount === "0" ? "500" : amount),
     showSubscriptionTab: liveShowSubscriptionTab,
+    articleColumn,
     articleScrollContainerRef: livePreviewScrollRef,
     onScrollToFull: playExpand,
   };
 
   const articleSlotClass = [
     styles.livePreviewArticleSlot,
+    styles.livePreviewArticleSlotInScrollableFrame,
     previewWidth >= 1024
       ? styles.livePreviewArticleSlotDesktop
       : previewWidth >= 768
@@ -347,7 +420,7 @@ function GeneralWidgetShowcasePage() {
           description={`layout=article — scroll 0…${GENERAL_WIDGET_SCROLL_RANGE}px: hero → compact. Tablet full ${FIGMA_TABLET_FULL_URL.split("node-id=")[1]} · collapsed ${FIGMA_TABLET_COLLAPSED_URL.split("node-id=")[1]} · mobile full ${FIGMA_MOBILE_FULL_URL.split("node-id=")[1]} · collapsed ${FIGMA_MOBILE_COLLAPSED_URL.split("node-id=")[1]}.`}
         >
           <ShowcaseDocLivePreview
-            caption={`${showcaseViewportName(previewViewportId)} (${previewWidth}px) · size=${componentSize}${isTabletPreview ? " · tablet 736px (Figma 947:14263)" : isMobilePreview ? ` · article ${GENERAL_WIDGET_ARTICLE_MOBILE_WIDTH_PX}px (fluid container, Figma ${FIGMA_MOBILE_FULL_URL.split("node-id=")[1]})` : ` · desktop/laptop card ${GENERAL_WIDGET_ARTICLE_DESKTOP_WIDTH_PX}px (Figma ${FIGMA_DESKTOP_ARTICLE_URL.split("node-id=")[1]})`}.`}
+            caption={`${showcaseViewportName(previewViewportId)} (${previewWidth}px) · size=${componentSize}${isTabletPreview ? ` · tablet ${GENERAL_WIDGET_ARTICLE_TABLET_WIDTH_PX}px (Figma 947:14263 / 1107:26075)` : isMobilePreview ? ` · mobile ${GENERAL_WIDGET_ARTICLE_MOBILE_WIDTH_PX}px (Figma ${FIGMA_MOBILE_FULL_URL.split("node-id=")[1]})` : ` · desktop/laptop ${GENERAL_WIDGET_ARTICLE_DESKTOP_WIDTH_PX}px (Figma ${FIGMA_DESKTOP_ARTICLE_URL.split("node-id=")[1]})`}.`}
             code={LIVE_PREVIEW_CODE}
             scrollablePreview
             flush
@@ -375,60 +448,19 @@ function GeneralWidgetShowcasePage() {
 
         <ShowcaseDocSection
           section="variants-gallery"
-          description="Once · Campaign (no sub) · Subscription · PaymentInfo · Done · VeryShort."
+          description="Перемикач — один варіант у preview (Once · Campaign · Subscription · PaymentInfo · Done · VeryShort)."
         >
-          <ShowcaseMatrix
-            columns={[
-              "Once",
-              "Campaign",
-              "Subscription",
-              "PaymentInfo",
-              "Done",
-              "VeryShort",
-            ]}
-            rows={[
-              {
-                cells: [
-                  <div key="once" className={styles.previewCell}>
-                    <GeneralWidget
-                      defaultPaymentTab="once"
-                      hero={{ src: HERO_VARIANT, alt: "Hero" }}
-                    />
-                  </div>,
-                  <div key="campaign" className={styles.previewCell}>
-                    <GeneralWidget
-                      showSubscriptionTab={false}
-                      defaultPaymentTab="once"
-                      hero={{ src: HERO_VARIANT, alt: "Hero" }}
-                    />
-                  </div>,
-                  <div key="subscription" className={styles.previewCell}>
-                    <GeneralWidget
-                      defaultPaymentTab="subscription"
-                      hero={{ src: HERO_VARIANT, alt: "Hero" }}
-                    />
-                  </div>,
-                  <div key="payment" className={styles.previewCell}>
-                    <GeneralWidget
-                      defaultPaymentTab="paymentInfo"
-                      paymentInfoSections={DEFAULT_PAYMENT_INFO_SECTIONS}
-                      hero={{ src: HERO_VARIANT, alt: "Hero" }}
-                    />
-                  </div>,
-                  <div key="done" className={styles.previewCell}>
-                    <GeneralWidget
-                      paymentType="done"
-                      progress={DEMO_DONE_PROGRESS}
-                      hero={{ src: HERO_VARIANT, alt: "Hero" }}
-                    />
-                  </div>,
-                  <div key="short" className={styles.previewCell}>
-                    <GeneralWidget layout="veryShort" progress={DEMO_PROGRESS} />
-                  </div>,
-                ],
-              },
-            ]}
-          />
+          <div className={styles.variantsGallery}>
+            <ShowcaseDocSizeSwitch
+              value={variantGalleryId}
+              onChange={setVariantGalleryId}
+              labeledOptions={VARIANT_GALLERY_OPTIONS}
+              aria-label="Варіант General Widget"
+            />
+            <ShowcasePreview className={styles.previewCell}>
+              <GeneralWidgetVariantPreview variant={variantGalleryId} />
+            </ShowcasePreview>
+          </div>
         </ShowcaseDocSection>
 
         <ShowcaseDocSection section="sizes" description="layout визначає габарити (Figma).">
@@ -437,7 +469,7 @@ function GeneralWidgetShowcasePage() {
               "full — hero ~329×374 + форма (desktop donate).",
               "veryShort — compact embed з progress thumbnail.",
               "sidebar — sticky peek + click expand.",
-              `article — scroll morph 0…260px; desktop card ${GENERAL_WIDGET_ARTICLE_DESKTOP_WIDTH_PX}px (915:14314) · tablet 736px · mobile ${GENERAL_WIDGET_ARTICLE_MOBILE_WIDTH_PX}px (fluid container).`,
+              `article — scroll morph 0…260px; desktop/laptop ${GENERAL_WIDGET_ARTICLE_DESKTOP_WIDTH_PX}px (915:14314) · tablet ${GENERAL_WIDGET_ARTICLE_TABLET_WIDTH_PX}px (947:14263 / 1107:26075) · mobile ${GENERAL_WIDGET_ARTICLE_MOBILE_WIDTH_PX}px (947:19185).`,
               "article tablet full — hero + progress + форма в два стовпці (947:14263).",
               "article tablet collapsed — compact strip + CTA (1107:26075).",
               `article mobile ${GENERAL_WIDGET_ARTICLE_MOBILE_WIDTH_PX}px — scroll morph (fluid container).`,
@@ -463,8 +495,9 @@ function GeneralWidgetShowcasePage() {
               "sidebar: клік progress → expand/collapse (окремо від article scroll).",
               "article: scroll morph — hero зникає; thumbnail = той самий src, що hero.",
               "article tablet (≥768px container): два стовпці; collapsed — CTA «Підтримати проєкт».",
-              `article mobile ${GENERAL_WIDGET_ARTICLE_MOBILE_WIDTH_PX}px collapsed — scroll morph (Figma 1107:24593).`,
-              "Live preview: viewport 1920…375 + «Подивитися анімацію» (morph 0…260px).",
+              `article mobile ${GENERAL_WIDGET_ARTICLE_MOBILE_WIDTH_PX}px — morph 0…260px → VeryShort (Figma 1107:24593).`,
+              "article desktop/laptop 329px — morph 0…260px → compact Short (Figma 287:15090), форма лишається.",
+              "Live preview: viewport 1920…375 + «Подивитися анімацію» (0…260px; desktop/laptop → стан 2, mobile → VeryShort).",
             ]}
           />
         </ShowcaseDocSection>
@@ -477,36 +510,46 @@ function GeneralWidgetShowcasePage() {
             Tablet · повний (Figma 947:14263)
           </p>
           <ShowcasePreview
-            viewportWidth={736}
+            viewportWidth={GENERAL_WIDGET_ARTICLE_TABLET_WIDTH_PX}
             constrainWidth
             flush
             className={styles.livePreviewPreview}
           >
-            <ArticleMorphPreview
-              {...articlePreviewProps}
-              scrollY={0}
-              showSubscriptionTab={false}
-              paymentTab="once"
-              onPaymentTabChange={setTab}
-            />
+            <div
+              className={`${styles.livePreviewArticleSlot} ${styles.livePreviewArticleSlotTablet}`}
+            >
+              <ArticleMorphPreview
+                {...articlePreviewProps}
+                scrollY={0}
+                articleColumn="tablet"
+                showSubscriptionTab={false}
+                paymentTab="once"
+                onPaymentTabChange={setTab}
+              />
+            </div>
           </ShowcasePreview>
 
           <p className={styles.galleryCaption}>
             Tablet · колапс на скрол (Figma 1107:26075)
           </p>
           <ShowcasePreview
-            viewportWidth={736}
+            viewportWidth={GENERAL_WIDGET_ARTICLE_TABLET_WIDTH_PX}
             constrainWidth
             flush
             className={styles.livePreviewPreview}
           >
-            <ArticleMorphPreview
-              {...articlePreviewProps}
-              scrollY={GENERAL_WIDGET_SCROLL_RANGE}
-              showSubscriptionTab={false}
-              paymentTab="once"
-              onPaymentTabChange={setTab}
-            />
+            <div
+              className={`${styles.livePreviewArticleSlot} ${styles.livePreviewArticleSlotTablet}`}
+            >
+              <ArticleMorphPreview
+                {...articlePreviewProps}
+                scrollY={GENERAL_WIDGET_SCROLL_RANGE}
+                articleColumn="tablet"
+                showSubscriptionTab={false}
+                paymentTab="once"
+                onPaymentTabChange={setTab}
+              />
+            </div>
           </ShowcasePreview>
 
           <p className={styles.galleryCaption}>
@@ -518,7 +561,15 @@ function GeneralWidgetShowcasePage() {
             flush
             className={styles.livePreviewPreview}
           >
-            <ArticleMorphPreview {...articlePreviewProps} scrollY={0} />
+            <div
+              className={`${styles.livePreviewArticleSlot} ${styles.livePreviewArticleSlotMobile}`}
+            >
+              <ArticleMorphPreview
+                {...articlePreviewProps}
+                scrollY={0}
+                articleColumn="mobile"
+              />
+            </div>
           </ShowcasePreview>
 
           <p className={styles.galleryCaption}>
@@ -530,10 +581,15 @@ function GeneralWidgetShowcasePage() {
             flush
             className={styles.livePreviewPreview}
           >
-            <ArticleMorphPreview
-              {...articlePreviewProps}
-              scrollY={GENERAL_WIDGET_SCROLL_RANGE}
-            />
+            <div
+              className={`${styles.livePreviewArticleSlot} ${styles.livePreviewArticleSlotMobile}`}
+            >
+              <ArticleMorphPreview
+                {...articlePreviewProps}
+                scrollY={GENERAL_WIDGET_SCROLL_RANGE}
+                articleColumn="mobile"
+              />
+            </div>
           </ShowcasePreview>
 
           <p className={styles.galleryCaption}>layout=sidebar (клік expand)</p>

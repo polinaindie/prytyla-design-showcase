@@ -52,3 +52,169 @@
 .galleryGroup + .galleryGroup {
   margin-top: var(--space-2xlarge);
 }
+
+.slotToolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-medium);
+  margin-bottom: var(--space-small);
+}
+
+.slotCaption {
+  margin: 0;
+  font-size: var(--font-size-body-small);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.pageRoot[data-showcase-theme="dark"] .slotCaption {
+  color: var(--text-on-inverse-muted);
+}
+
+.slotHint {
+  margin: 0 0 var(--space-medium);
+  font-size: var(--font-size-caption);
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.pageRoot[data-showcase-theme="dark"] .slotHint {
+  color: var(--text-on-inverse-muted);
+}
+
+/* Live preview — spacing за рецептом breakpoint */
+.demoShell {
+  box-sizing: border-box;
+  width: 100%;
+  padding-inline: var(--spacing-demo-gutter);
+  padding-block: var(--spacing-demo-card);
+  border: var(--border-width-small) dashed var(--border-default);
+  border-radius: var(--radius-large);
+  background: var(--surface-subtle-neutral);
+}
+
+.pageRoot[data-showcase-theme="dark"] .demoShell {
+  border-color: var(--border-on-inverse);
+  background: var(--surface-primary);
+}
+
+.demoSections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-demo-section);
+}
+
+.demoBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-demo-stack);
+  padding: var(--spacing-demo-card);
+  border-radius: var(--radius-medium);
+  background: var(--surface-default);
+  border: var(--border-width-small) solid var(--border-default);
+}
+
+.pageRoot[data-showcase-theme="dark"] .demoBlock {
+  background: var(--surface-inverse);
+  border-color: var(--border-on-inverse);
+}
+
+.demoBlockTitle {
+  margin: 0;
+  font-size: var(--font-size-body-small);
+  font-weight: 600;
+  color: var(--text-default);
+}
+
+.pageRoot[data-showcase-theme="dark"] .demoBlockTitle {
+  color: var(--text-inverse);
+}
+
+.demoCtaRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-demo-cta);
+}
+
+.demoMeta {
+  margin: 0;
+  font-size: var(--font-size-caption);
+  color: var(--text-muted);
+}
+
+.recipeGrid {
+  display: grid;
+  gap: var(--space-medium);
+  grid-template-columns: repeat(var(--spacing-showcase-grid-cols, 2), minmax(0, 1fr));
+  margin-top: var(--space-large);
+}
+
+.recipeCard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xsmall);
+  padding: var(--space-medium);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  background: var(--surface-default);
+  min-width: 0;
+}
+
+.pageRoot[data-showcase-theme="dark"] .recipeCard {
+  border-color: var(--border-on-inverse);
+  background: var(--surface-inverse);
+}
+
+.recipeLabel {
+  margin: 0;
+  font-size: var(--font-size-body-small);
+  font-weight: 600;
+  color: var(--text-default);
+}
+
+.pageRoot[data-showcase-theme="dark"] .recipeLabel {
+  color: var(--text-inverse);
+}
+
+.recipeToken {
+  margin: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--font-size-caption);
+  color: var(--text-link);
+  word-break: break-all;
+}
+
+.recipeProperty {
+  margin: 0;
+  font-size: var(--font-size-caption);
+  color: var(--text-muted);
+}
+
+.recipeFigma {
+  margin: 0;
+  font-size: var(--font-size-caption);
+  color: var(--text-secondary);
+}
+
+/* Showcase demo — semantic button sizing (не змінює DS Button поки) */
+.demoButton {
+  min-height: var(--spacing-demo-button-height);
+  padding-inline: var(--spacing-demo-button-px);
+}
+
+.spacingBarTrack {
+  display: flex;
+  align-items: center;
+  min-width: var(--pryt-brand-scale-3200);
+  height: var(--size-medium);
+}
+
+.spacingBarFill {
+  height: 100%;
+  min-width: var(--space-3xsmall);
+  border-radius: var(--radius-small);
+  background: var(--accent-secondary);
+}

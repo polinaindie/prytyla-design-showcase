@@ -25,6 +25,7 @@
   line-height: 1.5;
   text-align: center;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
   transition:
     background 0.2s ease,
     border-color 0.2s ease,
@@ -32,6 +33,7 @@
 }
 
 .root:hover:not(:disabled),
+.root:active:not(:disabled),
 .selected {
   border-color: var(--accent-secondary);
   background: var(--surface-page);
@@ -68,6 +70,7 @@
 }
 
 .root:hover:not(:disabled) .iconWrap,
+.root:active:not(:disabled) .iconWrap,
 .selected .iconWrap {
   color: var(--accent-secondary);
 }

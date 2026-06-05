@@ -1,5 +1,5 @@
 import { useId, useState } from "react";
-import { IconChevronDown } from "../Icons";
+import { IconDropdown } from "../Icons";
 import { useAccordionContext } from "./AccordionContext";
 import type { AccordionItemProps } from "./AccordionItem.types";
 import styles from "./AccordionItem.module.css";
@@ -54,7 +54,7 @@ export function AccordionItem({
         onClick={handleToggle}
       >
         <span className={styles.question}>{question}</span>
-        <IconChevronDown className={styles.icon} size={20} aria-hidden />
+        <IconDropdown className={styles.icon} size={20} aria-hidden />
       </button>
       <div
         id={panelId}

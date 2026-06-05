@@ -8,12 +8,6 @@
   color: var(--text-muted);
 }
 
-.cellDark {
-  padding: var(--space-large);
-  border-radius: var(--radius-medium);
-  background: var(--surface-section-dark);
-}
-
 .livePreviewSlot {
   width: 100%;
   padding: var(--space-2xlarge);

@@ -2,13 +2,16 @@ import { useId } from "react";
 import {
   IconArrowLeft10,
   IconArrowRight10,
-  IconArrowUpRight,
   IconBrandVprytyl,
   IconEmail20,
-  IconMenu,
   IconPhone20,
   IconSocialFacebook,
 } from "../Icons";
+import { IconFigmaSvg } from "../Icons/IconFigmaSvg";
+import {
+  FIGMA_SVG_ARROW_RIGHT_24,
+  FIGMA_SVG_ARROW_UP_RIGHT,
+} from "../Icons/iconFigmaSources";
 import type {
   ButtonContactProps,
   ButtonNavProps,
@@ -42,6 +45,52 @@ function ButtonSpecialGradientMenu({
         strokeLinecap="round"
       />
     </svg>
+  );
+}
+
+const BUTTON_ARROW_SIZE = 24;
+
+/** Arrow-Right — горизонтальний зсув при hover (як LinkCard internal). */
+function ButtonArrowRightAnimated() {
+  return (
+    <span className={styles.iconArrowWrap} aria-hidden>
+      <span className={styles.iconArrowTrackInternal}>
+        <IconFigmaSvg
+          figmaSvg={FIGMA_SVG_ARROW_RIGHT_24}
+          idPrefix="btn-arrow-right-lead"
+          className={styles.iconArrowInternal}
+          size={BUTTON_ARROW_SIZE}
+        />
+        <IconFigmaSvg
+          figmaSvg={FIGMA_SVG_ARROW_RIGHT_24}
+          idPrefix="btn-arrow-right-follow"
+          className={styles.iconArrowInternal}
+          size={BUTTON_ARROW_SIZE}
+        />
+      </span>
+    </span>
+  );
+}
+
+/** Arrow-Up-Right — діагональний зсув при hover (як LinkCard external). */
+function ButtonArrowUpRightAnimated() {
+  return (
+    <span className={styles.iconArrowWrap} aria-hidden>
+      <span className={styles.iconArrowTrackExternal}>
+        <IconFigmaSvg
+          figmaSvg={FIGMA_SVG_ARROW_UP_RIGHT}
+          idPrefix="btn-arrow-up-right-lead"
+          className={styles.iconArrowExternalLead}
+          size={BUTTON_ARROW_SIZE}
+        />
+        <IconFigmaSvg
+          figmaSvg={FIGMA_SVG_ARROW_UP_RIGHT}
+          idPrefix="btn-arrow-up-right-follow"
+          className={styles.iconArrowExternalFollow}
+          size={BUTTON_ARROW_SIZE}
+        />
+      </span>
+    </span>
   );
 }
 
@@ -133,8 +182,9 @@ export function Button(props: ButtonProps) {
     disabled = false,
     leftIcon,
     rightIcon,
-    showLeftIcon = true,
+    showLeftIcon = false,
     showRightIcon = true,
+    linkTarget = "internal",
     htmlType = "button",
     className,
     ...rest
@@ -151,22 +201,25 @@ export function Button(props: ButtonProps) {
   const iconGradient = isSpecial && !disabled ? gradientId : undefined;
   const iconClass = styles.icon;
 
-  const showLeft = isSpecial ? Boolean(leftIcon) && showLeftIcon : showLeftIcon;
+  const iconOnRight = showRightIcon;
+  const iconOnLeft = showLeftIcon && !iconOnRight;
+
+  const showLeft = isSpecial
+    ? Boolean(leftIcon) && iconOnLeft
+    : iconOnLeft;
 
   const renderLeft =
     showLeft &&
     (leftIcon ??
-      (iconGradient ? (
+      (isSpecial && iconGradient ? (
         <ButtonSpecialGradientMenu
           className={iconClass}
           gradientId={iconGradient}
         />
-      ) : (
-        <IconMenu className={iconClass} size={24} />
-      )));
+      ) : null));
 
   const renderRight =
-    showRightIcon &&
+    iconOnRight &&
     (rightIcon ??
       (isSpecial ? (
         <IconBrandVprytyl
@@ -180,8 +233,10 @@ export function Button(props: ButtonProps) {
           className={iconClass}
           gradientId={iconGradient}
         />
+      ) : linkTarget === "external" ? (
+        <ButtonArrowUpRightAnimated />
       ) : (
-        <IconArrowUpRight className={iconClass} size={24} />
+        <ButtonArrowRightAnimated />
       )));
 
   return (

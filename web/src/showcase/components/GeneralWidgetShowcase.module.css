@@ -19,6 +19,12 @@
   gap: var(--space-small);
 }
 
+.variantsGallery {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-medium);
+}
+
 /* Badge «Найдієвіше» — padding; overflow-x лише для scale-box */
 .livePreviewPreview {
   overflow-x: hidden;
@@ -30,24 +36,28 @@
   max-height: none;
 }
 
-/* Figma 915:14314 desktop 329px · tablet 736px · mobile article 343px (fluid container) */
+/* Figma 915:14314 desktop 329px · 947:14263 tablet 736px · 947:19185 mobile 343px */
 .livePreviewArticleSlot {
   width: 100%;
 }
 
+/* Live preview scrollable frame — компенсує padding .frameScrollable */
+.livePreviewArticleSlotInScrollableFrame {
+  box-sizing: border-box;
+  width: calc(100% + 2 * var(--space-large));
+  margin-inline: calc(-1 * var(--space-large));
+}
+
 .livePreviewArticleSlotDesktop {
-  max-width: 20.5625rem;
+  max-width: 20.5625rem; /* 329px — wide desktop / desktop / laptop */
 }
 
 .livePreviewArticleSlotTablet {
-  width: 46rem; /* 736px — Figma 947:14263 */
-  max-width: 100%;
+  max-width: 46rem; /* 736px — Figma 947:14263 · 1107:26075 */
 }
 
-/* Figma 947:19185 — mobile article 343px (fluid container) */
 .livePreviewArticleSlotMobile {
-  width: 21.4375rem;
-  max-width: 100%;
+  max-width: 21.4375rem; /* 343px — Figma 947:19185 */
 }
 
 .morphDemoButton {

@@ -30,6 +30,13 @@ import { GeneralWidgetShowcase } from "./components/GeneralWidgetShowcase";
 import { SubPageHeroShowcase } from "./components/SubPageHeroShowcase";
 import { MenuShowcase } from "./components/MenuShowcase";
 import { BadgeShowcase } from "./components/BadgeShowcase";
+import { BreadcrumbsShowcase } from "./components/BreadcrumbsShowcase";
+import { CalendarPickerShowcase } from "./components/CalendarPickerShowcase";
+import { ImpactStatisticsShowcase } from "./components/ImpactStatisticsShowcase";
+import { PaginationShowcase } from "./components/PaginationShowcase";
+import { TableShowcase } from "./components/TableShowcase";
+import { EvidenceViewerShowcase } from "./components/EvidenceViewerShowcase";
+import { PhotoGalleryShowcase } from "./components/PhotoGalleryShowcase";
 import { ProgressBarShowcase } from "./components/ProgressBarShowcase";
 import { TagShowcase } from "./components/TagShowcase";
 import { FilterChipShowcase } from "./components/FilterChipShowcase";
@@ -155,6 +162,12 @@ export const showcaseRoutes: ShowcaseGroup[] = [
             Component: BadgeShowcase,
           },
           {
+            id: "breadcrumbs",
+            label: "Breadcrumbs",
+            path: "breadcrumbs",
+            Component: BreadcrumbsShowcase,
+          },
+          {
             id: "button",
             label: "Button",
             path: "button",
@@ -225,6 +238,12 @@ export const showcaseRoutes: ShowcaseGroup[] = [
             label: "Checkbox",
             path: "checkbox",
             Component: CheckboxShowcase,
+          },
+          {
+            id: "calendar-picker",
+            label: "Calendar Picker",
+            path: "calendar-picker",
+            Component: CalendarPickerShowcase,
           },
           {
             id: "multi-drop",
@@ -339,6 +358,36 @@ export const showcaseRoutes: ShowcaseGroup[] = [
             label: "General Widget",
             path: "general-widget",
             Component: GeneralWidgetShowcase,
+          },
+          {
+            id: "impact-statistics",
+            label: "Impact statistics",
+            path: "impact-statistics",
+            Component: ImpactStatisticsShowcase,
+          },
+          {
+            id: "pagination",
+            label: "Pagination",
+            path: "pagination",
+            Component: PaginationShowcase,
+          },
+          {
+            id: "table",
+            label: "Table",
+            path: "table",
+            Component: TableShowcase,
+          },
+          {
+            id: "evidence-viewer",
+            label: "Evidence Viewer",
+            path: "evidence-viewer",
+            Component: EvidenceViewerShowcase,
+          },
+          {
+            id: "photo-gallery",
+            label: "Photo Gallery",
+            path: "photo-gallery",
+            Component: PhotoGalleryShowcase,
           },
           {
             id: "main-project",

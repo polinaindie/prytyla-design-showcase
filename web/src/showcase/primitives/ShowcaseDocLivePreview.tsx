@@ -41,6 +41,8 @@ type ShowcaseDocLivePreviewProps = {
   scrollablePreview?: boolean;
   /** Кнопки / контроли поруч із View code (напр. демо анімації). */
   previewActions?: ReactNode;
+  /** Додаткові перемикачі зліва в toolbar (перед viewport / size). */
+  toolbarSwitchesExtra?: ReactNode;
 };
 
 async function copyText(text: string): Promise<boolean> {
@@ -74,6 +76,7 @@ export function ShowcaseDocLivePreview({
   previewClassName,
   scrollablePreview = false,
   previewActions,
+  toolbarSwitchesExtra,
 }: ShowcaseDocLivePreviewProps) {
   const [copied, setCopied] = useState(false);
   const [codeOpen, setCodeOpen] = useState(defaultShowCode);
@@ -115,40 +118,44 @@ export function ShowcaseDocLivePreview({
     : undefined;
   const activeFrameWidth = previewFrameWidth ?? activeViewportWidth;
 
-  const showPreviewSwitch = showLabeledSwitch || showSizeSwitch || showViewportSwitch;
-  const showToolbar =
-    showPreviewSwitch || Boolean(code) || Boolean(previewActions);
+  const showLeftSwitches =
+    Boolean(toolbarSwitchesExtra) || showSizeSwitch || showViewportSwitch;
+  const showToolbarActions =
+    showLabeledSwitch || Boolean(code) || Boolean(previewActions);
+  const showToolbar = showLeftSwitches || showToolbarActions;
 
   return (
     <div className={styles.wrap}>
       <div className={styles.previewShell}>
         {showToolbar ? (
           <div className={styles.toolbar}>
-            {showPreviewSwitch ? (
+            {showLeftSwitches ? (
               <div className={styles.toolbarSwitches}>
-                {showLabeledSwitch ? (
-                  <ShowcaseDocSizeSwitch
-                    value={previewValue}
-                    onChange={onPreviewValueChange}
-                    labeledOptions={previewLabeledOptions}
-                  />
-                ) : showSizeSwitch ? (
-                  <ShowcaseDocSizeSwitch
-                    value={previewSize}
-                    onChange={onPreviewSizeChange}
-                    options={previewSizeOptions}
-                  />
-                ) : null}
+                {toolbarSwitchesExtra}
                 {showViewportSwitch ? (
                   <ShowcaseDocViewportSwitch
                     value={activeViewportId}
                     onChange={setActiveViewportId}
                   />
                 ) : null}
+                {showSizeSwitch ? (
+                  <ShowcaseDocSizeSwitch
+                    value={previewSize}
+                    onChange={onPreviewSizeChange}
+                    options={previewSizeOptions}
+                  />
+                ) : null}
               </div>
             ) : null}
-            {previewActions || code ? (
+            {showToolbarActions ? (
               <div className={styles.toolbarActions}>
+                {showLabeledSwitch ? (
+                  <ShowcaseDocSizeSwitch
+                    value={previewValue}
+                    onChange={onPreviewValueChange}
+                    labeledOptions={previewLabeledOptions}
+                  />
+                ) : null}
                 {previewActions}
                 {code ? (
                   <>

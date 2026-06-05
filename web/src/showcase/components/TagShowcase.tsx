@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { SubTag, Tag } from "../../design-system/Tag";
 import {
   ShowcaseDocBulletList,
@@ -9,10 +9,9 @@ import {
   ShowcaseDocSection,
   ShowcaseDocTokenUsageTable,
   ShowcaseDocUsageGuidelines,
-  ShowcaseMatrix,
-  ShowcasePreview,
   ShowcaseThemeProvider,
   type DocPropertyRow,
+  type ShowcaseDocSwitchOption,
   useShowcaseTheme,
 } from "../primitives";
 import { useCssVarValues } from "../tokens/useCssVarValues";
@@ -21,11 +20,20 @@ import styles from "./TagShowcase.module.css";
 const FIGMA_TAG_URL =
   "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=3-7429";
 
-const LIVE_PREVIEW_CODE = `import { Tag } from "@/design-system/Tag";
+const LIVE_PREVIEW_CODE_TAG = `import { Tag } from "@/design-system/Tag";
 
 <Tag>Гуманітарний</Tag>`;
 
-const TAG_EXAMPLES = ["Гуманітарний", "Освіта", "Медицина", "Завершено"];
+const LIVE_PREVIEW_CODE_SUBTAG = `import { SubTag } from "@/design-system/Tag";
+
+<SubTag>Проєкт</SubTag>`;
+
+const PREVIEW_KIND_OPTIONS = [
+  { value: "tag", label: "Tag" },
+  { value: "subtag", label: "SubTag" },
+] as const satisfies readonly ShowcaseDocSwitchOption<string>[];
+
+type TagPreviewKind = (typeof PREVIEW_KIND_OPTIONS)[number]["value"];
 
 const PROPERTY_ROWS: DocPropertyRow[] = [
   {
@@ -72,6 +80,12 @@ const TOKEN_USAGE_SAMPLE = [
 
 function TagShowcasePage() {
   const { theme } = useShowcaseTheme();
+  const [previewKind, setPreviewKind] = useState<TagPreviewKind>("tag");
+
+  const isSubTag = previewKind === "subtag";
+  const livePreviewCode = isSubTag
+    ? LIVE_PREVIEW_CODE_SUBTAG
+    : LIVE_PREVIEW_CODE_TAG;
 
   const usageValues = useCssVarValues(
     useMemo(() => TOKEN_USAGE_SAMPLE.map((row) => row.token), []),
@@ -97,36 +111,25 @@ function TagShowcasePage() {
       >
         <ShowcaseDocSection
           section="live-preview"
-          description="Tag — статична мітка категорії (без dismiss)."
+          description="Перемикач Tag / SubTag; hover — наведи курсор на preview."
         >
           <ShowcaseDocLivePreview
-            caption="Tag · Default · hover → --surface-subtle-info."
-            code={LIVE_PREVIEW_CODE}
+            caption={
+              isSubTag
+                ? "SubTag · Default · hover → underline + --text-default."
+                : "Tag · Default · hover → --surface-subtle-info."
+            }
+            code={livePreviewCode}
+            previewValue={previewKind}
+            onPreviewValueChange={(value) =>
+              setPreviewKind(value as TagPreviewKind)
+            }
+            previewLabeledOptions={PREVIEW_KIND_OPTIONS}
           >
-            <Tag>Гуманітарний</Tag>
+            <div className={styles.livePreviewSlot}>
+              {isSubTag ? <SubTag>Проєкт</SubTag> : <Tag>Гуманітарний</Tag>}
+            </div>
           </ShowcaseDocLivePreview>
-        </ShowcaseDocSection>
-
-        <ShowcaseDocSection
-          section="variants-gallery"
-          description="Tag pill + SubTag; hover — наведи курсор."
-        >
-          <p className={styles.galleryCaption}>Tag · приклади категорій</p>
-          <ShowcaseMatrix
-            columns={TAG_EXAMPLES}
-            rows={[
-              {
-                cells: TAG_EXAMPLES.map((label) => <Tag key={label}>{label}</Tag>),
-              },
-            ]}
-          />
-
-          <p className={styles.galleryCaption}>
-            SubTag · Figma 3:7422 · hover → underline + --text-default
-          </p>
-          <ShowcasePreview className={styles.preview}>
-            <SubTag>Проєкт</SubTag>
-          </ShowcasePreview>
         </ShowcaseDocSection>
 
         <ShowcaseDocSection
@@ -158,7 +161,7 @@ function TagShowcasePage() {
               "Filter Chip — для toggle-фільтрів списку",
             ]}
             dont={[
-              "Не плутай Tag з Badge (×), Filter Chip (active), SubTag",
+              "Не плутай Tag з Badge (×), Filter Chip (active)",
               "Не додавай variant/active — лише Default + CSS hover",
               "Не хардкодуй кольори поза токенами",
             ]}

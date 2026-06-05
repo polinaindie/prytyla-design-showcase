@@ -10,12 +10,12 @@
   top: 0;
   align-self: flex-start;
   width: 13.5rem;
-  max-height: 100vh;
+  height: 100vh;
   overflow-y: auto;
   flex-shrink: 0;
   padding: var(--space-medium) var(--space-small);
   background: var(--surface-default);
-  border-right: var(--border-width-small) solid var(--border-default);
+  border-bottom: var(--border-width-small) solid var(--border-default);
 }
 
 .brand {

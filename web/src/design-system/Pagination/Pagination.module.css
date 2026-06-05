@@ -1,0 +1,257 @@
+/* Desktop: 1256:30605. Tablet: 1291:32537. Mobile: 1296:30331. */
+
+.root {
+  container-type: inline-size;
+  container-name: pagination;
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "status pageSize"
+    "controls controls";
+  column-gap: var(--space-medium);
+  row-gap: var(--space-3xlarge);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-small);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+
+.status {
+  grid-area: status;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-small);
+  min-width: 0;
+  margin: 0;
+}
+
+.statusPrefix {
+  flex-shrink: 0;
+}
+
+.statusStrong {
+  color: var(--text-default);
+}
+
+.controls {
+  grid-area: controls;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-xlarge);
+  min-width: 0;
+}
+
+.pageList {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3xsmall);
+  max-width: 100%;
+}
+
+.ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--size-2xlarge);
+  padding: var(--space-small) var(--space-medium);
+  color: var(--text-default);
+}
+
+.iconNav :global(.navLabel:empty) {
+  display: none;
+}
+
+.pageList .iconNav {
+  width: var(--size-2xlarge);
+  min-width: var(--size-2xlarge);
+  padding-inline: var(--space-medium);
+  background: transparent;
+  border-width: var(--border-width-none);
+  border-style: none;
+  border-color: transparent;
+}
+
+.pageList .iconNav:hover:not(:disabled):not([data-active="true"]) {
+  background: transparent;
+  border-width: var(--border-width-none);
+  border-style: none;
+  border-color: transparent;
+}
+
+.pageList .iconNav:disabled {
+  background: transparent;
+  border-width: var(--border-width-none);
+  border-style: none;
+  border-color: transparent;
+}
+
+.jumpGroup {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-small);
+}
+
+.pageJumpInput {
+  box-sizing: border-box;
+  flex-shrink: 0;
+  width: 3.125rem; /* Figma 50px — layout-only */
+  min-width: 3.125rem;
+  height: var(--size-xlarge);
+  padding: var(--space-xsmall);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  background: var(--surface-default);
+  font-family: inherit;
+  font-size: var(--font-size-body-small);
+  font-weight: inherit;
+  line-height: 1.4;
+  color: var(--text-default);
+  -webkit-text-fill-color: var(--text-default);
+  text-align: center;
+}
+
+.pageJumpInput:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: var(--space-3xsmall);
+}
+
+.pageSizeGroup {
+  grid-area: pageSize;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-small);
+  min-width: min-content;
+}
+
+.pageSizeSuffix {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.pageSizeField {
+  position: relative;
+  flex-shrink: 0;
+  width: 4.3125rem; /* Figma 69px */
+}
+
+.pageSizeSelect {
+  appearance: none;
+  box-sizing: border-box;
+  width: 100%;
+  height: var(--size-xlarge);
+  padding: var(--space-xsmall) var(--size-3xlarge) var(--space-xsmall) var(--space-medium);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-medium);
+  background: var(--surface-default);
+  font: inherit;
+  color: var(--text-default);
+  cursor: pointer;
+}
+
+.pageSizeSelect:focus-visible {
+  outline: var(--border-width-medium) solid var(--border-focus);
+  outline-offset: var(--space-3xsmall);
+}
+
+.pageSizeSelect:disabled {
+  color: var(--text-disabled);
+  cursor: not-allowed;
+}
+
+.pageSizeIcon {
+  position: absolute;
+  top: 50%;
+  right: var(--space-3xsmall);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-large);
+  height: var(--size-large);
+  color: var(--text-default);
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+/* Mobile — Figma 1296:30331 (343×152); container width (showcase frame + product pages) */
+@container pagination (max-width: 767px) {
+  .root {
+    /* Figma: flex justify-between — status left, page size right; both shrink-0 */
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+    align-items: center;
+    column-gap: var(--space-xsmall);
+  }
+
+  .statusPrefix {
+    display: none;
+  }
+
+  .status {
+    flex-wrap: nowrap;
+    gap: var(--space-xsmall);
+    min-width: min-content;
+  }
+
+  .pageSizeGroup {
+    flex-shrink: 0;
+    gap: var(--space-small);
+    justify-self: end;
+  }
+
+  .pageSizeSuffix {
+    display: none;
+  }
+
+  .controls {
+    width: 17.8125rem; /* Figma 285px — layout-only */
+    max-width: 100%;
+    margin-inline: auto;
+  }
+
+  .pageList {
+    width: 100%;
+    margin-inline: auto;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .pageList::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Desktop — single row: status | pages + jump | page size (Figma 1256:30605) */
+@container pagination (min-width: 1024px) {
+  .root {
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas: "status controls pageSize";
+    align-items: center;
+    row-gap: 0;
+    column-gap: var(--space-xlarge);
+  }
+
+  .controls {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-xlarge);
+  }
+
+  .pageSizeGroup {
+    justify-content: flex-start;
+  }
+}

@@ -1,7 +1,43 @@
 import { Illustration3D } from "../Illustration3D";
-import { IconArrowRight40 } from "../Icons";
+import { IconFigmaSvg } from "../Icons/IconFigmaSvg";
+import {
+  FIGMA_SVG_ARROW_RIGHT_40,
+  FIGMA_SVG_ARROW_UP_RIGHT_40,
+} from "../Icons/large/iconFigmaSources";
 import type { LinkCardProps } from "./LinkCard.types";
 import styles from "./LinkCard.module.css";
+
+const LINK_CARD_ARROW_SIZE = 40;
+
+function LinkCardInternalArrowIcon({ idSuffix }: { idSuffix: "lead" | "follow" }) {
+  return (
+    <IconFigmaSvg
+      figmaSvg={FIGMA_SVG_ARROW_RIGHT_40}
+      idPrefix={`link-card-arrow-${idSuffix}`}
+      className={styles.arrowIcon}
+      size={LINK_CARD_ARROW_SIZE}
+      aria-hidden
+    />
+  );
+}
+
+function LinkCardExternalArrowIcon({
+  idSuffix,
+  className,
+}: {
+  idSuffix: "lead" | "follow";
+  className: string;
+}) {
+  return (
+    <IconFigmaSvg
+      figmaSvg={FIGMA_SVG_ARROW_UP_RIGHT_40}
+      idPrefix={`link-card-arrow-external-${idSuffix}`}
+      className={className}
+      size={LINK_CARD_ARROW_SIZE}
+      aria-hidden
+    />
+  );
+}
 
 export function LinkCard({
   title,
@@ -9,6 +45,7 @@ export function LinkCard({
   showIllustration = true,
   size = "desktop",
   titleSize,
+  external = false,
   href,
   className,
   ...rest
@@ -18,6 +55,7 @@ export function LinkCard({
   const rootClass = [
     styles.root,
     size === "mobile" ? styles.mobile : styles.desktop,
+    external && styles.external,
     !showIllustration && styles.noIllustration,
     className,
   ]
@@ -45,7 +83,25 @@ export function LinkCard({
       <span className={styles.body}>
         <span className={titleClass}>{title}</span>
         {size !== "mobile" ? (
-          <IconArrowRight40 className={styles.arrow} size={40} aria-hidden />
+          <span className={styles.arrow} aria-hidden>
+            {external ? (
+              <span className={styles.arrowTrackExternal}>
+                <LinkCardExternalArrowIcon
+                  idSuffix="lead"
+                  className={styles.arrowIconExternalLead}
+                />
+                <LinkCardExternalArrowIcon
+                  idSuffix="follow"
+                  className={styles.arrowIconExternalFollow}
+                />
+              </span>
+            ) : (
+              <span className={styles.arrowTrack}>
+                <LinkCardInternalArrowIcon idSuffix="lead" />
+                <LinkCardInternalArrowIcon idSuffix="follow" />
+              </span>
+            )}
+          </span>
         ) : null}
       </span>
     </a>

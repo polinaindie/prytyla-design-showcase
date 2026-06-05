@@ -250,7 +250,7 @@
 }
 
 /* Figma 287:15104 — Progressbar Section (compact article scroll, morph only) */
-.rootArticle:not(.rootArticleFullyCollapsed) .progressSectionCompact.progressSectionScroll {
+.rootArticle .progressSectionCompact.progressSectionScroll {
   box-sizing: border-box;
   gap: 0.875rem; /* 14px — TODO token */
   padding: var(--space-2xlarge) calc(var(--space-large) + var(--border-width-small));
@@ -395,11 +395,18 @@
 
   /* Під час morph (0…1): hero + progress стискаються через inline height / scrollMetrics.
      Compact strip (Figma 1107:26075) — лише при t = 1. */
+  .rootArticleFullyCollapsed {
+    border: none;
+    border-radius: 0;
+    background: transparent;
+  }
+
   .rootArticleFullyCollapsed .articleHeader {
     display: none;
   }
 
   .rootArticleFullyCollapsed .articleSide {
+    display: flex;
     flex-direction: row;
     align-items: center;
     gap: var(--space-2xlarge);
@@ -500,6 +507,102 @@
   }
 }
 
+/* Figma 1107:24593 — mobile article: VeryShort strip (state 3), лише mobile column */
+.rootArticleVeryShortCollapsed {
+  border: var(--border-width-medium) solid var(--accent-secondary);
+  border-radius: var(--radius-medium);
+  background: var(--surface-default);
+}
+
+.rootArticleVeryShortCollapsed .articleHeader {
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  border-radius: 0;
+}
+
+.rootArticleVeryShortCollapsed .articleHeaderClip {
+  overflow: visible;
+}
+
+.rootArticleVeryShortCollapsed .articleHeroLayer {
+  display: none;
+}
+
+.rootArticleVeryShortCollapsed .articleProgressAnchor {
+  position: relative;
+  inset: auto;
+}
+
+.rootArticleVeryShortCollapsed .articleSide {
+  display: none;
+}
+
+.rootArticleVeryShortCollapsed .progressSectionCompact.progressSectionScroll {
+  gap: 0.875rem; /* 14px — Figma 1107:24607 */
+  padding: var(--space-large);
+  border: none;
+  border-radius: var(--radius-medium);
+  background: var(--surface-default);
+}
+
+.rootArticleVeryShortCollapsed .progressSectionCompact .progressBody {
+  gap: var(--size-2xsmall); /* 10px */
+}
+
+.rootArticleVeryShortCollapsed .progressSectionCompact .statValue {
+  font-weight: 600;
+}
+
+/* Product pages без articleColumn — container fallback (343px mobile, не desktop 329px) */
+@container general-widget-article (min-width: 21.25rem) and (max-width: 22rem) {
+  .rootArticleFullyCollapsed {
+    border: var(--border-width-medium) solid var(--accent-secondary);
+    border-radius: var(--radius-medium);
+    background: var(--surface-default);
+  }
+
+  .rootArticleFullyCollapsed .articleHeader {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    border-radius: 0;
+  }
+
+  .rootArticleFullyCollapsed .articleHeaderClip {
+    overflow: visible;
+  }
+
+  .rootArticleFullyCollapsed .articleHeroLayer {
+    display: none;
+  }
+
+  .rootArticleFullyCollapsed .articleProgressAnchor {
+    position: relative;
+    inset: auto;
+  }
+
+  .rootArticleFullyCollapsed .articleSide {
+    display: none;
+  }
+
+  .rootArticleFullyCollapsed .progressSectionCompact.progressSectionScroll {
+    gap: 0.875rem;
+    padding: var(--space-large);
+    border: none;
+    border-radius: var(--radius-medium);
+    background: var(--surface-default);
+  }
+
+  .rootArticleFullyCollapsed .progressSectionCompact .progressBody {
+    gap: var(--size-2xsmall);
+  }
+
+  .rootArticleFullyCollapsed .progressSectionCompact .statValue {
+    font-weight: 600;
+  }
+}
+
 @container general-widget-article (min-width: 49rem) {
   .articleShell {
     flex-direction: column;
@@ -547,54 +650,6 @@
 @container general-widget-article (max-width: 22rem) {
   .rootArticle {
     max-width: 21.4375rem; /* 343px — mobile fluid container */
-  }
-
-  /* Figma 1107:24593 / 1107:24688 — article scroll collapsed (VeryShort strip) */
-  .rootArticleFullyCollapsed {
-    border: var(--border-width-medium) solid var(--accent-secondary);
-    border-radius: var(--radius-medium);
-    background: var(--surface-default);
-  }
-
-  .rootArticleFullyCollapsed .articleHeader {
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    border-radius: 0;
-  }
-
-  .rootArticleFullyCollapsed .articleHeaderClip {
-    overflow: visible;
-  }
-
-  .rootArticleFullyCollapsed .articleHeroLayer {
-    display: none;
-  }
-
-  .rootArticleFullyCollapsed .articleProgressAnchor {
-    position: relative;
-    inset: auto;
-  }
-
-  .rootArticleFullyCollapsed .articleSide {
-    display: none;
-  }
-
-  .rootArticleFullyCollapsed .progressSectionCompact.progressSectionScroll {
-    gap: 0.875rem; /* 14px — Figma 1107:24607 */
-    padding: var(--space-large);
-    border: var(--border-width-medium) solid var(--accent-secondary);
-    border-image: none;
-    border-radius: var(--radius-medium);
-    background: var(--surface-default);
-  }
-
-  .rootArticleFullyCollapsed .progressSectionCompact .progressBody {
-    gap: var(--size-2xsmall); /* 10px */
-  }
-
-  .rootArticleFullyCollapsed .progressSectionCompact .statValue {
-    font-weight: 600;
   }
 }
 
@@ -698,6 +753,7 @@
 
 .progressSectionDone .progressBody {
   gap: 0.875rem; /* TODO: space token for 14px when exported from Figma */
+  width: 100%;
 }
 
 .progressSectionDone .statLabel {

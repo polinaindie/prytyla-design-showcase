@@ -624,6 +624,7 @@ function DonateFormBody({
             theme="light"
             className={styles.actionFull}
             showLeftIcon={false}
+            disabled={primaryActionDisabled}
             onClick={onPrimaryAction}
           >
             {subscriptionPrimaryActionLabel}
@@ -735,6 +736,7 @@ export function GeneralWidget({
   articleScrollOffset,
   articleScrollContainerRef,
   articleScrollNaturalLayout = false,
+  articleColumn,
 }: GeneralWidgetProps) {
   const isDone = paymentType === "done";
   const isWide = layout === "wide";
@@ -1081,6 +1083,9 @@ export function GeneralWidget({
         className={[
           rootClass,
           isFullyCollapsed && styles.rootArticleFullyCollapsed,
+          isFullyCollapsed &&
+            articleColumn === "mobile" &&
+            styles.rootArticleVeryShortCollapsed,
         ]
           .filter(Boolean)
           .join(" ")}

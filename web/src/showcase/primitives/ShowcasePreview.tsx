@@ -70,6 +70,7 @@ export function ShowcasePreview({
   const outerRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   const [fitScale, setFitScale] = useState(1);
+  const [layoutFrameHeight, setLayoutFrameHeight] = useState(0);
   const [scaledHeight, setScaledHeight] = useState<number | undefined>(undefined);
 
   useLayoutEffect(() => {
@@ -85,9 +86,8 @@ export function ShowcasePreview({
       const scale = constrainWidth ? measureFitScale(outer, viewportWidth) : 1;
       setFitScale(scale);
       const frameHeight = frame.offsetHeight;
-      setScaledHeight(
-        scrollable || scale < 1 ? frameHeight * scale : undefined,
-      );
+      setLayoutFrameHeight(frameHeight);
+      setScaledHeight(scale < 1 ? frameHeight * scale : undefined);
     };
 
     sync();
@@ -117,7 +117,10 @@ export function ShowcasePreview({
     ...(fitScale < 1
       ? {
           transform: `scale(${fitScale})`,
-          transformOrigin: scrollable ? "top center" : "top left",
+          transformOrigin: "top left",
+          ...(scrollable && layoutFrameHeight > 0
+            ? { marginBottom: layoutFrameHeight * (fitScale - 1) }
+            : {}),
         }
       : {}),
   };
@@ -126,8 +129,10 @@ export function ShowcasePreview({
     scrollable || fitScale < 1
       ? {
           width: viewportWidth * fitScale,
-          height: scaledHeight,
-          ...(scrollable ? { marginInline: "auto" } : {}),
+          ...(scrollable
+            ? undefined
+            : { height: scaledHeight }),
+          ...(scrollable && fitScale < 1 ? { marginInline: "auto" } : {}),
         }
       : undefined;
 

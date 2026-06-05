@@ -9,10 +9,19 @@
   transition: background 0.2s ease;
 }
 
-/* Figma Hover + Opened (#fff5c5) */
-.item:hover,
-.open {
+/* Сусідні пункти: зливаємо подвійну лінію між елементами в 1px */
+.item + .item {
+  margin-top: calc(-1 * var(--border-width-small));
+}
+
+/* Figma Hover (#fff5c5); opened — без заливки */
+.item:hover {
   background: var(--accent-highlight);
+}
+
+.open,
+.open:hover {
+  background: transparent;
 }
 
 .header {

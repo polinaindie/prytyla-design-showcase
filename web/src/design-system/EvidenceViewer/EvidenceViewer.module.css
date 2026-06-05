@@ -1,0 +1,374 @@
+/* Figma Evidence viewer — section 1324:36986 */
+
+.root {
+  container-type: inline-size;
+  container-name: evidence-viewer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  padding: var(--space-2xlarge);
+  background: var(--bg-overlay);
+}
+
+.root[data-layout="embedded"] {
+  position: relative;
+  min-height: 28rem;
+  padding: 0;
+  background: transparent;
+}
+
+.root[data-layout="modal"] {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+}
+
+/* TODO: add size/shell-max token when Figma exports 1138px */
+.shell {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  max-width: 71.125rem;
+  overflow: hidden;
+  border-radius: var(--radius-large);
+  background: var(--surface-default);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-large);
+  padding-block: var(--space-3xlarge) var(--space-large);
+  padding-inline: var(--space-3xlarge);
+}
+
+.title {
+  flex: 1 1 0;
+  min-width: 0;
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-medium);
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--text-default);
+  overflow-wrap: anywhere;
+}
+
+.closeBtn {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: var(--size-large);
+  height: var(--size-large);
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-round);
+  background: transparent;
+  color: var(--icon-default);
+  cursor: pointer;
+}
+
+.closeBtn:hover {
+  background: var(--surface-subtle-neutral);
+}
+
+.closeBtn:focus-visible {
+  outline: var(--border-width-small) solid var(--border-focus);
+  outline-offset: var(--space-3xsmall);
+}
+
+.closeIcon {
+  width: var(--size-large);
+  height: var(--size-large);
+}
+
+/*
+ * Fixed viewport canvas — Figma 1920/1440/1200 document: 1138×858;
+ * wide photo (1319:33819): viewport 727px, media 1072×663;
+ * 768: 720×858 (document) / 720×468 (photo);
+ * 375: 350×492 (document) / 350×268 (photo).
+ * TODO: add viewport size tokens when exported from Figma.
+ */
+.viewport {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-medium);
+  width: 71.125rem;
+  max-width: 100%;
+  height: 53.625rem;
+  padding-block: var(--space-large);
+  padding-inline: var(--space-3xlarge);
+  background: var(--surface-subtle-neutral);
+}
+
+.mediaStage {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: var(--radius-medium);
+  background: transparent;
+  cursor: zoom-in;
+}
+
+.viewport[data-mode="document"] .mediaStage {
+  border: var(--border-width-small) solid var(--border-default);
+  background: var(--surface-default);
+}
+
+.mediaStage[data-zoomed="true"] {
+  cursor: grab;
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+}
+
+.mediaStage[data-zoomed="true"][data-dragging="true"] {
+  cursor: grabbing;
+}
+
+.mediaPan {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.mediaStage[data-dragging="true"] .mediaPan,
+.mediaStage[data-dragging="true"] .mediaImage {
+  transition: none;
+}
+
+.mediaImage {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: transform 180ms ease-out;
+  transform-origin: center center;
+}
+
+.mediaImage[data-zoomed="true"] {
+  transform: scale(1.75);
+}
+
+.zoomHint {
+  flex-shrink: 0;
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-small);
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.footer {
+  padding-block: var(--space-large) var(--space-3xlarge);
+  padding-inline: var(--space-3xlarge);
+  background: var(--surface-default);
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-small);
+}
+
+.navIconOnly {
+  width: var(--size-2xlarge);
+  min-width: var(--size-2xlarge);
+  padding-inline: var(--space-medium);
+}
+
+.navIconOnly :global(.navLabel:empty) {
+  display: none;
+}
+
+.navCompactLabel {
+  display: inline;
+}
+
+.pageIndicator {
+  padding-inline: var(--space-large);
+}
+
+/* Wide — 1920 / 1440 / 1200 (laptop) */
+.root[data-viewport-tier="wide"] .shell {
+  width: 71.125rem;
+  max-width: 71.125rem;
+}
+
+.root[data-viewport-tier="wide"] .viewport {
+  width: 71.125rem;
+  max-width: 71.125rem;
+  height: 53.625rem;
+}
+
+/* Figma Shell 1319:33819 — photo viewport shrink-wraps to 727px */
+.root[data-viewport-tier="wide"] .viewport[data-mode="photo"] {
+  height: auto;
+}
+
+/* TODO: add size/evidence-media-stage tokens when exported from Figma (1072×663px) */
+.root[data-viewport-tier="wide"] .viewport[data-mode="photo"] .mediaStage {
+  flex: 0 0 auto;
+  width: 67rem;
+  height: 41.4375rem;
+}
+
+.root[data-viewport-tier="tablet"] .shell {
+  width: 45rem;
+  max-width: 45rem;
+}
+
+.root[data-viewport-tier="tablet"] .viewport {
+  width: 45rem;
+  max-width: 45rem;
+  height: 53.625rem;
+}
+
+.root[data-viewport-tier="tablet"] .viewport[data-mode="photo"] {
+  height: 29.25rem;
+}
+
+.root[data-viewport-tier="mobile"] {
+  padding-block: var(--space-2xlarge);
+  padding-inline: var(--space-medium);
+}
+
+.root[data-viewport-tier="mobile"] .shell {
+  width: 21.875rem;
+  max-width: 21.875rem;
+}
+
+.root[data-viewport-tier="mobile"] .header {
+  align-items: flex-start;
+  padding-block: var(--space-large) var(--space-medium);
+  padding-inline: var(--space-medium);
+}
+
+.root[data-viewport-tier="mobile"] .viewport {
+  width: 21.875rem;
+  max-width: 21.875rem;
+  height: 30.75rem;
+  padding-block: var(--space-large);
+  padding-inline: var(--space-medium);
+}
+
+.root[data-viewport-tier="mobile"] .viewport[data-mode="photo"] {
+  height: 16.75rem;
+}
+
+.root[data-viewport-tier="mobile"] .footer {
+  padding-block: var(--space-medium) var(--space-large);
+  padding-inline: var(--space-medium);
+}
+
+.root[data-viewport-tier="mobile"] .navCompactLabel {
+  display: none;
+}
+
+.root[data-viewport-tier="mobile"] .navCompactIconOnly {
+  width: var(--size-2xlarge);
+  min-width: var(--size-2xlarge);
+  padding-inline: var(--space-medium);
+}
+
+.root[data-viewport-tier="mobile"] .navCompactIconOnly :global(.navLabel:empty) {
+  display: none;
+}
+
+/* Tablet / mobile — fallback коли viewportTier не передано (product modal) */
+@container evidence-viewer (min-width: 48rem) and (max-width: 63.9375rem) {
+  .root:not([data-viewport-tier]) .shell {
+    max-width: 45rem;
+  }
+
+  .root:not([data-viewport-tier]) .viewport {
+    width: 45rem;
+    height: 53.625rem;
+  }
+
+  .root:not([data-viewport-tier]) .viewport[data-mode="photo"] {
+    height: 29.25rem;
+  }
+}
+
+/* Wide fallback — product modal без viewportTier */
+@container evidence-viewer (min-width: 64rem) {
+  .root:not([data-viewport-tier]) .viewport[data-mode="photo"] {
+    height: auto;
+  }
+
+  .root:not([data-viewport-tier]) .viewport[data-mode="photo"] .mediaStage {
+    flex: 0 0 auto;
+    width: 67rem;
+    height: 41.4375rem;
+  }
+}
+
+@container evidence-viewer (max-width: 47.9375rem) {
+  .root:not([data-viewport-tier]) {
+    padding-block: var(--space-2xlarge);
+    padding-inline: var(--space-medium);
+  }
+
+  .root:not([data-viewport-tier]) .shell {
+    max-width: 21.875rem;
+  }
+
+  .root:not([data-viewport-tier]) .header {
+    align-items: flex-start;
+    padding-block: var(--space-large) var(--space-medium);
+    padding-inline: var(--space-medium);
+  }
+
+  .root:not([data-viewport-tier]) .viewport {
+    width: 21.875rem;
+    height: 30.75rem;
+    padding-block: var(--space-large);
+    padding-inline: var(--space-medium);
+  }
+
+  .root:not([data-viewport-tier]) .viewport[data-mode="photo"] {
+    height: 16.75rem;
+  }
+
+  .root:not([data-viewport-tier]) .footer {
+    padding-block: var(--space-medium) var(--space-large);
+    padding-inline: var(--space-medium);
+  }
+
+  .root:not([data-viewport-tier]) .navCompactLabel {
+    display: none;
+  }
+
+  .root:not([data-viewport-tier]) .navCompactIconOnly {
+    width: var(--size-2xlarge);
+    min-width: var(--size-2xlarge);
+    padding-inline: var(--space-medium);
+  }
+
+  .root:not([data-viewport-tier]) .navCompactIconOnly :global(.navLabel:empty) {
+    display: none;
+  }
+}
