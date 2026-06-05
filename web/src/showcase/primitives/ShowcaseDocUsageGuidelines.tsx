@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { showcasePagePath } from "../showcasePaths";
 import { ShowcaseDoDont } from "./ShowcaseDoDont";
 import styles from "./ShowcaseDocUsageGuidelines.module.css";
 
@@ -28,7 +29,7 @@ export function ShowcaseDocUsageGuidelines({
           <ul className={styles.alternativesList}>
             {alternatives.map((item) => (
               <li key={item.path}>
-                <Link className={styles.alternativesLink} to={`/showcase/${item.path}`}>
+                <Link className={styles.alternativesLink} to={showcasePagePath(item.path)}>
                   {item.label}
                 </Link>
                 {item.note ? (

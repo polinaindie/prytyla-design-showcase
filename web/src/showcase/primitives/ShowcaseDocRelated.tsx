@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { showcasePagePath } from "../showcasePaths";
 import styles from "./ShowcaseDocRelated.module.css";
 
 export type ShowcaseDocRelatedLink = {
@@ -30,7 +31,7 @@ function LinkGroup({
       <ul className={styles.list}>
         {items.map((item) => (
           <li key={item.path}>
-            <Link className={styles.link} to={`/showcase/${item.path}`}>
+            <Link className={styles.link} to={showcasePagePath(item.path)}>
               {item.label}
             </Link>
           </li>

@@ -21,6 +21,12 @@ import {
   type ShowcasePageConfig,
   type ShowcaseSubgroup,
 } from "./routes";
+import { ShowcaseHomePage } from "./ShowcaseHomePage";
+import {
+  getShowcasePathSegment,
+  showcaseHomePath,
+  showcasePagePath,
+} from "./showcasePaths";
 
 function pageMatchesQuery(page: ShowcasePageConfig, query: string): boolean {
   const q = query.trim().toLowerCase();
@@ -108,7 +114,7 @@ function ShowcaseNavPages({ pages }: { pages: ShowcasePageConfig[] }) {
       {pages.map((page) => (
         <li key={page.id}>
           <NavLink
-            to={`/showcase/${page.path}`}
+            to={showcasePagePath(page.path)}
             className={({ isActive }) => navLinkClassName(isActive)}
           >
             {page.label}
@@ -281,8 +287,7 @@ function ShowcaseLayout() {
   const { query, setQuery } = useShowcaseSearch();
 
   const activePath = useMemo(() => {
-    const match = location.pathname.match(/\/showcase\/([^/]+)/);
-    return match?.[1] ?? "colors";
+    return getShowcasePathSegment(location.pathname) ?? "";
   }, [location.pathname]);
 
   const navRoutes = useMemo(
@@ -346,7 +351,15 @@ function ShowcaseLayout() {
   return (
     <div className={styles.layout}>
       <aside className={styles.aside}>
-        <h1 className={styles.brand}>Prytula DS</h1>
+        <NavLink
+          to={showcaseHomePath()}
+          end
+          className={({ isActive }) =>
+            isActive ? `${styles.brand} ${styles.brandActive}` : styles.brand
+          }
+        >
+          Prytula DS
+        </NavLink>
         <ShowcaseSidebarSearch activePath={activePath} />
         <nav className={styles.nav} aria-label="Design system">
           {navRoutes.length > 0 ? (
@@ -368,7 +381,7 @@ function ShowcaseLayout() {
 
       <main className={styles.main}>
         <Routes>
-          <Route index element={<Navigate to="colors" replace />} />
+          <Route index element={<ShowcaseHomePage />} />
           {pages.map((page) => (
             <Route
               key={page.id}
@@ -376,7 +389,7 @@ function ShowcaseLayout() {
               element={<page.Component />}
             />
           ))}
-          <Route path="*" element={<Navigate to="colors" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
     </div>

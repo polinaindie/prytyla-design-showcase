@@ -50,7 +50,7 @@ import { GridPage } from "./foundations/GridPage";
 export type ShowcasePageConfig = {
   id: string;
   label: string;
-  /** Path segment relative to /showcase (e.g. "colors" → /showcase/colors) */
+  /** Path segment relative to showcase root (e.g. "colors" → /colors) */
   path: string;
   Component: ComponentType;
 };

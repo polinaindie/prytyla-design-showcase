@@ -1,6 +1,16 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { SitePage } from "./SitePage";
+import { BrowserRouter, Navigate, Route, Routes, useParams } from "react-router-dom";
 import ShowcasePage from "./showcase/ShowcasePage";
+import { showcasePagePath } from "./showcase/showcasePaths";
+
+function LegacyShowcaseRedirect() {
+  const { "*": rest } = useParams();
+
+  if (!rest) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <Navigate to={showcasePagePath(rest.split("/")[0])} replace />;
+}
 
 function App() {
   const basename = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -8,8 +18,8 @@ function App() {
   return (
     <BrowserRouter basename={basename || undefined}>
       <Routes>
-        <Route path="/" element={<SitePage />} />
-        <Route path="/showcase/*" element={<ShowcasePage />} />
+        <Route path="/showcase/*" element={<LegacyShowcaseRedirect />} />
+        <Route path="/*" element={<ShowcasePage />} />
       </Routes>
     </BrowserRouter>
   );

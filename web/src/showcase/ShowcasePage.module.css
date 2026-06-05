@@ -19,6 +19,7 @@
 }
 
 .brand {
+  display: block;
   margin: 0 0 var(--space-small);
   padding-bottom: var(--space-small);
   border-bottom: var(--border-width-small) solid var(--border-default);
@@ -27,6 +28,16 @@
   font-weight: 400;
   line-height: 1.2;
   color: var(--text-default);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.brand:hover {
+  color: var(--text-primary);
+}
+
+.brandActive {
+  color: var(--text-primary);
 }
 
 .searchWrap {

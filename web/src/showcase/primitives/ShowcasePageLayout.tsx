@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { useLocation } from "react-router-dom";
+import { getShowcasePathSegment } from "../showcasePaths";
 import { ShowcaseViewportBar } from "./ShowcaseViewportBar";
 import styles from "./ShowcasePageLayout.module.css";
 
@@ -30,8 +31,7 @@ export function ShowcasePageLayout({
   showViewportBar = true,
 }: ShowcasePageLayoutProps) {
   const location = useLocation();
-  const pathSegment =
-    location.pathname.match(/\/showcase\/([^/]+)/)?.[1] ?? "";
+  const pathSegment = getShowcasePathSegment(location.pathname) ?? "";
   const hideByRoute = VIEWPORT_BAR_HIDDEN_PATHS.has(pathSegment);
   const showBar = showViewportBar && !hideByRoute;
 
