@@ -21,6 +21,7 @@ import {
   useShowcaseTheme,
 } from "../primitives";
 import { useCssVarValues } from "../tokens/useCssVarValues";
+import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import styles from "./EvidenceViewerShowcase.module.css";
 
 const FIGMA_URL =
@@ -29,24 +30,28 @@ const FIGMA_URL =
 const DEMO_TITLE =
   "Корпус бронежилета класу IV (приклад назви позиції)";
 
+const DEMO_NEWS_IMAGE = publicAssetUrl("/showcase/news-card-demo.jpg");
+const DEMO_PROJECT_IMAGE = publicAssetUrl("/showcase/project-card-demo.jpg");
+const DEMO_MAIN_IMAGE = publicAssetUrl("/showcase/main-project-demo.jpg");
+
 const DOCUMENT_ITEMS = [
   {
-    src: "/showcase/news-card-demo.jpg",
+    src: DEMO_NEWS_IMAGE,
     alt: "Авторський договір — сторінка 1",
   },
   {
-    src: "/showcase/project-card-demo.jpg",
+    src: DEMO_PROJECT_IMAGE,
     alt: "Авторський договір — сторінка 2",
   },
 ] as const;
 
 const PHOTO_ITEMS = [
   {
-    src: "/showcase/main-project-demo.jpg",
+    src: DEMO_MAIN_IMAGE,
     alt: "Фото доказу — дрони",
   },
   {
-    src: "/showcase/news-card-demo.jpg",
+    src: DEMO_NEWS_IMAGE,
     alt: "Фото доказу — 2",
   },
 ] as const;

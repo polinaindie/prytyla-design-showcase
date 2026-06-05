@@ -1,5 +1,6 @@
 import { getPartnerLogoAsset } from "./partnerLogoAssets";
 import type { PartnerLogoProps } from "./PartnerLogo.types";
+import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import styles from "./PartnerLogo.module.css";
 
 export function PartnerLogo({
@@ -19,7 +20,7 @@ export function PartnerLogo({
       <span className={rootClass} {...rest}>
         <img
           className={styles.media}
-          src={asset.src}
+          src={publicAssetUrl(asset.src)}
           alt={asset.overlaySrc ? "" : resolvedAlt}
           aria-hidden={asset.overlaySrc ? true : undefined}
           decoding="async"
@@ -28,7 +29,7 @@ export function PartnerLogo({
         {asset.overlaySrc ? (
           <img
             className={styles.festOverlay}
-            src={asset.overlaySrc}
+            src={publicAssetUrl(asset.overlaySrc)}
             alt={resolvedAlt}
             decoding="async"
             draggable={false}
@@ -46,7 +47,7 @@ export function PartnerLogo({
     <span className={rootClass} {...rest}>
       <img
         className={styles.media}
-        src={src}
+        src={publicAssetUrl(src)}
         alt={alt ?? ""}
         decoding="async"
         draggable={false}

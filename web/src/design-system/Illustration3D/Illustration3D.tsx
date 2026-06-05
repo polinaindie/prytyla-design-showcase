@@ -1,5 +1,6 @@
 import { getIllustration3DAsset } from "./illustration3DAssets";
 import type { Illustration3DProps } from "./Illustration3D.types";
+import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import styles from "./Illustration3D.module.css";
 
 const IMAGE_LAYOUT_CLASS: Partial<
@@ -33,7 +34,7 @@ export function Illustration3D({
     <span className={rootClass}>
       <img
         className={imageClass}
-        src={asset.src}
+        src={publicAssetUrl(asset.src)}
         alt={hidden ? "" : resolvedAlt}
         aria-hidden={hidden || undefined}
         decoding="async"

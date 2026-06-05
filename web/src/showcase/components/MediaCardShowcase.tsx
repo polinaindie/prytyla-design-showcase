@@ -19,12 +19,13 @@ import {
   useShowcaseTheme,
 } from "../primitives";
 import { useCssVarValues } from "../tokens/useCssVarValues";
+import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import styles from "./MediaCardShowcase.module.css";
 
 const FIGMA_URL =
   "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=292-6431";
 
-const LOGO = "/showcase/media-times-logo.png";
+const LOGO = publicAssetUrl("/showcase/media-times-logo.png");
 
 const DEMO_TITLE =
   "“Ukraine Needs Armored Vehicles. This Ukrainian Charity Bought Dozens.”";
@@ -33,7 +34,7 @@ const LIVE_PREVIEW_CODE = `import { MediaCard } from "@/design-system/MediaCard"
 
 <MediaCard
   href="https://www.thetimes.com/"
-  logoSrc="/showcase/media-times-logo.png"
+  logoSrc="${publicAssetUrl("/showcase/media-times-logo.png")}"
   logoAlt="The Times"
   title="…"
   size="desktop"

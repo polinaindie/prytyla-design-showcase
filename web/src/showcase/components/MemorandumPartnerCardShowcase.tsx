@@ -16,17 +16,18 @@ import {
   useShowcaseTheme,
 } from "../primitives";
 import { useCssVarValues } from "../tokens/useCssVarValues";
+import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import styles from "./MemorandumPartnerCardShowcase.module.css";
 
 const FIGMA_URL =
   "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=1107-28529";
 
-const DEMO_LOGO = "/showcase/memorandum-partner-logo.png";
+const DEMO_LOGO = publicAssetUrl("/showcase/memorandum-partner-logo.png");
 
 const LIVE_PREVIEW_CODE = `import { MemorandumPartnerCard } from "@/design-system/MemorandumPartnerCard";
 
 <MemorandumPartnerCard
-  logoSrc="/showcase/memorandum-partner-logo.png"
+  logoSrc="${publicAssetUrl("/showcase/memorandum-partner-logo.png")}"
   logoAlt="Міністерство оборони України"
 />`;
 

@@ -19,19 +19,20 @@ import {
   useShowcaseTheme,
 } from "../primitives";
 import { useCssVarValues } from "../tokens/useCssVarValues";
+import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import styles from "./PartnerCardShowcase.module.css";
 
 const FIGMA_URL =
   "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=3-7139";
 
-const LOGO_SICH = "/showcase/partner-logo-sich.png";
-const LOGO_DILA = "/showcase/partner-logo-dila.png";
+const LOGO_SICH = publicAssetUrl("/showcase/partner-logo-sich.png");
+const LOGO_DILA = publicAssetUrl("/showcase/partner-logo-dila.png");
 
 const LIVE_PREVIEW_CODE = `import { PartnerCard } from "@/design-system/PartnerCard";
 
 <PartnerCard
   type="info"
-  logoSrc="/showcase/partner-logo-sich.png"
+  logoSrc="${publicAssetUrl("/showcase/partner-logo-sich.png")}"
   logoAlt="SICH Tourniquet"
 />`;
 

@@ -31,6 +31,7 @@ import {
   useShowcaseTheme,
 } from "../primitives";
 import { useCssVarValues } from "../tokens/useCssVarValues";
+import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import styles from "./GeneralWidgetShowcase.module.css";
 
 const FIGMA_URL =
@@ -65,7 +66,7 @@ const HERO_VARIANT =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='329' height='374'%3E%3Crect fill='%23d1d1d1' width='329' height='374'/%3E%3C/svg%3E";
 
 /** Той самий кадр, що з’являється в compact thumbnail при scroll (layout=article). */
-const HERO_ARTICLE = "/images/general-widget-chyste-nebo-thumb.png";
+const HERO_ARTICLE = publicAssetUrl("/images/general-widget-chyste-nebo-thumb.png");
 
 const LIVE_PREVIEW_CODE = `import { GeneralWidget } from "@/design-system/GeneralWidget";
 
@@ -190,7 +191,7 @@ const TOKEN_USAGE_SAMPLE = [
 const DEMO_PROGRESS = {
   value: 69,
   title: "Чисте небо",
-  thumbnailSrc: "/images/general-widget-chyste-nebo-thumb.png",
+  thumbnailSrc: HERO_ARTICLE,
   thumbnailAlt: "Чисте небо — збір на перехоплювачі ворожих БПЛА",
   collectedAmount: "48 388 780 ₴",
   goalAmount: "20 000 000 ₴",

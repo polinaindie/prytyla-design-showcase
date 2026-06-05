@@ -21,36 +21,41 @@ import {
   useShowcaseTheme,
 } from "../primitives";
 import { useCssVarValues } from "../tokens/useCssVarValues";
+import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import styles from "./PhotoGalleryShowcase.module.css";
 
 const FIGMA_URL =
   "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=1812-37641";
 
+const DEMO_MAIN_IMAGE = publicAssetUrl("/showcase/main-project-demo.jpg");
+const DEMO_NEWS_IMAGE = publicAssetUrl("/showcase/news-card-demo.jpg");
+const DEMO_PROJECT_IMAGE = publicAssetUrl("/showcase/project-card-demo.jpg");
+
 const DEMO_ITEMS = [
   {
-    src: "/showcase/main-project-demo.jpg",
+    src: DEMO_MAIN_IMAGE,
     alt: "Дрони Signum на підлозі",
     caption:
       "20 денних літаків-перехоплювачів для «Signum» 53 ОМБр",
   },
   {
-    src: "/showcase/news-card-demo.jpg",
+    src: DEMO_NEWS_IMAGE,
     alt: "Закупівля обладнання",
     caption:
       "Комплект мобільного комплексу виявлення цілей, що базується на БпЛА",
   },
   {
-    src: "/showcase/project-card-demo.jpg",
+    src: DEMO_PROJECT_IMAGE,
     alt: "Поставка для підрозділу",
     caption: "Закупівля засобів звʼязку та спостереження для бригади",
   },
   {
-    src: "/showcase/main-project-demo.jpg",
+    src: DEMO_MAIN_IMAGE,
     alt: "Демонстрація комплекту",
     caption: "Презентація комплекту перехоплювачів волонтерам бригади",
   },
   {
-    src: "/showcase/news-card-demo.jpg",
+    src: DEMO_NEWS_IMAGE,
     alt: "Документи поставки",
     caption: "Підтверджуючі документи та фото передачі обладнання",
   },
@@ -63,17 +68,17 @@ const FOUR_ITEMS = DEMO_ITEMS.slice(0, 4);
 const MANY_ITEMS = [
   ...DEMO_ITEMS,
   {
-    src: "/showcase/project-card-demo.jpg",
+    src: DEMO_PROJECT_IMAGE,
     alt: "Передача техніки",
     caption: "Передача техніки на позиції підрозділу",
   },
   {
-    src: "/showcase/main-project-demo.jpg",
+    src: DEMO_MAIN_IMAGE,
     alt: "Польові випробування",
     caption: "Польові випробування перехоплювачів перед передачею",
   },
   {
-    src: "/showcase/news-card-demo.jpg",
+    src: DEMO_NEWS_IMAGE,
     alt: "Звіт про використання",
     caption: "Звіт волонтерів про використання зібраних коштів",
   },

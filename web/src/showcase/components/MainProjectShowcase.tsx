@@ -18,19 +18,20 @@ import {
   useShowcaseTheme,
 } from "../primitives";
 import { useCssVarValues } from "../tokens/useCssVarValues";
+import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import styles from "./MainProjectShowcase.module.css";
 
 const FIGMA_URL =
   "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=16-10164";
 
-const DEMO_IMAGE = "/showcase/main-project-demo.jpg";
+const DEMO_IMAGE = publicAssetUrl("/showcase/main-project-demo.jpg");
 
 const LIVE_PREVIEW_CODE = `import { MainProject } from "@/design-system/MainProject";
 
 <MainProject
   href="/projects/unified-fundraising"
   donateHref="https://donate.example.org/unified"
-  imageSrc="/showcase/main-project-demo.jpg"
+  imageSrc="${publicAssetUrl("/showcase/main-project-demo.jpg")}"
   title="Єдинозбір"
   description="…"
   progress={69}

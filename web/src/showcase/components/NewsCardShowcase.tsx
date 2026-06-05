@@ -25,6 +25,7 @@ import {
   useShowcaseTheme,
 } from "../primitives";
 import { useCssVarValues } from "../tokens/useCssVarValues";
+import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import styles from "./NewsCardShowcase.module.css";
 
 const FIGMA_CARD_URL =
@@ -33,13 +34,13 @@ const FIGMA_CARD_URL =
 const FIGMA_FEATURED_URL =
   "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=292-5047";
 
-const DEMO_IMAGE = "/showcase/news-card-demo.jpg";
+const DEMO_IMAGE = publicAssetUrl("/showcase/news-card-demo.jpg");
 
 const LIVE_PREVIEW_CODE = `import { NewsCard } from "@/design-system/NewsCard";
 
 <NewsCard
   href="/news/safety-ua"
-  imageSrc="/showcase/news-card-demo.jpg"
+  imageSrc="${publicAssetUrl("/showcase/news-card-demo.jpg")}"
   date="11/08/2025"
   category="Проєкт"
   title="Завершено проєкт «Безпека UA: …»"

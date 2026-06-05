@@ -1,5 +1,6 @@
 import { getLogoAsset } from "./logoAssets";
 import type { LogoProps } from "./Logo.types";
+import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import styles from "./Logo.module.css";
 
 const DEFAULT_HEIGHT = 46;
@@ -30,7 +31,7 @@ export function Logo({
     >
       <img
         className={styles.image}
-        src={asset.src}
+        src={publicAssetUrl(asset.src)}
         alt={hidden ? "" : resolvedAlt}
         aria-hidden={hidden || undefined}
         decoding="async"

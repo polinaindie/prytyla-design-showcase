@@ -19,19 +19,20 @@ import {
   useShowcaseTheme,
 } from "../primitives";
 import { useCssVarValues } from "../tokens/useCssVarValues";
+import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import styles from "./ProjectCardShowcase.module.css";
 
 const FIGMA_URL =
   "https://www.figma.com/design/hiAQiy4aRZQiwD1S4jekxY/Prytula-Responsive?node-id=16-9982";
 
-const DEMO_IMAGE = "/showcase/project-card-demo.jpg";
+const DEMO_IMAGE = publicAssetUrl("/showcase/project-card-demo.jpg");
 
 const LIVE_PREVIEW_CODE = `import { ProjectCard } from "@/design-system/ProjectCard";
 
 <ProjectCard
   href="/projects/jaws"
   donateHref="https://donate.example.org/jaws"
-  imageSrc="/showcase/project-card-demo.jpg"
+  imageSrc="${publicAssetUrl("/showcase/project-card-demo.jpg")}"
   title="Щелепи"
   description="…"
   progress={69}
