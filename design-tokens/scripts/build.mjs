@@ -18,6 +18,17 @@ const WEB_STYLES = path.join(ROOT, "..", "web", "src", "styles");
 const BP_TABLET_MIN = "768px";
 const BP_DESKTOP_MIN = "1024px";
 
+/** Figma font-size px → rem (html 16px baseline in web/src/index.css) */
+const REM_BASE = 16;
+
+function pxToRem(px) {
+  const rem = px / REM_BASE;
+  const formatted = Number(rem.toFixed(4))
+    .toString()
+    .replace(/\.?0+$/, "");
+  return `${formatted}rem`;
+}
+
 function slugPath(name) {
   return name
     .split("/")
@@ -114,7 +125,7 @@ function literalCss(row) {
   if (type === "FLOAT") {
     const n = Number(value);
     if (Number.isNaN(n)) return "0";
-    if (name.startsWith("font-size/")) return `${n}px`;
+    if (name.startsWith("font-size/")) return pxToRem(n);
     if (name.startsWith("Scale/")) return `${n}px`;
     return `${n}px`;
   }
@@ -202,7 +213,7 @@ function main() {
     fs.readFileSync(SEMANTIC_SPACING_PATH, "utf8"),
   );
 
-  function appendSemanticModeBlock(rows, label, sourceFile) {
+  function appendSemanticModeBlock(rows, label, sourceFile, formatPx = (px) => `${px}px`) {
     cssBlocks.push("");
     cssBlocks.push(
       `/* ${label} — responsive (Figma Semantic: Mobile default, Tablet ${BP_TABLET_MIN}+, Desktop ${BP_DESKTOP_MIN}+) */`,
@@ -211,13 +222,13 @@ function main() {
     cssBlocks.push(`:root {`);
     cssBlocks.push(`  /* Mobile (< ${BP_TABLET_MIN}) */`);
     for (const row of rows) {
-      cssBlocks.push(`  ${semanticModeVar(row.name)}: ${row.mobile}px;`);
+      cssBlocks.push(`  ${semanticModeVar(row.name)}: ${formatPx(row.mobile)};`);
     }
     cssBlocks.push(`}`);
 
     const tabletDecls = rows
       .filter((row) => row.tablet !== row.mobile)
-      .map((row) => `  ${semanticModeVar(row.name)}: ${row.tablet}px;`);
+      .map((row) => `  ${semanticModeVar(row.name)}: ${formatPx(row.tablet)};`);
     if (tabletDecls.length > 0) {
       cssBlocks.push("");
       cssBlocks.push(`@media (min-width: ${BP_TABLET_MIN}) {`);
@@ -229,7 +240,7 @@ function main() {
 
     const desktopDecls = rows
       .filter((row) => row.desktop !== row.tablet)
-      .map((row) => `  ${semanticModeVar(row.name)}: ${row.desktop}px;`);
+      .map((row) => `  ${semanticModeVar(row.name)}: ${formatPx(row.desktop)};`);
     if (desktopDecls.length > 0) {
       cssBlocks.push("");
       cssBlocks.push(`@media (min-width: ${BP_DESKTOP_MIN}) {`);
@@ -244,6 +255,7 @@ function main() {
     semanticTypoRows,
     "Semantic typography",
     "figma-semantic-typography.tsv",
+    pxToRem,
   );
   appendSemanticModeBlock(
     semanticSpacingRows,
@@ -296,7 +308,7 @@ function main() {
   tsLines.push(`export type AliasToken = keyof typeof alias;`);
   tsLines.push(`export type MappedToken = keyof typeof mapped;`);
   tsLines.push("");
-  function appendSemanticTsExports(rows, constName, typeName, metaName) {
+  function appendSemanticTsExports(rows, constName, typeName, metaName, { includeRem = false } = {}) {
     tsLines.push(`/** Figma Semantic — responsive via CSS media queries */`);
     tsLines.push(`export const ${constName} = {`);
     for (const row of rows) {
@@ -310,8 +322,11 @@ function main() {
     tsLines.push("");
     tsLines.push(`export const ${metaName} = [`);
     for (const row of rows) {
+      const remFields = includeRem
+        ? `, mobileRem: ${JSON.stringify(pxToRem(row.mobile))}, tabletRem: ${JSON.stringify(pxToRem(row.tablet))}, desktopRem: ${JSON.stringify(pxToRem(row.desktop))}`
+        : "";
       tsLines.push(
-        `  { figma: ${JSON.stringify(row.name)}, cssVar: ${JSON.stringify(semanticModeVar(row.name))}, mobile: ${row.mobile}, tablet: ${row.tablet}, desktop: ${row.desktop}, responsive: ${row.responsive} },`,
+        `  { figma: ${JSON.stringify(row.name)}, cssVar: ${JSON.stringify(semanticModeVar(row.name))}, mobile: ${row.mobile}, tablet: ${row.tablet}, desktop: ${row.desktop}, responsive: ${row.responsive}${remFields} },`,
       );
     }
     tsLines.push(`] as const;`);
@@ -323,6 +338,7 @@ function main() {
     "semanticFontSize",
     "SemanticFontSizeToken",
     "semanticFontSizeMeta",
+    { includeRem: true },
   );
   appendSemanticTsExports(
     semanticSpacingRows,
@@ -330,6 +346,13 @@ function main() {
     "SemanticSpacingToken",
     "semanticSpacingMeta",
   );
+  tsLines.push(`export const remBase = ${REM_BASE} as const;`);
+  tsLines.push(`export function pxToRem(px: number): string {`);
+  tsLines.push(`  const rem = px / remBase;`);
+  tsLines.push(`  const formatted = Number(rem.toFixed(4)).toString().replace(/\\.?0+$/, "");`);
+  tsLines.push(`  return \`\${formatted}rem\`;`);
+  tsLines.push(`}`);
+  tsLines.push("");
   tsLines.push(`export const typographyBreakpoints = {`);
   tsLines.push(`  tabletMin: ${JSON.stringify(BP_TABLET_MIN)},`);
   tsLines.push(`  desktopMin: ${JSON.stringify(BP_DESKTOP_MIN)},`);

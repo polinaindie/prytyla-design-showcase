@@ -104,14 +104,42 @@ function usesDisplayFont(token: string): boolean {
   return fontSizeStep(token) >= 600;
 }
 
+function semanticRemForMode(
+  row: (typeof semanticFontSizeMeta)[number],
+  mode: ShowcaseTypographyMode,
+): string {
+  if (!row.responsive) return row.mobileRem;
+  if (mode === "desktop") return row.desktopRem;
+  if (mode === "tablet") return row.tabletRem;
+  return row.mobileRem;
+}
+
+function semanticPxForMode(
+  row: (typeof semanticFontSizeMeta)[number],
+  mode: ShowcaseTypographyMode,
+): number {
+  if (!row.responsive) return row.mobile;
+  if (mode === "desktop") return row.desktop;
+  if (mode === "tablet") return row.tablet;
+  return row.mobile;
+}
+
+function formatRemWithPx(rem: string, px: number): string {
+  return `${rem} (${px}px)`;
+}
+
 function semanticSizeForMode(
   row: (typeof semanticFontSizeMeta)[number],
   mode: ShowcaseTypographyMode,
 ): string {
-  if (!row.responsive) return `${row.mobile}px`;
-  if (mode === "desktop") return `${row.desktop}px`;
-  if (mode === "tablet") return `${row.tablet}px`;
-  return `${row.mobile}px`;
+  return semanticRemForMode(row, mode);
+}
+
+function semanticBreakpointsLabel(row: (typeof semanticFontSizeMeta)[number]): string {
+  if (!row.responsive) {
+    return formatRemWithPx(row.mobileRem, row.mobile);
+  }
+  return `${row.mobileRem} · ${row.tabletRem} · ${row.desktopRem} (${row.mobile}px · ${row.tablet}px · ${row.desktop}px)`;
 }
 
 function semanticUsesDisplay(figmaName: string): boolean {
@@ -127,8 +155,17 @@ function tokenVarRef(token: string): string {
 }
 
 function parsePx(value: string): number {
+  const remMatch = value.trim().match(/^([\d.]+)rem$/);
+  if (remMatch) return Number.parseFloat(remMatch[1]!) * 16;
   const n = Number.parseFloat(value);
   return Number.isNaN(n) ? 0 : n;
+}
+
+function formatResolvedFontSize(value: string): string {
+  const remMatch = value.trim().match(/^([\d.]+)rem$/);
+  if (!remMatch) return value;
+  const px = Number.parseFloat(remMatch[1]!) * 16;
+  return formatRemWithPx(value.trim(), px);
 }
 
 function filterTokens(tokens: readonly string[], query: string): readonly string[] {
@@ -228,13 +265,15 @@ function TypographyPageContent() {
   const semanticRows = useMemo(() => {
     const rows = semanticFontSizeMeta.map((row) => {
       const computed = semanticSizeForMode(row, typographyMode);
-      const valueLabel = row.responsive
-        ? `${row.mobile}px · ${row.tablet}px · ${row.desktop}px`
-        : `${row.mobile}px`;
+      const valueLabel = semanticBreakpointsLabel(row);
+      const displayValue = formatRemWithPx(
+        computed,
+        semanticPxForMode(row, typographyMode),
+      );
 
       return {
         token: row.cssVar,
-        value: computed,
+        value: displayValue,
         preview: (
           <TypeSample
             fontSize={computed}
@@ -258,7 +297,7 @@ function TypographyPageContent() {
     () =>
       sortedSizes.map((token) => ({
         token,
-        value: values[token]!,
+        value: formatResolvedFontSize(values[token]!),
         preview: (
           <TypeSample fontSize={values[token]!} display={usesDisplayFont(token)} />
         ),
@@ -405,7 +444,7 @@ function TypographyPageContent() {
                             <p className={styles.slotHint}>
                               {showcaseViewportName(previewViewportId)} ({previewWidth}px) ·{" "}
                               {typographyMode} · @media {typographyBreakpoints.tabletMin} /{" "}
-                              {typographyBreakpoints.desktopMin} — px у Value для обраної ширини.
+                              {typographyBreakpoints.desktopMin} — rem (px) у Value для обраної ширини.
                             </p>
                             <div
                               className={styles.typographyFrame}
@@ -430,7 +469,7 @@ function TypographyPageContent() {
                         children: (
                           <>
                             <p className={shared.lowLevelNote}>
-                              Legacy шкала --pryt-brand-font-size-*. Однакові px на всіх
+                              Legacy шкала --pryt-brand-font-size-*. Однакові rem (px) на всіх
                               breakpoints — без панелі «Ширина».
                             </p>
                             <ShowcaseTokenTable rows={filteredBrandRows} showPreview />
@@ -492,7 +531,7 @@ function TypographyPageContent() {
               "Довіряй responsive — не дублюй @media з іншими px без потреби",
             ]}
             dont={[
-              "НЕ задавай font-size у px напряму",
+              "НЕ задавай font-size у px/rem напряму",
               "НЕ підбирай --pryt-brand-font-size-* для нових компонентів, якщо є semantic",
               "НЕ змішуй Mariupol з Inter у одному заголовку",
             ]}
