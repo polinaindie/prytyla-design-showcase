@@ -1135,3 +1135,24 @@
   visibility: hidden;
   pointer-events: none;
 }
+
+/* articleStableTabs, tablet: щільніша картка, щоб віджет не займав пів сторінки */
+@container general-widget-article (min-width: 44rem) and (max-width: 48.5rem) {
+  .rootArticleStable .articleProgressTablet .progressSection {
+    gap: var(--space-large);
+    padding: var(--space-large) var(--space-2xlarge);
+  }
+
+  .rootArticleStable .articleProgressTablet .progressBody {
+    gap: var(--space-large);
+  }
+
+  .rootArticleStable .form {
+    gap: var(--space-medium);
+    padding: var(--space-large) var(--space-2xlarge) var(--space-2xlarge);
+  }
+
+  .rootArticleStable .stablePane {
+    gap: var(--space-medium);
+  }
+}

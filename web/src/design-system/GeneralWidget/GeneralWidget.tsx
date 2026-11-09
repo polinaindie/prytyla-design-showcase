@@ -1125,6 +1125,7 @@ export function GeneralWidget({
       styles.rootArticle,
       useNaturalArticleLayout && styles.rootArticleNaturalLayout,
       scrollAnimation.useAutoHeight && !articleStableTabs && styles.rootArticlePaymentInfo,
+      articleStableTabs && styles.rootArticleStable,
       className,
     ]
       .filter(Boolean)
