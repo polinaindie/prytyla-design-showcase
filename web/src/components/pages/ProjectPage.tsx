@@ -31,6 +31,12 @@ const IMG_VIDEO = publicAssetUrl("/images/project-page/donation-video.png");
 const IMG_PROJECT_HERO = publicAssetUrl("/images/project-page/project-hero-image.png");
 const IMG_QUOTE_AUTHOR = publicAssetUrl("/images/project-page/quote-author.png");
 
+/**
+ * Планшет: false — повний вигляд як на мобілці (compact progress + форма, без hero);
+ * true — hero-зображення в повному стані + shared-element морф фото в мініатюру.
+ */
+const TABLET_FULL_WITH_HERO = false;
+
 type Rect = { x: number; y: number; w: number; h: number };
 
 /** Compact-смуга (Figma 1107:26076): padding 16 + border 1, мініатюра 74×95. */
@@ -125,6 +131,7 @@ export function ProjectPage() {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   const [currency, setCurrency] = useState("UAH");
+  const heroLayout = isTablet && TABLET_FULL_WITH_HERO;
   const morphProgress = Math.min(1, Math.max(0, offset / GENERAL_WIDGET_SCROLL_RANGE));
   /* Секвенція: контент зникає 0–0.3 → фото їде 0.2–0.8 → compact-контент з'являється 0.7–1. */
   const fullOut = smooth(morphProgress, 0, 0.3);
@@ -184,9 +191,9 @@ export function ProjectPage() {
       articleColumn={isTablet ? "tablet" : "mobile"}
       articleScrollOffset={scrollOffset}
       articleScrollNaturalLayout
-      articleHero={isTablet}
+      articleHero={heroLayout}
       articleStableTabs
-      showSubscriptionTab={isTablet}
+      showSubscriptionTab={heroLayout}
       onScrollToFull={scrollToTop}
       progress={PROGRESS}
       hero={{ src: HERO, alt: "Чисте небо" }}
@@ -223,7 +230,7 @@ export function ProjectPage() {
       >
         <div className={styles.pinned}>
           <Breadcrumbs items={BREADCRUMBS} />
-          {isTablet && morphProgress > 0 && morphProgress < 1 ? (
+          {heroLayout && morphProgress > 0 && morphProgress < 1 ? (
             /*
              * Subordinate motion: фото — єдиний головний об'єкт, що безперервно їде з hero
              * в мініатюру. Решта контенту спершу зникає, а після «приземлення» фото — з'являється.
@@ -265,7 +272,7 @@ export function ProjectPage() {
           ) : (
             <div ref={widgetSlotRef}>
               {renderWidget(
-                isTablet
+                heroLayout
                   ? morphProgress >= 1
                     ? GENERAL_WIDGET_SCROLL_RANGE
                     : 0
