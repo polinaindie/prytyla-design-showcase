@@ -8,16 +8,16 @@ const TOUCH_THRESHOLD = 12;
 const MORPH_DURATION_MS = 900;
 
 /**
- * Чи може вкладений прокручуваний блок (напр. список реквізитів) прийняти цей жест.
- * direction > 0 — прокрутка вниз, < 0 — вгору.
+ * Чи знаходиться жест над вкладеним прокручуваним блоком (напр. список реквізитів).
+ * Над таким блоком жести ніколи не запускають колапс/розгортання віджета — інакше інерція
+ * прокрутки, дійшовши до кінця списку, «перетікає» в згортання форми.
  */
-function canScrollInside(target: EventTarget | null, direction: number): boolean {
+function isInsideScrollableArea(target: EventTarget | null): boolean {
   let node = target instanceof Element ? target : null;
   while (node && node !== document.documentElement && node !== document.body) {
     const { overflowY } = getComputedStyle(node);
     if ((overflowY === "auto" || overflowY === "scroll") && node.scrollHeight > node.clientHeight + 1) {
-      if (direction > 0 && node.scrollTop + node.clientHeight < node.scrollHeight - 1) return true;
-      if (direction < 0 && node.scrollTop > 0) return true;
+      return true;
     }
     node = node.parentElement;
   }
@@ -124,7 +124,7 @@ export function useProjectPageScroll(
         return;
       }
       if (window.scrollY > 0) return;
-      if (canScrollInside(event.target, event.deltaY)) return;
+      if (isInsideScrollableArea(event.target)) return;
       if (phase === "expanded" && event.deltaY > 0) {
         event.preventDefault();
         collapse();
@@ -145,7 +145,7 @@ export function useProjectPageScroll(
       }
       if (window.scrollY > 0) return;
       const dy = (event.touches[0]?.clientY ?? touchStartY) - touchStartY;
-      if (canScrollInside(event.target, -dy)) return;
+      if (isInsideScrollableArea(event.target)) return;
       if (phase === "expanded" && dy < -TOUCH_THRESHOLD) {
         event.preventDefault();
         collapse();
