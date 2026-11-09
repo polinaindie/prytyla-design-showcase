@@ -1,3 +1,4 @@
+import { useId } from "react";
 import type { IconProps } from "../Icon.types";
 import { applyIconSvgAttrs } from "../normalizeFigmaIconSvg";
 import { normalizePaymentIconSvg } from "./normalizePaymentIconSvg";
@@ -18,7 +19,8 @@ export function IconPaymentFigmaSvg({
   glyphOnly = false,
   "aria-hidden": ariaHidden = true,
 }: IconPaymentFigmaSvgProps) {
-  const normalized = normalizePaymentIconSvg(figmaSvg, idPrefix, { glyphOnly });
+  const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
+  const normalized = normalizePaymentIconSvg(figmaSvg, `${idPrefix}-${uid}`, { glyphOnly });
   const html = applyIconSvgAttrs(normalized, undefined, size);
 
   return (

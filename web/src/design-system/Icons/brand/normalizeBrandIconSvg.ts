@@ -1,18 +1,13 @@
 /**
- * Brand icons: preserve Figma export colors and gradients; uniquify defs ids.
+ * Brand icons: preserve Figma export colors and gradients; uniquify ALL defs ids
+ * (paint0…paintN radial/linear gradients, clip paths) — інакше копії іконки на сторінці
+ * ділять id, і градієнти, визначені в прихованому (display:none) клоні, не малюються у видимому.
  */
 export function normalizeBrandIconSvg(svg: string, idPrefix: string): string {
-  let out = svg.trim();
-
-  out = out.replace(/paint0_radial_[\w-]+/g, (match) => `${idPrefix}-${match}`);
-  out = out.replace(/url\(#paint0_radial_[^)]+\)/g, (match) =>
-    match.replace(/#paint0_radial_/, `#${idPrefix}-paint0_radial_`),
-  );
-
-  out = out.replace(/clip0_[\w-]+/g, (match) => `${idPrefix}-${match}`);
-  out = out.replace(/url\(#clip0_[^)]+\)/g, (match) =>
-    match.replace(/#clip0_/, `#${idPrefix}-clip0_`),
-  );
-
-  return out;
+  return svg
+    .trim()
+    .replace(
+      /paint\d+_(?:radial|linear)_[\w-]+|clip\d+_[\w-]+/g,
+      (match) => `${idPrefix}-${match}`,
+    );
 }

@@ -560,6 +560,25 @@ function DonateFormBody({
     return () => observer.disconnect();
   }, [stableTabs, animatedTabHeight, showSubscriptionTab]);
 
+  /* Скрол реквізитів починається від верхнього краю першого акордеону (а не від заголовка секції). */
+  useLayoutEffect(() => {
+    if (!stableTabs) return;
+    const root = infoRootRef.current;
+    const pane = root?.parentElement;
+    if (!root || !pane) return;
+    const sync = () => {
+      const first = root.querySelector<HTMLElement>("[aria-expanded]")?.parentElement;
+      if (!first) return;
+      const offset =
+        first.getBoundingClientRect().top - pane.getBoundingClientRect().top + pane.scrollTop;
+      pane.style.setProperty("--requisites-scroll-top", `${Math.max(0, offset).toFixed(2)}px`);
+    };
+    sync();
+    const observer = new ResizeObserver(sync);
+    observer.observe(root);
+    return () => observer.disconnect();
+  }, [stableTabs]);
+
   const onceContent = (
     <div role="tabpanel">
       <AmountBlock
@@ -696,9 +715,9 @@ function DonateFormBody({
     const activeHeight =
       paneHeights == null
         ? undefined
-        : paymentTab === "subscription"
-          ? paneHeights.sub
-          : paneHeights.once;
+        : paymentTab === "once"
+          ? paneHeights.once
+          : paneHeights.sub; // «Щомісяця» і «Реквізити» — однакова (більша) висота
 
     return (
       <>

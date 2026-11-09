@@ -134,19 +134,22 @@ export function ProjectPage() {
   const heroLayout = isTablet && TABLET_FULL_WITH_HERO;
   const morphProgress = Math.min(1, Math.max(0, offset / GENERAL_WIDGET_SCROLL_RANGE));
   /* Секвенція: контент зникає 0–0.3 → фото їде 0.2–0.8 → compact-контент з'являється 0.7–1. */
+  const morphState: "full" | "morph" | "collapsed" =
+    morphProgress <= 0 ? "full" : morphProgress >= 1 ? "collapsed" : "morph";
   const fullOut = smooth(morphProgress, 0, 0.3);
   const photoP = smooth(morphProgress, 0.12, 0.88);
   const compactIn = smooth(morphProgress, 0.7, 1);
   const fullWidgetHeight = useRef<number | null>(null);
   const widgetSlotRef = useRef<HTMLDivElement>(null);
   const morphRef = useRef<HTMLDivElement>(null);
+  const fullLayerRef = useRef<HTMLDivElement>(null);
   const compactLayerRef = useRef<HTMLDivElement>(null);
   const heroRect = useRef<Rect | null>(null);
   const thumbRect = useRef<Rect>(THUMB_FALLBACK);
 
   /* Висота та кадр hero повного віджета (t=0) — база для shared-element морфу фото. */
   useEffect(() => {
-    const node = widgetSlotRef.current;
+    const node = heroLayout ? fullLayerRef.current : widgetSlotRef.current;
     if (!node || morphProgress !== 0) return;
     const sync = () => {
       fullWidgetHeight.current = node.offsetHeight;
@@ -161,7 +164,7 @@ export function ProjectPage() {
     const observer = new ResizeObserver(sync);
     observer.observe(node);
     return () => observer.disconnect();
-  }, [morphProgress, isTablet, paymentTab]);
+  }, [morphProgress, isTablet, paymentTab, heroLayout]);
 
   /* Кадр мініатюри в compact-шарі — кінцева точка морфу фото. */
   useLayoutEffect(() => {
@@ -193,7 +196,7 @@ export function ProjectPage() {
       articleScrollNaturalLayout
       articleHero={heroLayout}
       articleStableTabs
-      articleAnimatedTabHeight={isTablet}
+      articleAnimatedTabHeight
       onScrollToFull={scrollToTop}
       progress={PROGRESS}
       hero={{ src: HERO, alt: "Чисте небо" }}
@@ -230,54 +233,77 @@ export function ProjectPage() {
       >
         <div className={styles.pinned}>
           <Breadcrumbs items={BREADCRUMBS} />
-          {heroLayout && morphProgress > 0 && morphProgress < 1 ? (
+          {heroLayout ? (
             /*
              * Subordinate motion: фото — єдиний головний об'єкт, що безперервно їде з hero
-             * в мініатюру. Решта контенту спершу зникає, а після «приземлення» фото — з'являється.
+             * в мініатюру; решта контенту спершу зникає, а після «приземлення» фото з'являється.
+             * Обидві копії віджета змонтовані ЗАВЖДИ (без remount на старті колапсу → без фризу
+             * першого кадру); між станами змінюється лише позиціювання/видимість шарів.
              */
             <div
               ref={morphRef}
-              className={styles.widgetMorph}
-              style={{
-                height: Math.round(
-                  lerp(
-                    fullWidgetHeight.current ?? GENERAL_WIDGET_TABLET_COLLAPSED_H,
-                    GENERAL_WIDGET_TABLET_COLLAPSED_H,
-                    photoP,
-                  ),
-                ),
-              }}
+              className={[styles.widgetMorph, morphState === "morph" && styles.widgetMorphActive]
+                .filter(Boolean)
+                .join(" ")}
+              style={
+                morphState === "morph"
+                  ? {
+                      height: Math.round(
+                        lerp(
+                          fullWidgetHeight.current ?? GENERAL_WIDGET_TABLET_COLLAPSED_H,
+                          GENERAL_WIDGET_TABLET_COLLAPSED_H,
+                          photoP,
+                        ),
+                      ),
+                    }
+                  : undefined
+              }
             >
               <div
                 ref={compactLayerRef}
-                className={`${styles.widgetLayer} ${styles.widgetLayerHidePhoto}`}
-                style={{ opacity: compactIn }}
+                className={[
+                  styles.widgetLayer,
+                  morphState === "collapsed" && styles.widgetLayerFlow,
+                  morphState === "full" && styles.widgetLayerOff,
+                  morphState === "morph" && styles.widgetLayerHidePhoto,
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                style={morphState === "morph" ? { opacity: compactIn } : undefined}
+                inert={morphState !== "collapsed" || undefined}
+                aria-hidden={morphState !== "collapsed" || undefined}
               >
                 {renderWidget(GENERAL_WIDGET_SCROLL_RANGE)}
               </div>
               <div
-                className={`${styles.widgetLayer} ${styles.widgetLayerTop} ${styles.widgetLayerHidePhoto}`}
-                style={{ opacity: 1 - fullOut }}
+                ref={fullLayerRef}
+                className={[
+                  styles.widgetLayer,
+                  morphState === "full" && styles.widgetLayerFlow,
+                  morphState === "collapsed" && styles.widgetLayerOff,
+                  morphState === "morph" && `${styles.widgetLayerTop} ${styles.widgetLayerHidePhoto}`,
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+                style={morphState === "morph" ? { opacity: 1 - fullOut } : undefined}
+                inert={morphState !== "full" || undefined}
+                aria-hidden={morphState !== "full" || undefined}
               >
                 {renderWidget(0)}
               </div>
-              <img
-                className={styles.morphPhoto}
-                src={HERO}
-                alt=""
-                aria-hidden
-                style={photoStyle}
-              />
+              {morphState === "morph" ? (
+                <img
+                  className={styles.morphPhoto}
+                  src={HERO}
+                  alt=""
+                  aria-hidden
+                  style={photoStyle}
+                />
+              ) : null}
             </div>
           ) : (
             <div ref={widgetSlotRef}>
-              {renderWidget(
-                heroLayout
-                  ? morphProgress >= 1
-                    ? GENERAL_WIDGET_SCROLL_RANGE
-                    : 0
-                  : easeInOutCubic(morphProgress) * GENERAL_WIDGET_SCROLL_RANGE,
-              )}
+              {renderWidget(easeInOutCubic(morphProgress) * GENERAL_WIDGET_SCROLL_RANGE)}
             </div>
           )}
         </div>

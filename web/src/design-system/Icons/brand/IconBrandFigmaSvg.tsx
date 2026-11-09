@@ -1,3 +1,4 @@
+import { useId } from "react";
 import type { IconProps } from "../Icon.types";
 import { normalizeBrandIconSvg } from "./normalizeBrandIconSvg";
 
@@ -32,7 +33,9 @@ export function IconBrandFigmaSvg({
   height,
   "aria-hidden": ariaHidden = true,
 }: IconBrandFigmaSvgProps) {
-  const normalized = normalizeBrandIconSvg(figmaSvg, idPrefix);
+  /* Унікальні id градієнтів на екземпляр: дубль у прихованому (display:none) клоні ламав заливку видимого. */
+  const uid = useId().replace(/[^a-zA-Z0-9_-]/g, "");
+  const normalized = normalizeBrandIconSvg(figmaSvg, `${idPrefix}-${uid}`);
   const html = applyBrandSvgAttrs(normalized, className, width, height);
 
   return (

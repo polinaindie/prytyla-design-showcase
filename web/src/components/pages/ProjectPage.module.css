@@ -59,6 +59,10 @@
 /* Tablet crossfade: нижній шар — compact, верхній — повний (згасає) */
 .widgetMorph {
   position: relative;
+}
+
+/* Лише під час морфу: власна «картка» й обводка (у спокої не обрізають випадні списки віджета) */
+.widgetMorphActive {
   overflow: hidden;
   border-radius: var(--radius-large);
   /* Власна «картка» — лишається, коли контент шарів зник (немає миготіння) */
@@ -66,7 +70,7 @@
 }
 
 /* Сіра обводка — поверх фото й шарів, тож контур картки не рветься, поки фото їде */
-.widgetMorph::after {
+.widgetMorphActive::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -91,6 +95,16 @@
 .widgetLayer {
   position: absolute;
   inset: 0 0 auto;
+}
+
+.widgetLayerFlow {
+  position: relative;
+  inset: auto;
+}
+
+.widgetLayerOff {
+  visibility: hidden;
+  pointer-events: none;
 }
 
 .widgetLayerTop {

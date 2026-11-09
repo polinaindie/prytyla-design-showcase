@@ -390,7 +390,7 @@
   }
 
   .rootArticle .quickAmounts {
-    gap: var(--space-2xlarge);
+    gap: var(--space-small); /* 8px: пілюлі рівномірно ділять усю ширину контейнера */
   }
 
   /* Під час morph (0…1): hero + progress стискаються через inline height / scrollMetrics.
@@ -512,17 +512,20 @@
 
 /*
  * articleHero=false — Figma Page_1 2556:46402: compact progress + форма без hero.
- * Усі відмінності між повним (t=0) і зібраним (t=1, Figma 1107:24593) виглядом
- * інтерполюються через --article-morph-t, тож у кінці анімації нічого не «клацає».
+ * РОЗМІРИ однакові в розгорнутому (t=0) і зібраному (t=1, Figma 1107:24593) стані — під час
+ * колапсу змінюються лише кольори (рамка, фон) та висота форми, а не відступи/товщини:
+ *  - рамка завжди 1px; «друга» піксельна лінія зібраного стану — inset box-shadow (без зсуву макета);
+ *  - відступи прогресу завжди 17px (1px рамка + 17 = 18px від краю, як 2px рамка + 16px у Figma).
  */
 .rootArticleHeroless {
   --hl-t: var(--article-morph-t, 0);
 
-  border: calc(var(--border-width-small) + (var(--border-width-medium) - var(--border-width-small)) * var(--hl-t))
-    solid
+  border: var(--border-width-small) solid
     color-mix(in srgb, var(--accent-secondary) calc(var(--hl-t) * 100%), var(--border-default));
   border-radius: var(--radius-large); /* 12px і в зібраному стані */
   background: var(--surface-default);
+  box-shadow: inset 0 0 0 var(--border-width-small)
+    color-mix(in srgb, var(--accent-secondary) calc(var(--hl-t) * 100%), transparent);
 }
 
 .herolessFormClip {
@@ -530,9 +533,8 @@
 }
 
 .rootArticleHeroless .progressSectionCompact.progressSectionScroll {
-  padding-block: calc(var(--space-2xlarge) - (var(--space-2xlarge) - var(--space-large)) * var(--hl-t));
-  padding-inline: calc(var(--space-large) + var(--border-width-small) * (1 - var(--hl-t)));
-  border-width: 0 0 calc(var(--border-width-small) * (1 - var(--hl-t)));
+  padding: calc(var(--space-large) + var(--border-width-small));
+  border-width: 0;
   border-radius: 0;
   background: color-mix(in srgb, var(--surface-default) calc(var(--hl-t) * 100%), var(--bg-subtle-neutral));
 }
@@ -984,6 +986,7 @@
 .quickAmount {
   flex: 1 1 0;
   min-width: 0;
+  width: 100%;
 }
 
 .paymentInfoRoot {
@@ -1086,8 +1089,11 @@
 
 .bankIcon {
   flex-shrink: 0;
-  /* Бейдж mono лишається білим і на hover (кнопка тоді оранжева, а currentColor стає чорним) */
-  color: var(--text-inverse);
+}
+
+/* Заливка бейджа mono = колір тексту кнопки: білий за замовчуванням, чорний при hover (кнопка тоді жовта) */
+.bankIcon path {
+  fill: currentColor;
 }
 
 @keyframes articleShellCollapsedIn {
@@ -1165,6 +1171,15 @@
   .rootArticleStable:not(.rootArticleFullyCollapsed) .stablePane {
     gap: var(--space-medium);
   }
+
+  /* Ширша колонка з фото → менше обрізається по боках (фото 4:5 не «зумиться») */
+  .rootArticleStable:not(.rootArticleFullyCollapsed) .articleHeader {
+    flex: 1 1 54%;
+  }
+
+  .rootArticleStable:not(.rootArticleFullyCollapsed) .articleSide {
+    flex: 1 1 46%;
+  }
 }
 
 /* articleStableTabs, mobile (articleHero=false): щільніша картка (~50% висоти екрана) */
@@ -1174,15 +1189,12 @@
 }
 
 .rootArticleHeroless .form {
-  /* контур дає root — власні бокові/нижня рамка форми давали подвійну лінію */
+  /* контур дає root; роздільник під прогресом — border-top форми (зникає разом із нею) */
   border: none;
+  border-top: var(--border-width-small) solid var(--border-default);
   border-radius: 0;
   gap: var(--space-medium);
   padding: var(--space-large) var(--space-large) var(--space-large);
-}
-
-.rootArticleHeroless .progressSectionCompact.progressSectionScroll {
-  padding-block: calc(var(--space-2xlarge) - (var(--space-2xlarge) - var(--space-medium)) * (1 - var(--hl-t)));
 }
 
 /* articleAnimatedTabHeight — природна висота панелей, плавне подовження картки */
@@ -1211,4 +1223,68 @@
   transition:
     opacity 0.16s ease,
     visibility 0s linear 0.16s;
+}
+
+/*
+ * Тонкий скрол списку реквізитів — праворуч ЗА контентом (у правому відступі форми), не поверх нього:
+ * панель виступає на 12px вправо, а контент зберігає свою ширину (padding-inline-end = 6px зазору).
+ * Видно і доріжку (trail) 2px — neutral-100, повзунок 2px — neutral-400 (відтінки сірого); доріжка починається від
+ * верху першого акордеону (--requisites-scroll-top).
+ */
+.stablePaneScroll {
+  inset: 0 -0.75rem 0 0;
+}
+
+.stablePaneScrollFull {
+  margin-inline-end: -0.75rem;
+}
+
+.stablePaneScroll,
+.stablePaneScrollFull {
+  padding-inline-end: 0.375rem;
+}
+
+.stablePaneScroll::-webkit-scrollbar,
+.stablePaneScrollFull::-webkit-scrollbar {
+  width: 0.375rem;
+}
+
+.stablePaneScroll::-webkit-scrollbar-track,
+.stablePaneScrollFull::-webkit-scrollbar-track {
+  margin-top: var(--requisites-scroll-top, 0);
+  background: linear-gradient(
+    to right,
+    transparent 0.125rem,
+    var(--pryt-brand-neutral-100) 0.125rem 0.25rem,
+    transparent 0.25rem
+  );
+}
+
+.stablePaneScroll::-webkit-scrollbar-thumb,
+.stablePaneScrollFull::-webkit-scrollbar-thumb {
+  border: 0.125rem solid transparent;
+  border-radius: var(--radius-round);
+  background: var(--pryt-brand-neutral-400);
+  background-clip: padding-box;
+}
+
+.stablePaneScroll::-webkit-scrollbar-thumb:hover,
+.stablePaneScrollFull::-webkit-scrollbar-thumb:hover {
+  background: var(--pryt-brand-neutral-600);
+  background-clip: padding-box;
+}
+
+/* Праворуч за контентом: тіло вкладок не обрізає виступ горизонтально */
+.stableTabBodyAnimated {
+  overflow-x: visible;
+  overflow-y: clip;
+}
+
+/* Firefox: стандартні властивості (у браузерів із ::-webkit-scrollbar вони б вимкнули власний вигляд) */
+@supports not selector(::-webkit-scrollbar) {
+  .stablePaneScroll,
+  .stablePaneScrollFull {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-default) transparent;
+  }
 }
