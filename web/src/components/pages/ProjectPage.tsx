@@ -193,7 +193,6 @@ export function ProjectPage() {
       articleScrollNaturalLayout
       articleHero={heroLayout}
       articleStableTabs
-      showSubscriptionTab={heroLayout}
       onScrollToFull={scrollToTop}
       progress={PROGRESS}
       hero={{ src: HERO, alt: "Чисте небо" }}
