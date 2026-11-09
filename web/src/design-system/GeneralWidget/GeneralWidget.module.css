@@ -454,6 +454,8 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+    /* morph-opacity (t=1 → 0) не має ховати реквізити: у цій вкладці форма — основний вміст */
+    opacity: 1;
   }
 
   .rootArticleFullyCollapsed.rootArticlePaymentInfo .articleTabletCollapsedCta {

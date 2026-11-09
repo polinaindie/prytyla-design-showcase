@@ -1078,7 +1078,11 @@ export function GeneralWidget({
       .join(" ");
 
     if (!articleHero) {
-      const t = scrollAnimation.t;
+      /* Реквізити примусово дають t=1 у хука — тут стан колапсу бере позицію анімації сторінки. */
+      const t =
+        articleScrollOffset !== undefined
+          ? Math.min(1, Math.max(0, articleScrollOffset / GENERAL_WIDGET_SCROLL_RANGE))
+          : scrollAnimation.t;
       const collapsed = t >= 1;
       const compactMetrics = getGeneralWidgetScrollMetrics(
         GENERAL_WIDGET_SCROLL_RANGE,
