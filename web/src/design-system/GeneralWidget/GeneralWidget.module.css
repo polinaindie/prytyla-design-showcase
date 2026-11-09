@@ -1174,6 +1174,9 @@
 }
 
 .rootArticleHeroless .form {
+  /* контур дає root — власні бокові/нижня рамка форми давали подвійну лінію */
+  border: none;
+  border-radius: 0;
   gap: var(--space-medium);
   padding: var(--space-large) var(--space-large) var(--space-large);
 }
