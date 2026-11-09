@@ -35,7 +35,7 @@ const IMG_QUOTE_AUTHOR = publicAssetUrl("/images/project-page/quote-author.png")
  * Планшет: false — повний вигляд як на мобілці (compact progress + форма, без hero);
  * true — hero-зображення в повному стані + shared-element морф фото в мініатюру.
  */
-const TABLET_FULL_WITH_HERO = false;
+const TABLET_FULL_WITH_HERO = true;
 
 type Rect = { x: number; y: number; w: number; h: number };
 
