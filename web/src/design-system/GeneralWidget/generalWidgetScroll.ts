@@ -30,6 +30,9 @@ export const GENERAL_WIDGET_COLLAPSED_H_ONCE = 506;
 export const GENERAL_WIDGET_COLLAPSED_H_SUBSCRIPTION = 592;
 export const GENERAL_WIDGET_COLLAPSED_H_PAYMENT_INFO = 631;
 
+/** Figma 1107:26076 — tablet compact strip (736×128) */
+export const GENERAL_WIDGET_TABLET_COLLAPSED_H = 128;
+
 /** Figma 287:15104 — compact progress (py 24 + thumb 95, measured ~149px) */
 export const GENERAL_WIDGET_PROGRESS_COMPACT_H = 149;
 /** Figma 287:14980 — expanded progress під hero (без thumb) */

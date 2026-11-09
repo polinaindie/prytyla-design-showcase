@@ -18,6 +18,7 @@ import { useStableProgressSectionHeight } from "./useStableProgressSectionHeight
 import {
   GENERAL_WIDGET_IMAGE_MAX_H,
   GENERAL_WIDGET_SCROLL_RANGE,
+  GENERAL_WIDGET_TABLET_COLLAPSED_H,
   getGeneralWidgetScrollMetrics,
 } from "./generalWidgetScroll";
 import { Button } from "../Button";
@@ -906,6 +907,23 @@ export function GeneralWidget({
     return () => observer.disconnect();
   }, [layout, articleHero, paymentTab]);
 
+  /* Tablet article: повна висота вимірюється у t=0 — morph анімує height до compact-смуги
+     (інакше висота стрибає 527→128 в останньому кадрі). */
+  const tabletFullHeightRef = useRef<number | null>(null);
+  const isArticleAtTop = scrollAnimation.t === 0;
+  useLayoutEffect(() => {
+    if (layout !== "article" || articleColumn !== "tablet" || !isArticleAtTop) return;
+    const node = articleRef.current;
+    if (!node) return;
+    const sync = () => {
+      tabletFullHeightRef.current = node.offsetHeight;
+    };
+    sync();
+    const observer = new ResizeObserver(sync);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [layout, articleColumn, isArticleAtTop, paymentTab]);
+
   const articleHeightTransition = scrollAnimation.useHeightTransition
     ? "height 0.35s cubic-bezier(0.4, 0, 0.2, 1)"
     : "none";
@@ -1117,13 +1135,32 @@ export function GeneralWidget({
 
     const lockedWidgetHeight = scrollAnimation.widgetHeight;
 
-    const rootStyle: CSSProperties =
-      !useNaturalArticleLayout && lockedWidgetHeight != null
+    const tabletMorphT = scrollAnimation.t;
+    const tabletFullHeight = tabletFullHeightRef.current;
+    const isTabletMorphing =
+      articleColumn === "tablet" &&
+      tabletFullHeight != null &&
+      tabletMorphT > 0 &&
+      tabletMorphT < 1;
+
+    const rootStyle: CSSProperties = isTabletMorphing
+      ? {
+          height: Math.round(
+            tabletFullHeight * (1 - tabletMorphT) +
+              GENERAL_WIDGET_TABLET_COLLAPSED_H * tabletMorphT,
+          ),
+          overflow: "hidden",
+          transition: "none",
+        }
+      : !useNaturalArticleLayout && lockedWidgetHeight != null
         ? {
             height: lockedWidgetHeight,
             transition: articleHeightTransition,
           }
         : {};
+    const tabletShellStyle: CSSProperties | undefined = isTabletMorphing
+      ? { opacity: Math.max(0, 1 - Math.max(0, tabletMorphT - 0.4) / 0.6) }
+      : undefined;
 
     const headerStyle: CSSProperties =
       scrollAnimation.t >= 1
@@ -1175,7 +1212,15 @@ export function GeneralWidget({
           ["--article-morph-t" as string]: morphT,
         }}
       >
-        <div className={styles.articleShell}>
+        <div
+          className={[
+            styles.articleShell,
+            articleColumn === "tablet" && isFullyCollapsed && styles.articleShellCollapsedIn,
+          ]
+            .filter(Boolean)
+            .join(" ")}
+          style={tabletShellStyle}
+        >
           <div
             className={[
               styles.articleHeader,
