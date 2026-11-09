@@ -1,10 +1,24 @@
-import { useEffect, useRef, useState, type RefObject } from "react";
+import { useEffect, useRef, useState } from "react";
+import { GENERAL_WIDGET_SCROLL_RANGE } from "../../design-system/GeneralWidget/generalWidgetScroll";
 
 /** px — мінімальний рух, щоб вважати його напрямком скролу (відсікає дрижання тачпада). */
 const DIRECTION_THRESHOLD = 6;
+/** px — скрол від верху, після якого віджет один раз програє анімацію згортання. */
+const COLLAPSE_AT = 8;
+const MORPH_DURATION_MS = 560;
+
+function easeInOutCubic(progress: number): number {
+  return progress < 0.5
+    ? 4 * progress * progress * progress
+    : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+}
 
 type ProjectPageScroll = {
-  /** window.scrollY відносно верху `anchorRef` (≥ 0) — живить morph віджета. */
+  /**
+   * 0…GENERAL_WIDGET_SCROLL_RANGE — живить morph віджета (articleScrollOffset).
+   * Не прив'язаний до пікселів скролу: один жест скролу запускає плавну анімацію
+   * згортання, повернення на верх сторінки — розгортання.
+   */
   offset: number;
   /** false — скрол вниз (меню сховане), true — на самому верху або скрол вгору. */
   menuVisible: boolean;
@@ -14,13 +28,12 @@ type ProjectPageScroll = {
 
 /**
  * Один passive scroll-listener на сторінку:
- * - `offset` для GeneralWidget layout=article (articleScrollOffset);
+ * - цільовий стан віджета (collapsed / expanded) + time-based анімація до нього;
  * - напрямок скролу для меню (ховається вниз, з'являється вгору над
  *   breadcrumbs + віджетом);
  * - прапорець для кнопки «нагору».
  */
 export function useProjectPageScroll(
-  anchorRef: RefObject<HTMLElement | null>,
   options: { menuLocked?: boolean; foldThreshold?: number } = {},
 ): ProjectPageScroll {
   const { menuLocked = false, foldThreshold = 600 } = options;
@@ -28,6 +41,9 @@ export function useProjectPageScroll(
   const [menuVisible, setMenuVisible] = useState(true);
   const [scrolledPastFold, setScrolledPastFold] = useState(false);
   const lastY = useRef(0);
+  const collapsedRef = useRef(false);
+  const offsetRef = useRef(0);
+  const rafRef = useRef(0);
   const menuLockedRef = useRef(menuLocked);
 
   useEffect(() => {
@@ -38,14 +54,42 @@ export function useProjectPageScroll(
   }, [menuLocked]);
 
   useEffect(() => {
+    const animateTo = (target: number) => {
+      cancelAnimationFrame(rafRef.current);
+      const from = offsetRef.current;
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (reduceMotion || from === target) {
+        offsetRef.current = target;
+        setOffset(target);
+        return;
+      }
+
+      const start = performance.now();
+      const step = (now: number) => {
+        const progress = Math.min(1, (now - start) / MORPH_DURATION_MS);
+        const value = from + (target - from) * easeInOutCubic(progress);
+        offsetRef.current = value;
+        setOffset(value);
+        if (progress < 1) {
+          rafRef.current = requestAnimationFrame(step);
+        }
+      };
+      rafRef.current = requestAnimationFrame(step);
+    };
+
     const update = () => {
       const y = Math.max(0, window.scrollY);
-      const anchorTop = anchorRef.current
-        ? anchorRef.current.getBoundingClientRect().top + window.scrollY
-        : 0;
 
-      setOffset(Math.max(0, y - anchorTop));
       setScrolledPastFold(y >= foldThreshold);
+
+      if (!collapsedRef.current && y > COLLAPSE_AT) {
+        collapsedRef.current = true;
+        animateTo(GENERAL_WIDGET_SCROLL_RANGE);
+      } else if (collapsedRef.current && y <= 0) {
+        collapsedRef.current = false;
+        animateTo(0);
+      }
 
       const delta = y - lastY.current;
       if (y <= 0 || menuLockedRef.current) {
@@ -62,12 +106,11 @@ export function useProjectPageScroll(
 
     update();
     window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update, { passive: true });
     return () => {
+      cancelAnimationFrame(rafRef.current);
       window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
     };
-  }, [anchorRef, foldThreshold]);
+  }, [foldThreshold]);
 
   return { offset, menuVisible, scrolledPastFold };
 }

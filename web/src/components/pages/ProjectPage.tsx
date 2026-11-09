@@ -66,12 +66,11 @@ export function ProjectPage() {
   const isTablet = useIsTablet();
   const menuRef = useRef<HTMLElement>(null);
   const pageRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [paymentTab, setPaymentTab] = useState<GeneralWidgetPaymentTab>("once");
   const [amount, setAmount] = useState("");
 
-  const { offset, menuVisible, scrolledPastFold } = useProjectPageScroll(contentRef, {
+  const { offset, menuVisible, scrolledPastFold } = useProjectPageScroll({
     menuLocked: mobileMenuOpen,
   });
 
@@ -105,7 +104,6 @@ export function ProjectPage() {
       </header>
 
       <main
-        ref={contentRef}
         className={[styles.content, menuVisible ? styles.menuShown : ""]
           .filter(Boolean)
           .join(" ")}
