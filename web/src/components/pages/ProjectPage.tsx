@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Breadcrumbs } from "../../design-system/Breadcrumbs";
 import { GeneralWidget } from "../../design-system/GeneralWidget";
 import type { GeneralWidgetPaymentTab } from "../../design-system/GeneralWidget";
@@ -45,7 +45,27 @@ const STATS = [
   { title: "Вдень та вночі", text: "Працюють вдень та вночі" },
 ];
 
+/** Figma Tablet 768 (Project Page Tablet 947:11310) — від 48rem; нижче — мобільний макет 375. */
+const TABLET_QUERY = "(min-width: 48rem)";
+
+function subscribeTablet(onChange: () => void) {
+  const mq = window.matchMedia(TABLET_QUERY);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+}
+
+function useIsTablet(): boolean {
+  return useSyncExternalStore(
+    subscribeTablet,
+    () => window.matchMedia(TABLET_QUERY).matches,
+    () => false,
+  );
+}
+
 export function ProjectPage() {
+  const isTablet = useIsTablet();
+  const menuRef = useRef<HTMLElement>(null);
+  const pageRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLElement>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [paymentTab, setPaymentTab] = useState<GeneralWidgetPaymentTab>("once");
@@ -55,17 +75,30 @@ export function ProjectPage() {
     menuLocked: mobileMenuOpen,
   });
 
+  /* Висота меню відрізняється mobile/tablet — sticky-блок та відступ беруть реальну. */
+  useEffect(() => {
+    const menu = menuRef.current;
+    const page = pageRef.current;
+    if (!menu || !page) return;
+    const sync = () => page.style.setProperty("--project-menu-h", `${menu.offsetHeight}px`);
+    sync();
+    const observer = new ResizeObserver(sync);
+    observer.observe(menu);
+    return () => observer.disconnect();
+  }, [isTablet]);
+
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
-    <div className={styles.page}>
+    <div ref={pageRef} className={styles.page}>
       <header
+        ref={menuRef}
         className={[styles.menu, menuVisible ? "" : styles.menuHidden]
           .filter(Boolean)
           .join(" ")}
       >
         <Menu
-          size="mobile"
+          size={isTablet ? "tablet" : "mobile"}
           mobileMenuOpen={mobileMenuOpen}
           onMobileMenuToggle={() => setMobileMenuOpen((open) => !open)}
         />
@@ -81,7 +114,7 @@ export function ProjectPage() {
           <Breadcrumbs items={BREADCRUMBS} />
           <GeneralWidget
             layout="article"
-            articleColumn="mobile"
+            articleColumn={isTablet ? "tablet" : "mobile"}
             articleScrollOffset={offset}
             articleScrollNaturalLayout
             onScrollToFull={scrollToTop}
@@ -106,26 +139,28 @@ export function ProjectPage() {
             </p>
 
             <div className={styles.donationNote}>
-              <p className={styles.noteTitle}>
-                Кожен <span className={styles.noteAccent}>твій донат кратний 33₴ </span>
-                збільшує шанси виграти
-                <br />
-                FORD KUGA від WINNER
-              </p>
-              <div className={styles.noteText}>
-                <p>
-                  До 33-го дня народження нашого партнера Winner розігруємо авто від нього для
-                  підсилення проєкту.
+              <div className={styles.noteBody}>
+                <p className={styles.noteTitle}>
+                  Кожен <span className={styles.noteAccent}>твій донат кратний 33₴ </span>
+                  збільшує шанси виграти
+                  <br />
+                  FORD KUGA від WINNER
                 </p>
-                <p>
-                  Участь в розіграші беруть донати на Монобанку збору з 19.11.2025 до 19.02.2026.
-                </p>
-                <p>
-                  Детальніше про розіграш:{" "}
-                  <a className={styles.noteLink} href="#rules">
-                    Правила проведення акції
-                  </a>
-                </p>
+                <div className={styles.noteText}>
+                  <p>
+                    До 33-го дня народження нашого партнера Winner розігруємо авто від нього для
+                    підсилення проєкту.
+                  </p>
+                  <p>
+                    Участь в розіграші беруть донати на Монобанку збору з 19.11.2025 до 19.02.2026.
+                  </p>
+                  <p>
+                    Детальніше про розіграш:{" "}
+                    <a className={styles.noteLink} href="#rules">
+                      Правила проведення акції
+                    </a>
+                  </p>
+                </div>
               </div>
               <img className={styles.noteCar} src={IMG_CAR} alt="Ford Kuga" />
             </div>

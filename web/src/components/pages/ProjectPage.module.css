@@ -96,6 +96,12 @@
   background: var(--surface-subtle-accent);
 }
 
+.noteBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xlarge);
+}
+
 .noteTitle {
   margin: 0;
   font-family: var(--font-display);
@@ -333,4 +339,53 @@
 
 .toTopIcon {
   transform: rotate(180deg);
+}
+
+/* ——— Tablet 768 (Figma Project Page Tablet 947:11310 · On scroll 1107:23306) ——— */
+@media (min-width: 48rem) {
+  .content {
+    max-width: 48rem;
+    padding-block-start: calc(var(--project-menu-h) + var(--space-large));
+  }
+
+  .donationNote {
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-4xlarge);
+  }
+
+  .noteBody {
+    flex: 1 1 0;
+    min-width: 0;
+    gap: var(--space-3xlarge);
+  }
+
+  .noteCar {
+    flex: none;
+    width: 18.3125rem;
+  }
+
+  .quote {
+    min-height: 19.5625rem;
+    padding-inline-end: 21rem;
+  }
+
+  .quoteText {
+    max-width: 26.25rem;
+  }
+
+  .quoteAuthor {
+    max-width: none;
+  }
+
+  .quotePhoto {
+    right: 0;
+    bottom: 0;
+    width: 19.6875rem;
+    height: 19.5625rem;
+  }
+
+  .projectImage {
+    height: 32.375rem; /* Figma 518px */
+  }
 }

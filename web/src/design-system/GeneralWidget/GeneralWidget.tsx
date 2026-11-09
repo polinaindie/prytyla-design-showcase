@@ -1193,8 +1193,8 @@ export function GeneralWidget({
                 theme="light"
                 className={styles.actionFull}
                 showLeftIcon={false}
-                disabled={primaryActionDisabled}
-                onClick={onPrimaryAction}
+                /* Figma 1107:26075: у compact CTA активний; без суми веде до повної форми. */
+                onClick={primaryActionDisabled ? scrollToFullWidget : onPrimaryAction}
               >
                 {effectivePrimaryActionLabel === "Підтримати разово"
                   ? "Підтримати проєкт"
