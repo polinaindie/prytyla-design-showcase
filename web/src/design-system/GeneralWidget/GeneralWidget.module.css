@@ -1166,3 +1166,18 @@
     gap: var(--space-medium);
   }
 }
+
+/* articleStableTabs, mobile (articleHero=false): щільніша картка (~50% висоти екрана) */
+.rootArticleHeroless .stablePane,
+.rootArticleHeroless .stableTabBody {
+  gap: var(--space-medium);
+}
+
+.rootArticleHeroless .form {
+  gap: var(--space-medium);
+  padding: var(--space-large) var(--space-large) var(--space-large);
+}
+
+.rootArticleHeroless .progressSectionCompact.progressSectionScroll {
+  padding-block: calc(var(--space-2xlarge) - (var(--space-2xlarge) - var(--space-medium)) * (1 - var(--hl-t)));
+}

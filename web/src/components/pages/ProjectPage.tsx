@@ -193,7 +193,6 @@ export function ProjectPage() {
       articleScrollNaturalLayout
       articleHero={heroLayout}
       articleStableTabs
-      articleRequisitesFullHeight={!isTablet}
       showSubscriptionTab={heroLayout}
       onScrollToFull={scrollToTop}
       progress={PROGRESS}
