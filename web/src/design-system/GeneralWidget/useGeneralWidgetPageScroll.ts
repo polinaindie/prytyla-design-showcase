@@ -49,6 +49,7 @@ export function useGeneralWidgetPageScroll(
   scrollOffsetOverride?: number,
   progressBarHeight?: number,
   scrollContainerRef?: RefObject<HTMLElement | null>,
+  forceCompactPaymentInfo = true,
 ): GeneralWidgetScrollMetrics & { pageScrollY: number; useHeightTransition: boolean } {
   const [pageScrollY, setPageScrollY] = useState(0);
   const [useHeightTransition, setUseHeightTransition] = useState(false);
@@ -112,6 +113,7 @@ export function useGeneralWidgetPageScroll(
     enabled ? effectiveScrollY : 0,
     activeTab,
     progressBarHeight,
+    forceCompactPaymentInfo,
   );
 
   return {

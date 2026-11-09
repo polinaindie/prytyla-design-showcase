@@ -105,9 +105,11 @@ export function getGeneralWidgetScrollMetrics(
   scrollY: number,
   activeTab: GeneralWidgetPaymentTab,
   progressExpandedHeight = GENERAL_WIDGET_PROGRESS_EXPANDED_FALLBACK_H,
+  forceCompactPaymentInfo = true,
 ): GeneralWidgetScrollMetrics {
   /** Реквізити — завжди compact (hero прихований), щоб список переказів був видимий без внутрішнього скролу. */
-  const t = activeTab === "paymentInfo" ? 1 : getScrollT(scrollY);
+  const t =
+    activeTab === "paymentInfo" && forceCompactPaymentInfo ? 1 : getScrollT(scrollY);
   const fullH = getGeneralWidgetFullHeight(activeTab);
   const collapsedH = getGeneralWidgetCollapsedHeight(activeTab);
   const progressH = getProgressSectionMorphHeight(t, progressExpandedHeight);

@@ -94,6 +94,12 @@ export type GeneralWidgetProps = {
    * @default true
    */
   articleHero?: boolean;
+  /**
+   * layout=article: однаковий розмір картки на всіх вкладках — висоту задають Разово/Щомісяця,
+   * Реквізити скролляться всередині, а hero/compact-стан не залежить від вкладки.
+   * @default false
+   */
+  articleStableTabs?: boolean;
   /** Прогрес зверху (Figma Progressbar=On) — лише layout=full */
   showProgress?: boolean;
   progress?: GeneralWidgetProgress;

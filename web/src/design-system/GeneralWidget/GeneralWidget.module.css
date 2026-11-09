@@ -1100,3 +1100,35 @@
 .articleShellCollapsedIn {
   animation: articleShellCollapsedIn 0.2s ease both;
 }
+
+/* articleStableTabs — усі вкладки в одній комірці, розмір не залежить від активної */
+.stableTabBody {
+  position: relative;
+  display: grid;
+  min-width: 0;
+}
+
+.stablePane {
+  display: flex;
+  flex-direction: column;
+  grid-area: 1 / 1;
+  gap: var(--space-large);
+  min-width: 0;
+}
+
+.stablePane > .actions {
+  margin-top: auto;
+}
+
+/* Реквізити не впливають на розмір комірки — заповнюють її і скролляться */
+.stablePaneScroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.stablePaneHidden {
+  visibility: hidden;
+  pointer-events: none;
+}

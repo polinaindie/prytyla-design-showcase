@@ -277,6 +277,8 @@ function PaymentTypeTabs({
 }
 
 type DonateFormBodyProps = {
+  /** Усі вкладки в одній комірці: розмір = max(Разово, Щомісяця), реквізити скролляться всередині. */
+  stableTabs?: boolean;
   paymentTab: GeneralWidgetPaymentTab;
   onPaymentTabChange: (tab: GeneralWidgetPaymentTab) => void;
   showSubscriptionTab: boolean;
@@ -486,6 +488,7 @@ function SubscriptionCallout({
 }
 
 function DonateFormBody({
+  stableTabs = false,
   paymentTab,
   onPaymentTabChange,
   showSubscriptionTab,
@@ -516,6 +519,170 @@ function DonateFormBody({
   onPrimaryAction,
   onSecondaryAction,
 }: DonateFormBodyProps) {
+  const onceContent = (
+    <div role="tabpanel">
+      <AmountBlock
+        amount={amount}
+        currency={currency}
+        currencyOptions={currencyOptions}
+        onCurrencyChange={onCurrencyChange}
+        onAmountChange={onAmountChange}
+        quickAmounts={quickAmounts}
+        onQuickAmountClick={onQuickAmountClick}
+        className={isWide ? styles.amountBlockWide : undefined}
+      >
+        {isWide && showNewsletterOptIn ? (
+          <NewsletterOptInBlock
+            checked={newsletterOptIn}
+            onCheckedChange={onNewsletterOptInChange}
+            label={newsletterOptInLabel}
+            email={newsletterEmail}
+            onEmailChange={onNewsletterEmailChange}
+            emailLabel={newsletterEmailLabel}
+            emailInputId={newsletterEmailInputId}
+          />
+        ) : null}
+      </AmountBlock>
+    </div>
+  );
+
+  const subscriptionContent = (
+    <div className={styles.subscriptionPanel} role="tabpanel">
+      <SubscriptionCallout
+        cancelHref={subscriptionCancelHref}
+        onCancel={onSubscriptionCancel}
+      />
+      <AmountBlock
+        amount={amount}
+        currency={currency}
+        currencyOptions={currencyOptions}
+        onCurrencyChange={onCurrencyChange}
+        onAmountChange={onAmountChange}
+        quickAmounts={quickAmounts}
+        onQuickAmountClick={onQuickAmountClick}
+      />
+    </div>
+  );
+
+  const paymentInfoContent = (
+    <div className={styles.paymentInfoRoot} role="tabpanel">
+      <PaymentInfoGroup>
+        {paymentInfoSections.map((section) => (
+          <div key={section.title} className={styles.paymentInfoSection}>
+            <p className={styles.sectionHeading}>{section.title}</p>
+            {section.items.map((item) => (
+              <PaymentInfo
+                key={item.id}
+                id={item.id}
+                paymentType={item.paymentType}
+                title={item.title}
+                fields={item.fields}
+                description={item.description}
+              />
+            ))}
+          </div>
+        ))}
+      </PaymentInfoGroup>
+    </div>
+  );
+
+  const onceActions = (
+    <div className={styles.actions}>
+      <Button
+        variant="primary"
+        theme="light"
+        className={styles.actionFull}
+        showLeftIcon={false}
+        disabled={primaryActionDisabled}
+        onClick={onPrimaryAction}
+      >
+        {primaryActionLabel}
+      </Button>
+      <Button
+        variant="primary"
+        theme="dark"
+        className={styles.actionFull}
+        showLeftIcon={false}
+        rightIcon={
+          <IconBrandMono
+            className={styles.bankIcon}
+            width={58}
+            height={24}
+            glyphOnly
+            aria-hidden
+          />
+        }
+        onClick={onSecondaryAction}
+      >
+        {secondaryActionLabel}
+      </Button>
+    </div>
+  );
+
+  const subscriptionActions = (
+    <div className={styles.actions}>
+      <Button
+        variant="primary"
+        theme="light"
+        className={styles.actionFull}
+        showLeftIcon={false}
+        disabled={primaryActionDisabled}
+        onClick={onPrimaryAction}
+      >
+        {subscriptionPrimaryActionLabel}
+      </Button>
+      <Button
+        variant="primary"
+        theme="special"
+        className={styles.actionFull}
+        onClick={onSecondaryAction}
+      >
+        {subscriptionSecondaryActionLabel}
+      </Button>
+    </div>
+  );
+
+  if (stableTabs) {
+    const paneClass = (active: boolean) =>
+      [styles.stablePane, !active && styles.stablePaneHidden].filter(Boolean).join(" ");
+
+    return (
+      <>
+        <PaymentTypeTabs
+          activeTab={paymentTab}
+          onTabChange={onPaymentTabChange}
+          showSubscriptionTab={showSubscriptionTab}
+        />
+        <div className={styles.stableTabBody}>
+          <div className={paneClass(paymentTab === "once")} inert={paymentTab !== "once" || undefined}>
+            {onceContent}
+            {onceActions}
+          </div>
+          {showSubscriptionTab ? (
+            <div
+              className={paneClass(paymentTab === "subscription")}
+              inert={paymentTab !== "subscription" || undefined}
+            >
+              {subscriptionContent}
+              {subscriptionActions}
+            </div>
+          ) : null}
+          <div
+            className={[
+              styles.stablePaneScroll,
+              paymentTab !== "paymentInfo" && styles.stablePaneHidden,
+            ]
+              .filter(Boolean)
+              .join(" ")}
+            inert={paymentTab !== "paymentInfo" || undefined}
+          >
+            {paymentInfoContent}
+          </div>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <PaymentTypeTabs
@@ -524,128 +691,11 @@ function DonateFormBody({
         showSubscriptionTab={showSubscriptionTab}
       />
 
-      {paymentTab === "once" ? (
-        <div role="tabpanel">
-          <AmountBlock
-            amount={amount}
-            currency={currency}
-            currencyOptions={currencyOptions}
-            onCurrencyChange={onCurrencyChange}
-            onAmountChange={onAmountChange}
-            quickAmounts={quickAmounts}
-            onQuickAmountClick={onQuickAmountClick}
-            className={isWide ? styles.amountBlockWide : undefined}
-          >
-            {isWide && showNewsletterOptIn ? (
-              <NewsletterOptInBlock
-                checked={newsletterOptIn}
-                onCheckedChange={onNewsletterOptInChange}
-                label={newsletterOptInLabel}
-                email={newsletterEmail}
-                onEmailChange={onNewsletterEmailChange}
-                emailLabel={newsletterEmailLabel}
-                emailInputId={newsletterEmailInputId}
-              />
-            ) : null}
-          </AmountBlock>
-        </div>
-      ) : null}
-
-      {paymentTab === "subscription" ? (
-        <div className={styles.subscriptionPanel} role="tabpanel">
-          <SubscriptionCallout
-            cancelHref={subscriptionCancelHref}
-            onCancel={onSubscriptionCancel}
-          />
-          <AmountBlock
-            amount={amount}
-            currency={currency}
-            currencyOptions={currencyOptions}
-            onCurrencyChange={onCurrencyChange}
-            onAmountChange={onAmountChange}
-            quickAmounts={quickAmounts}
-            onQuickAmountClick={onQuickAmountClick}
-          />
-        </div>
-      ) : null}
-
-      {paymentTab === "paymentInfo" ? (
-        <div className={styles.paymentInfoRoot} role="tabpanel">
-          <PaymentInfoGroup>
-            {paymentInfoSections.map((section) => (
-              <div key={section.title} className={styles.paymentInfoSection}>
-                <p className={styles.sectionHeading}>{section.title}</p>
-                {section.items.map((item) => (
-                  <PaymentInfo
-                    key={item.id}
-                    id={item.id}
-                    paymentType={item.paymentType}
-                    title={item.title}
-                    fields={item.fields}
-                    description={item.description}
-                  />
-                ))}
-              </div>
-            ))}
-          </PaymentInfoGroup>
-        </div>
-      ) : null}
-
-      {paymentTab === "once" ? (
-        <div className={styles.actions}>
-          <Button
-            variant="primary"
-            theme="light"
-            className={styles.actionFull}
-            showLeftIcon={false}
-            disabled={primaryActionDisabled}
-            onClick={onPrimaryAction}
-          >
-            {primaryActionLabel}
-          </Button>
-          <Button
-            variant="primary"
-            theme="dark"
-            className={styles.actionFull}
-            showLeftIcon={false}
-            rightIcon={
-              <IconBrandMono
-                className={styles.bankIcon}
-                width={58}
-                height={24}
-                glyphOnly
-                aria-hidden
-              />
-            }
-            onClick={onSecondaryAction}
-          >
-            {secondaryActionLabel}
-          </Button>
-        </div>
-      ) : null}
-
-      {paymentTab === "subscription" ? (
-        <div className={styles.actions}>
-          <Button
-            variant="primary"
-            theme="light"
-            className={styles.actionFull}
-            showLeftIcon={false}
-            disabled={primaryActionDisabled}
-            onClick={onPrimaryAction}
-          >
-            {subscriptionPrimaryActionLabel}
-          </Button>
-          <Button
-            variant="primary"
-            theme="special"
-            className={styles.actionFull}
-            onClick={onSecondaryAction}
-          >
-            {subscriptionSecondaryActionLabel}
-          </Button>
-        </div>
-      ) : null}
+      {paymentTab === "once" ? onceContent : null}
+      {paymentTab === "subscription" ? subscriptionContent : null}
+      {paymentTab === "paymentInfo" ? paymentInfoContent : null}
+      {paymentTab === "once" ? onceActions : null}
+      {paymentTab === "subscription" ? subscriptionActions : null}
     </>
   );
 }
@@ -745,6 +795,7 @@ export function GeneralWidget({
   articleScrollNaturalLayout = false,
   articleColumn,
   articleHero = true,
+  articleStableTabs = false,
 }: GeneralWidgetProps) {
   const isDone = paymentType === "done";
   const isWide = layout === "wide";
@@ -892,6 +943,7 @@ export function GeneralWidget({
     articleScrollOffset,
     progressSectionHeight,
     articleScrollContainerRef,
+    !articleStableTabs,
   );
 
   /* articleHero=false (mobile, Figma Page_1): форма згортається висотою, а не hero-морфом. */
@@ -958,6 +1010,7 @@ export function GeneralWidget({
   };
 
   const donateFormProps: DonateFormBodyProps = {
+    stableTabs: layout === "article" && articleStableTabs,
     paymentTab,
     onPaymentTabChange: setPaymentTab,
     showSubscriptionTab,
@@ -1071,7 +1124,7 @@ export function GeneralWidget({
       styles.root,
       styles.rootArticle,
       useNaturalArticleLayout && styles.rootArticleNaturalLayout,
-      scrollAnimation.useAutoHeight && styles.rootArticlePaymentInfo,
+      scrollAnimation.useAutoHeight && !articleStableTabs && styles.rootArticlePaymentInfo,
       className,
     ]
       .filter(Boolean)

@@ -185,6 +185,7 @@ export function ProjectPage() {
       articleScrollOffset={scrollOffset}
       articleScrollNaturalLayout
       articleHero={isTablet}
+      articleStableTabs
       showSubscriptionTab={isTablet}
       onScrollToFull={scrollToTop}
       progress={PROGRESS}
