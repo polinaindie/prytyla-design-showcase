@@ -518,7 +518,7 @@
   border: calc(var(--border-width-small) + (var(--border-width-medium) - var(--border-width-small)) * var(--hl-t))
     solid
     color-mix(in srgb, var(--accent-secondary) calc(var(--hl-t) * 100%), var(--border-default));
-  border-radius: calc(var(--radius-large) - (var(--radius-large) - var(--radius-medium)) * var(--hl-t));
+  border-radius: var(--radius-large); /* 12px і в зібраному стані */
   background: var(--surface-default);
 }
 
