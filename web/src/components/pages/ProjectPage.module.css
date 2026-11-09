@@ -56,6 +56,22 @@
   transition: top 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* Tablet crossfade: нижній шар — compact, верхній — повний (згасає) */
+.widgetMorph {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-large);
+}
+
+.widgetLayer {
+  position: absolute;
+  inset: 0 0 auto;
+}
+
+.widgetLayerTop {
+  z-index: 1;
+}
+
 .sections {
   display: flex;
   flex-direction: column;

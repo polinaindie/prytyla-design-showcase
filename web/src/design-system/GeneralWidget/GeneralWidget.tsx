@@ -1215,7 +1215,6 @@ export function GeneralWidget({
         <div
           className={[
             styles.articleShell,
-            articleColumn === "tablet" && isFullyCollapsed && styles.articleShellCollapsedIn,
           ]
             .filter(Boolean)
             .join(" ")}

@@ -5,6 +5,10 @@ import type { GeneralWidgetPaymentTab } from "../../design-system/GeneralWidget"
 import { IconChevronDown } from "../../design-system/Icons";
 import { Menu } from "../../design-system/Menu";
 import { publicAssetUrl } from "../../lib/publicAssetUrl";
+import {
+  GENERAL_WIDGET_SCROLL_RANGE,
+  GENERAL_WIDGET_TABLET_COLLAPSED_H,
+} from "../../design-system/GeneralWidget/generalWidgetScroll";
 import { useProjectPageScroll } from "./useProjectPageScroll";
 import styles from "./ProjectPage.module.css";
 
@@ -88,6 +92,46 @@ export function ProjectPage() {
 
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
+  const [currency, setCurrency] = useState("UAH");
+  const morphProgress = Math.min(1, Math.max(0, offset / GENERAL_WIDGET_SCROLL_RANGE));
+  const fullWidgetHeight = useRef<number | null>(null);
+  const widgetSlotRef = useRef<HTMLDivElement>(null);
+
+  /* Висота повного віджета (t=0) — база для плавної висоти crossfade. */
+  useEffect(() => {
+    const node = widgetSlotRef.current;
+    if (!node || morphProgress !== 0) return;
+    const sync = () => {
+      fullWidgetHeight.current = node.offsetHeight;
+    };
+    sync();
+    const observer = new ResizeObserver(sync);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [morphProgress, isTablet, paymentTab]);
+
+  const renderWidget = (scrollOffset: number) => (
+    <GeneralWidget
+      layout="article"
+      articleColumn={isTablet ? "tablet" : "mobile"}
+      articleScrollOffset={scrollOffset}
+      articleScrollNaturalLayout
+      articleHero={isTablet}
+      showSubscriptionTab={isTablet}
+      onScrollToFull={scrollToTop}
+      progress={PROGRESS}
+      hero={{ src: HERO, alt: "Чисте небо" }}
+      paymentTab={paymentTab}
+      onPaymentTabChange={setPaymentTab}
+      amount={amount}
+      onAmountChange={setAmount}
+      currency={currency}
+      onCurrencyChange={setCurrency}
+      onQuickAmountClick={(value) => setAmount(String(value))}
+    />
+  );
+
+
   return (
     <div ref={pageRef} className={styles.page}>
       <header
@@ -110,22 +154,31 @@ export function ProjectPage() {
       >
         <div className={styles.pinned}>
           <Breadcrumbs items={BREADCRUMBS} />
-          <GeneralWidget
-            layout="article"
-            articleColumn={isTablet ? "tablet" : "mobile"}
-            articleScrollOffset={offset}
-            articleScrollNaturalLayout
-            articleHero={isTablet}
-            showSubscriptionTab={isTablet}
-            onScrollToFull={scrollToTop}
-            progress={PROGRESS}
-            hero={{ src: HERO, alt: "Чисте небо" }}
-            paymentTab={paymentTab}
-            onPaymentTabChange={setPaymentTab}
-            amount={amount}
-            onAmountChange={setAmount}
-            onQuickAmountClick={(value) => setAmount(String(value))}
-          />
+          {isTablet && morphProgress > 0 && morphProgress < 1 ? (
+            /* Tablet: crossfade full ↔ compact (без «блимання») + плавна висота. */
+            <div
+              className={styles.widgetMorph}
+              style={{
+                height: Math.round(
+                  (fullWidgetHeight.current ?? GENERAL_WIDGET_TABLET_COLLAPSED_H) *
+                    (1 - morphProgress) +
+                    GENERAL_WIDGET_TABLET_COLLAPSED_H * morphProgress,
+                ),
+              }}
+            >
+              <div className={styles.widgetLayer}>{renderWidget(GENERAL_WIDGET_SCROLL_RANGE)}</div>
+              <div
+                className={`${styles.widgetLayer} ${styles.widgetLayerTop}`}
+                style={{ opacity: 1 - morphProgress }}
+              >
+                {renderWidget(0)}
+              </div>
+            </div>
+          ) : (
+            <div ref={widgetSlotRef}>
+              {renderWidget(isTablet ? (morphProgress >= 1 ? GENERAL_WIDGET_SCROLL_RANGE : 0) : offset)}
+            </div>
+          )}
         </div>
 
         <div className={styles.sections}>
