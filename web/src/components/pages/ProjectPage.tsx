@@ -193,6 +193,7 @@ export function ProjectPage() {
       articleScrollNaturalLayout
       articleHero={heroLayout}
       articleStableTabs
+      articleAnimatedTabHeight={isTablet}
       onScrollToFull={scrollToTop}
       progress={PROGRESS}
       hero={{ src: HERO, alt: "Чисте небо" }}

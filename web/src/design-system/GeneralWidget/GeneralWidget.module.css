@@ -1184,3 +1184,31 @@
 .rootArticleHeroless .progressSectionCompact.progressSectionScroll {
   padding-block: calc(var(--space-2xlarge) - (var(--space-2xlarge) - var(--space-medium)) * (1 - var(--hl-t)));
 }
+
+/* articleAnimatedTabHeight — природна висота панелей, плавне подовження картки */
+.stableTabBodyAnimated {
+  overflow: hidden;
+  transition: height 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stablePaneTop {
+  align-self: start;
+}
+
+.stablePaneTop > [role="tabpanel"] {
+  margin-top: 0;
+}
+
+.stablePane,
+.stablePaneScroll {
+  opacity: 1;
+  transition: opacity 0.2s ease 0.08s;
+}
+
+.stablePane.stablePaneHidden,
+.stablePaneScroll.stablePaneHidden {
+  opacity: 0;
+  transition:
+    opacity 0.16s ease,
+    visibility 0s linear 0.16s;
+}

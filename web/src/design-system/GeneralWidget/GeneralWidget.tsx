@@ -281,6 +281,8 @@ type DonateFormBodyProps = {
   stableTabs?: boolean;
   /** stableTabs: висота = повний список реквізитів у згорнутому вигляді; розкриття скролиться всередині. */
   requisitesFullHeight?: boolean;
+  /** stableTabs: сума зверху, висота картки плавно змінюється між «Разово» та «Щомісяця». */
+  animatedTabHeight?: boolean;
   paymentTab: GeneralWidgetPaymentTab;
   onPaymentTabChange: (tab: GeneralWidgetPaymentTab) => void;
   showSubscriptionTab: boolean;
@@ -492,6 +494,7 @@ function SubscriptionCallout({
 function DonateFormBody({
   stableTabs = false,
   requisitesFullHeight = false,
+  animatedTabHeight = false,
   paymentTab,
   onPaymentTabChange,
   showSubscriptionTab,
@@ -538,6 +541,24 @@ function DonateFormBody({
     observer.observe(node);
     return () => observer.disconnect();
   }, [stableTabs, requisitesFullHeight]);
+
+  /* animatedTabHeight: природна висота панелей Разово / Щомісяця → плавна висота тіла вкладок. */
+  const oncePaneRef = useRef<HTMLDivElement>(null);
+  const subPaneRef = useRef<HTMLDivElement>(null);
+  const [paneHeights, setPaneHeights] = useState<{ once: number; sub: number } | null>(null);
+  useLayoutEffect(() => {
+    if (!stableTabs || !animatedTabHeight) return;
+    const once = oncePaneRef.current;
+    const sub = subPaneRef.current;
+    if (!once) return;
+    const measure = () =>
+      setPaneHeights({ once: once.offsetHeight, sub: sub ? sub.offsetHeight : once.offsetHeight });
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(once);
+    if (sub) observer.observe(sub);
+    return () => observer.disconnect();
+  }, [stableTabs, animatedTabHeight, showSubscriptionTab]);
 
   const onceContent = (
     <div role="tabpanel">
@@ -664,7 +685,20 @@ function DonateFormBody({
 
   if (stableTabs) {
     const paneClass = (active: boolean) =>
-      [styles.stablePane, !active && styles.stablePaneHidden].filter(Boolean).join(" ");
+      [
+        styles.stablePane,
+        animatedTabHeight && styles.stablePaneTop,
+        !active && styles.stablePaneHidden,
+      ]
+        .filter(Boolean)
+        .join(" ");
+
+    const activeHeight =
+      paneHeights == null
+        ? undefined
+        : paymentTab === "subscription"
+          ? paneHeights.sub
+          : paneHeights.once;
 
     return (
       <>
@@ -673,13 +707,23 @@ function DonateFormBody({
           onTabChange={onPaymentTabChange}
           showSubscriptionTab={showSubscriptionTab}
         />
-        <div className={styles.stableTabBody}>
-          <div className={paneClass(paymentTab === "once")} inert={paymentTab !== "once" || undefined}>
+        <div
+          className={[styles.stableTabBody, animatedTabHeight && styles.stableTabBodyAnimated]
+            .filter(Boolean)
+            .join(" ")}
+          style={animatedTabHeight && activeHeight != null ? { height: activeHeight } : undefined}
+        >
+          <div
+            ref={oncePaneRef}
+            className={paneClass(paymentTab === "once")}
+            inert={paymentTab !== "once" || undefined}
+          >
             {onceContent}
             {onceActions}
           </div>
           {showSubscriptionTab ? (
             <div
+              ref={subPaneRef}
               className={paneClass(paymentTab === "subscription")}
               inert={paymentTab !== "subscription" || undefined}
             >
@@ -822,6 +866,7 @@ export function GeneralWidget({
   articleHero = true,
   articleStableTabs = false,
   articleRequisitesFullHeight = false,
+  articleAnimatedTabHeight = false,
 }: GeneralWidgetProps) {
   const isDone = paymentType === "done";
   const isWide = layout === "wide";
@@ -1038,6 +1083,7 @@ export function GeneralWidget({
   const donateFormProps: DonateFormBodyProps = {
     stableTabs: layout === "article" && articleStableTabs,
     requisitesFullHeight: articleRequisitesFullHeight,
+    animatedTabHeight: articleAnimatedTabHeight,
     paymentTab,
     onPaymentTabChange: setPaymentTab,
     showSubscriptionTab,

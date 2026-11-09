@@ -106,6 +106,12 @@ export type GeneralWidgetProps = {
    * @default false — реквізити скролляться в межах висоти Разово/Щомісяця.
    */
   articleRequisitesFullHeight?: boolean;
+  /**
+   * articleStableTabs: сума завжди зверху (під табами), а висота картки плавно змінюється
+   * між «Разово» і «Щомісяця» (плашка зʼявляється зверху). Реквізити скролляться у висоті «Разово».
+   * @default false
+   */
+  articleAnimatedTabHeight?: boolean;
   /** Прогрес зверху (Figma Progressbar=On) — лише layout=full */
   showProgress?: boolean;
   progress?: GeneralWidgetProgress;
