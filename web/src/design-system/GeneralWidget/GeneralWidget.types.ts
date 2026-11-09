@@ -100,6 +100,12 @@ export type GeneralWidgetProps = {
    * @default false
    */
   articleStableTabs?: boolean;
+  /**
+   * articleStableTabs: висота картки = повний список реквізитів у згорнутому вигляді
+   * (мобільний), розкриті пункти скролляться всередині цієї висоти.
+   * @default false — реквізити скролляться в межах висоти Разово/Щомісяця.
+   */
+  articleRequisitesFullHeight?: boolean;
   /** Прогрес зверху (Figma Progressbar=On) — лише layout=full */
   showProgress?: boolean;
   progress?: GeneralWidgetProgress;

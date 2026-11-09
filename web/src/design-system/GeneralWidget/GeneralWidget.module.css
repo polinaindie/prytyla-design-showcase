@@ -1131,6 +1131,16 @@
   overscroll-behavior: contain;
 }
 
+.stablePaneScrollFull {
+  position: relative;
+  grid-area: 1 / 1;
+  min-width: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* size containment: у висоту комірки входить лише min-height (= згорнутий список), розкриття не розтягує картку */
+  contain: size;
+}
+
 .stablePaneHidden {
   visibility: hidden;
   pointer-events: none;

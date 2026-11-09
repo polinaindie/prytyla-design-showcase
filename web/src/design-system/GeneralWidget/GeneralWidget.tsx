@@ -279,6 +279,8 @@ function PaymentTypeTabs({
 type DonateFormBodyProps = {
   /** Усі вкладки в одній комірці: розмір = max(Разово, Щомісяця), реквізити скролляться всередині. */
   stableTabs?: boolean;
+  /** stableTabs: висота = повний список реквізитів у згорнутому вигляді; розкриття скролиться всередині. */
+  requisitesFullHeight?: boolean;
   paymentTab: GeneralWidgetPaymentTab;
   onPaymentTabChange: (tab: GeneralWidgetPaymentTab) => void;
   showSubscriptionTab: boolean;
@@ -489,6 +491,7 @@ function SubscriptionCallout({
 
 function DonateFormBody({
   stableTabs = false,
+  requisitesFullHeight = false,
   paymentTab,
   onPaymentTabChange,
   showSubscriptionTab,
@@ -519,6 +522,23 @@ function DonateFormBody({
   onPrimaryAction,
   onSecondaryAction,
 }: DonateFormBodyProps) {
+  /* Природна висота списку реквізитів, коли всі пункти згорнуті (вимірюється, поки жоден не розкритий). */
+  const infoRootRef = useRef<HTMLDivElement>(null);
+  const [collapsedInfoHeight, setCollapsedInfoHeight] = useState<number | null>(null);
+  useLayoutEffect(() => {
+    if (!stableTabs || !requisitesFullHeight) return;
+    const node = infoRootRef.current;
+    if (!node) return;
+    const measure = () => {
+      if (node.querySelector('[aria-expanded="true"]')) return;
+      setCollapsedInfoHeight(node.offsetHeight);
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [stableTabs, requisitesFullHeight]);
+
   const onceContent = (
     <div role="tabpanel">
       <AmountBlock
@@ -565,7 +585,7 @@ function DonateFormBody({
   );
 
   const paymentInfoContent = (
-    <div className={styles.paymentInfoRoot} role="tabpanel">
+    <div ref={infoRootRef} className={styles.paymentInfoRoot} role="tabpanel">
       <PaymentInfoGroup>
         {paymentInfoSections.map((section) => (
           <div key={section.title} className={styles.paymentInfoSection}>
@@ -669,11 +689,16 @@ function DonateFormBody({
           ) : null}
           <div
             className={[
-              styles.stablePaneScroll,
+              requisitesFullHeight ? styles.stablePaneScrollFull : styles.stablePaneScroll,
               paymentTab !== "paymentInfo" && styles.stablePaneHidden,
             ]
               .filter(Boolean)
               .join(" ")}
+            style={
+              requisitesFullHeight && collapsedInfoHeight != null
+                ? { minHeight: collapsedInfoHeight }
+                : undefined
+            }
             inert={paymentTab !== "paymentInfo" || undefined}
           >
             {paymentInfoContent}
@@ -796,6 +821,7 @@ export function GeneralWidget({
   articleColumn,
   articleHero = true,
   articleStableTabs = false,
+  articleRequisitesFullHeight = false,
 }: GeneralWidgetProps) {
   const isDone = paymentType === "done";
   const isWide = layout === "wide";
@@ -1011,6 +1037,7 @@ export function GeneralWidget({
 
   const donateFormProps: DonateFormBodyProps = {
     stableTabs: layout === "article" && articleStableTabs,
+    requisitesFullHeight: articleRequisitesFullHeight,
     paymentTab,
     onPaymentTabChange: setPaymentTab,
     showSubscriptionTab,
