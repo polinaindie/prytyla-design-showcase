@@ -898,6 +898,10 @@ export function GeneralWidget({
       scrollContainer.scrollTo({ top: 0, behavior: "smooth" });
       return;
     }
+    /* Сторінка сама керує скролом (напр. sticky-віджет) — не перебиваємо його. */
+    if (onScrollToFull) {
+      return;
+    }
     const anchorTop = articleRef.current
       ? articleRef.current.getBoundingClientRect().top + window.scrollY
       : 0;

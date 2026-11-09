@@ -1,0 +1,336 @@
+/* Figma Project Page_1 2556:46382 (mobile 375) */
+
+.page {
+  --project-menu-h: 5rem; /* Menu mobile: padding-top 16 + bar 64 (Figma 2556:46392) */
+
+  min-height: 100vh;
+  background: var(--surface-page);
+  color: var(--text-default);
+  /* Sticky-блок змінює висоту під час morph — без browser scroll anchoring. */
+  overflow-anchor: none;
+}
+
+/* Меню: fixed зверху, ховається при скролі вниз, виїжджає при скролі вгору */
+.menu {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 30;
+  display: flex;
+  justify-content: center;
+  background: var(--surface-page);
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menuHidden {
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+
+.content {
+  --pinned-top: 0px;
+
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 23.4375rem;
+  margin: 0 auto;
+  padding: var(--project-menu-h) var(--space-large) var(--space-5xlarge);
+}
+
+/* Коли меню видиме — sticky-блок стоїть під ним */
+.menuShown {
+  --pinned-top: var(--project-menu-h);
+}
+
+/* Breadcrumbs + GeneralWidget: прикріплені, контент проїжджає під ними */
+.pinned {
+  position: sticky;
+  top: var(--pinned-top);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xlarge);
+  padding-block: var(--space-large);
+  margin-inline: calc(var(--space-large) * -1);
+  padding-inline: var(--space-large);
+  background: var(--surface-page);
+  transition: top 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sections {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5xlarge);
+  padding-block-start: var(--space-large);
+}
+
+/* ——— Hero ——— */
+.heroBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-large);
+}
+
+.h1 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--font-size-heading-h1);
+  font-weight: 900;
+  line-height: 1;
+  color: var(--text-primary);
+}
+
+.lead {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-large);
+  line-height: 1.5;
+  color: var(--text-default);
+}
+
+.donationNote {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xlarge);
+  padding: var(--space-large);
+  border-radius: var(--radius-large);
+  background: var(--surface-subtle-accent);
+}
+
+.noteTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--font-size-heading-h3);
+  font-weight: 900;
+  line-height: 1;
+  color: var(--text-primary);
+}
+
+.noteAccent {
+  font-size: var(--font-size-heading-h1);
+  color: var(--bg-accent);
+}
+
+.noteText {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-md);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-medium);
+  line-height: 1.5;
+  color: var(--text-default);
+}
+
+.noteText p {
+  margin: 0;
+}
+
+.noteLink {
+  color: var(--text-link);
+  text-decoration: underline;
+  text-underline-position: from-font;
+}
+
+.noteCar {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 602 / 339;
+  object-fit: cover;
+  border-radius: var(--radius-large);
+}
+
+/* ——— Why ——— */
+.why {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4xlarge);
+}
+
+.whyHeading,
+.description {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xlarge);
+  color: var(--text-default);
+}
+
+.h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--font-size-heading-h3);
+  font-weight: 900;
+  line-height: 1;
+}
+
+.h4 {
+  margin: 0;
+  font-family: Mariupol, system-ui, sans-serif;
+  font-size: var(--font-size-heading-h4);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.body {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-medium);
+  line-height: 1.5;
+}
+
+.body p {
+  margin: 0 0 var(--space-small);
+}
+
+.body p:last-child {
+  margin-bottom: 0;
+}
+
+.list {
+  margin: 0 0 var(--space-small);
+  padding-inline-start: var(--space-2xlarge);
+}
+
+/* Quote */
+.quote {
+  position: relative;
+  box-sizing: border-box;
+  margin: var(--space-large) 0 0;
+  padding: var(--space-4xlarge) var(--space-2xlarge) var(--space-4xlarge) var(--space-4xlarge);
+  border-inline-start: var(--border-width-medium) solid var(--bg-accent);
+  background: var(--surface-default);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xlarge);
+}
+
+.quoteMark {
+  position: absolute;
+  top: -2.4375rem;
+  left: 1.0625rem;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 5rem;
+  font-weight: 900;
+  line-height: 1.5;
+  color: var(--bg-accent);
+}
+
+.quoteText {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-large);
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--text-default);
+}
+
+.quoteAuthor {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xsmall);
+  max-width: 10.5rem;
+}
+
+.quoteName {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-large);
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.quoteRole {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-small);
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+.quotePhoto {
+  position: absolute;
+  right: 0;
+  bottom: var(--space-2xlarge);
+  width: 8.375rem;
+  height: 8.3125rem;
+  object-fit: cover;
+  object-position: 30% 20%;
+}
+
+/* Stats */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-large) var(--space-2xlarge);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-gap-tight);
+  padding: var(--space-xlarge) var(--space-large);
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-large);
+}
+
+.statTitle {
+  margin: 0;
+  font-family: Mariupol, system-ui, sans-serif;
+  font-size: var(--font-size-heading-h3);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+.statText {
+  margin: 0;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: var(--font-size-body-small);
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+.projectImage {
+  display: block;
+  width: 100%;
+  height: 14.25rem; /* Figma 228px */
+  object-fit: cover;
+  object-position: 50% 20%;
+  border-radius: var(--radius-large);
+}
+
+/* Back to top (Figma 2556:46860, 33px circle) */
+.toTop {
+  position: fixed;
+  right: var(--space-large);
+  bottom: var(--space-large);
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.0625rem;
+  height: 2.0625rem;
+  padding: 0;
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-round);
+  background: var(--surface-default);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.toTopVisible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.toTopIcon {
+  transform: rotate(180deg);
+}

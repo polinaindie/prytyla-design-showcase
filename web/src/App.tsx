@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes, useParams } from "react-router-dom";
+import { ProjectPage } from "./components/pages/ProjectPage";
 import ShowcasePage from "./showcase/ShowcasePage";
 import { showcasePagePath } from "./showcase/showcasePaths";
 
@@ -18,6 +19,7 @@ function App() {
   return (
     <BrowserRouter basename={basename || undefined}>
       <Routes>
+        <Route path="/project-page" element={<ProjectPage />} />
         <Route path="/showcase/*" element={<LegacyShowcaseRedirect />} />
         <Route path="/*" element={<ShowcasePage />} />
       </Routes>
