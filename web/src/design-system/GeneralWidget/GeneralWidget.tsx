@@ -564,6 +564,25 @@ function DonateFormBody({
     </div>
   );
 
+  /* stableTabs: сума стоїть на тому самому місці, що й на «Разово»; плашка — під нею. */
+  const subscriptionContentStable = (
+    <div className={styles.subscriptionPanel} role="tabpanel">
+      <AmountBlock
+        amount={amount}
+        currency={currency}
+        currencyOptions={currencyOptions}
+        onCurrencyChange={onCurrencyChange}
+        onAmountChange={onAmountChange}
+        quickAmounts={quickAmounts}
+        onQuickAmountClick={onQuickAmountClick}
+      />
+      <SubscriptionCallout
+        cancelHref={subscriptionCancelHref}
+        onCancel={onSubscriptionCancel}
+      />
+    </div>
+  );
+
   const paymentInfoContent = (
     <div className={styles.paymentInfoRoot} role="tabpanel">
       <PaymentInfoGroup>
@@ -663,7 +682,7 @@ function DonateFormBody({
               className={paneClass(paymentTab === "subscription")}
               inert={paymentTab !== "subscription" || undefined}
             >
-              {subscriptionContent}
+              {subscriptionContentStable}
               {subscriptionActions}
             </div>
           ) : null}
