@@ -343,6 +343,14 @@
 
 /* ——— Tablet 768 (Figma Project Page Tablet 947:11310 · On scroll 1107:23306) ——— */
 @media (min-width: 48rem) {
+  /* Меню на ширину колонки контенту (768 − 2×16), а не власні 662px */
+  .page .menu > *:not([data-menu-reset]) {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 48rem;
+    padding-inline: var(--space-large);
+  }
+
   .content {
     max-width: 48rem;
     padding-block-start: calc(var(--project-menu-h) + var(--space-large));
