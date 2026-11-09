@@ -507,10 +507,18 @@
   }
 }
 
-/* articleHero=false — Figma Page_1 2556:46402: compact progress + форма без hero */
+/*
+ * articleHero=false — Figma Page_1 2556:46402: compact progress + форма без hero.
+ * Усі відмінності між повним (t=0) і зібраним (t=1, Figma 1107:24593) виглядом
+ * інтерполюються через --article-morph-t, тож у кінці анімації нічого не «клацає».
+ */
 .rootArticleHeroless {
-  border: var(--border-width-small) solid var(--border-default);
-  border-radius: var(--radius-large);
+  --hl-t: var(--article-morph-t, 0);
+
+  border: calc(var(--border-width-small) + (var(--border-width-medium) - var(--border-width-small)) * var(--hl-t))
+    solid
+    color-mix(in srgb, var(--accent-secondary) calc(var(--hl-t) * 100%), var(--border-default));
+  border-radius: calc(var(--radius-large) - (var(--radius-large) - var(--radius-medium)) * var(--hl-t));
   background: var(--surface-default);
 }
 
@@ -519,10 +527,11 @@
 }
 
 .rootArticleHeroless .progressSectionCompact.progressSectionScroll {
-  padding-block: var(--space-2xlarge);
-  padding-inline: calc(var(--space-large) + var(--border-width-small));
-  border-width: 0 0 var(--border-width-small);
+  padding-block: calc(var(--space-2xlarge) - (var(--space-2xlarge) - var(--space-large)) * var(--hl-t));
+  padding-inline: calc(var(--space-large) + var(--border-width-small) * (1 - var(--hl-t)));
+  border-width: 0 0 calc(var(--border-width-small) * (1 - var(--hl-t)));
   border-radius: 0;
+  background: color-mix(in srgb, var(--surface-default) calc(var(--hl-t) * 100%), var(--bg-subtle-neutral));
 }
 
 /* Figma 1107:24593 — mobile article: VeryShort strip (state 3), лише mobile column */
@@ -1074,20 +1083,6 @@
 
 .bankIcon {
   flex-shrink: 0;
-}
-
-.rootArticleHeroless.rootArticleVeryShortCollapsed {
-  border: var(--border-width-medium) solid var(--accent-secondary);
-  border-radius: var(--radius-medium);
-}
-
-.rootArticleHeroless.rootArticleVeryShortCollapsed .progressSectionCompact.progressSectionScroll {
-  padding: var(--space-large);
-  border-width: 0;
-}
-
-.rootArticleHeroless.rootArticleVeryShortCollapsed .herolessFormClip {
-  height: 0;
 }
 
 @keyframes articleShellCollapsedIn {

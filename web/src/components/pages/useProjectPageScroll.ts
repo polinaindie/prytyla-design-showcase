@@ -3,15 +3,16 @@ import { GENERAL_WIDGET_SCROLL_RANGE } from "../../design-system/GeneralWidget/g
 
 /** px — мінімальний рух, щоб вважати його напрямком скролу (відсікає дрижання тачпада). */
 const DIRECTION_THRESHOLD = 6;
-/** px — скрол від верху, після якого віджет один раз програє анімацію згортання. */
-const COLLAPSE_AT = 8;
+/** px — свайп пальцем, після якого жест на верху сторінки запускає згортання/розгортання. */
+const TOUCH_THRESHOLD = 12;
 const MORPH_DURATION_MS = 900;
+
+type Phase = "expanded" | "collapsing" | "collapsed" | "expanding";
 
 type ProjectPageScroll = {
   /**
    * 0…GENERAL_WIDGET_SCROLL_RANGE — живить morph віджета (articleScrollOffset).
-   * Не прив'язаний до пікселів скролу: один жест скролу запускає плавну анімацію
-   * згортання, повернення на верх сторінки — розгортання.
+   * Лінійний за часом; пом'якшення робить сторінка.
    */
   offset: number;
   /** false — скрол вниз (меню сховане), true — на самому верху або скрол вгору. */
@@ -21,11 +22,13 @@ type ProjectPageScroll = {
 };
 
 /**
- * Один passive scroll-listener на сторінку:
- * - цільовий стан віджета (collapsed / expanded) + time-based анімація до нього;
- * - напрямок скролу для меню (ховається вниз, з'являється вгору над
- *   breadcrumbs + віджетом);
- * - прапорець для кнопки «нагору».
+ * Згортання віджета — окрема анімація, а не прив'язка до пікселів скролу:
+ * 1. Перший жест вниз на самому верху (wheel / touch / клавіатура) НЕ скролить сторінку,
+ *    а запускає колапс; поки він триває, скрол заблокований, тож контент їде вгору
+ *    разом із картою і нічого не «губиться» під нею.
+ * 2. Коли колапс завершився — сторінка скролиться як зазвичай (контент під карткою).
+ * 3. Повернення на верх (або жест вгору на верху) розгортає віджет.
+ * Також: меню ховається при скролі вниз / з'являється при скролі вгору, прапорець для «нагору».
  */
 export function useProjectPageScroll(
   options: { menuLocked?: boolean; foldThreshold?: number } = {},
@@ -34,10 +37,6 @@ export function useProjectPageScroll(
   const [offset, setOffset] = useState(0);
   const [menuVisible, setMenuVisible] = useState(true);
   const [scrolledPastFold, setScrolledPastFold] = useState(false);
-  const lastY = useRef(0);
-  const collapsedRef = useRef(false);
-  const offsetRef = useRef(0);
-  const rafRef = useRef(0);
   const menuLockedRef = useRef(menuLocked);
 
   useEffect(() => {
@@ -48,45 +47,117 @@ export function useProjectPageScroll(
   }, [menuLocked]);
 
   useEffect(() => {
-    const animateTo = (target: number) => {
-      cancelAnimationFrame(rafRef.current);
-      const from = offsetRef.current;
+    let phase: Phase = "expanded";
+    let current = 0;
+    let rafId = 0;
+    let lastY = Math.max(0, window.scrollY);
+    let touchStartY = 0;
+
+    const animating = () => phase === "collapsing" || phase === "expanding";
+
+    const animateTo = (target: number, onDone: () => void) => {
+      cancelAnimationFrame(rafId);
+      const from = current;
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
       if (reduceMotion || from === target) {
-        offsetRef.current = target;
+        current = target;
         setOffset(target);
+        onDone();
         return;
       }
 
       const start = performance.now();
       const step = (now: number) => {
         const progress = Math.min(1, (now - start) / MORPH_DURATION_MS);
-        /* Лінійний час: пом'якшення робить сторінка (кожна фаза — своя крива). */
-        const value = from + (target - from) * progress;
-        offsetRef.current = value;
-        setOffset(value);
+        current = from + (target - from) * progress;
+        setOffset(current);
         if (progress < 1) {
-          rafRef.current = requestAnimationFrame(step);
+          rafId = requestAnimationFrame(step);
+        } else {
+          onDone();
         }
       };
-      rafRef.current = requestAnimationFrame(step);
+      rafId = requestAnimationFrame(step);
     };
 
-    const update = () => {
-      const y = Math.max(0, window.scrollY);
+    const collapse = () => {
+      if (phase !== "expanded") return;
+      phase = "collapsing";
+      window.scrollTo({ top: 0, behavior: "instant" });
+      animateTo(GENERAL_WIDGET_SCROLL_RANGE, () => {
+        phase = "collapsed";
+        lastY = Math.max(0, window.scrollY);
+      });
+    };
 
+    const expand = () => {
+      if (phase !== "collapsed") return;
+      phase = "expanding";
+      setMenuVisible(true);
+      animateTo(0, () => {
+        phase = "expanded";
+        lastY = Math.max(0, window.scrollY);
+      });
+    };
+
+    const onWheel = (event: WheelEvent) => {
+      if (animating()) {
+        event.preventDefault();
+        return;
+      }
+      if (window.scrollY > 0) return;
+      if (phase === "expanded" && event.deltaY > 0) {
+        event.preventDefault();
+        collapse();
+      } else if (phase === "collapsed" && event.deltaY < 0) {
+        event.preventDefault();
+        expand();
+      }
+    };
+
+    const onTouchStart = (event: TouchEvent) => {
+      touchStartY = event.touches[0]?.clientY ?? 0;
+    };
+
+    const onTouchMove = (event: TouchEvent) => {
+      if (animating()) {
+        event.preventDefault();
+        return;
+      }
+      if (window.scrollY > 0) return;
+      const dy = (event.touches[0]?.clientY ?? touchStartY) - touchStartY;
+      if (phase === "expanded" && dy < -TOUCH_THRESHOLD) {
+        event.preventDefault();
+        collapse();
+      } else if (phase === "collapsed" && dy > TOUCH_THRESHOLD) {
+        event.preventDefault();
+        expand();
+      }
+    };
+
+    const onScroll = () => {
+      const y = Math.max(0, window.scrollY);
       setScrolledPastFold(y >= foldThreshold);
 
-      if (!collapsedRef.current && y > COLLAPSE_AT) {
-        collapsedRef.current = true;
-        animateTo(GENERAL_WIDGET_SCROLL_RANGE);
-      } else if (collapsedRef.current && y <= 0) {
-        collapsedRef.current = false;
-        animateTo(0);
+      if (animating()) {
+        /* Скрол заблокований на час анімації: тримаємо сторінку на верху. */
+        if (y !== 0) window.scrollTo({ top: 0, behavior: "instant" });
+        return;
       }
 
-      const delta = y - lastY.current;
+      /* Запасний шлях (scrollbar, клавіатура, «нагору»): згортання від першого зсуву. */
+      if (phase === "expanded" && y > DIRECTION_THRESHOLD) {
+        collapse();
+        return;
+      }
+      if (phase === "collapsed" && y <= 0 && lastY > 0) {
+        expand();
+        lastY = 0;
+        return;
+      }
+
+      const delta = y - lastY;
       if (y <= 0 || menuLockedRef.current) {
         setMenuVisible(true);
       } else if (delta > DIRECTION_THRESHOLD) {
@@ -95,15 +166,21 @@ export function useProjectPageScroll(
         setMenuVisible(true);
       }
       if (Math.abs(delta) > DIRECTION_THRESHOLD || y <= 0) {
-        lastY.current = y;
+        lastY = y;
       }
     };
 
-    update();
-    window.addEventListener("scroll", update, { passive: true });
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("wheel", onWheel, { passive: false });
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchmove", onTouchMove, { passive: false });
     return () => {
-      cancelAnimationFrame(rafRef.current);
-      window.removeEventListener("scroll", update);
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("wheel", onWheel);
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchmove", onTouchMove);
     };
   }, [foldThreshold]);
 

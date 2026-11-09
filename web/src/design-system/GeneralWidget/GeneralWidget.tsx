@@ -1097,7 +1097,6 @@ export function GeneralWidget({
             styles.root,
             styles.rootArticle,
             styles.rootArticleHeroless,
-            collapsed && styles.rootArticleVeryShortCollapsed,
             className,
           ]
             .filter(Boolean)
