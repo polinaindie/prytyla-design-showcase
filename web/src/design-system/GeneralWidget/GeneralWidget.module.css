@@ -1118,7 +1118,8 @@
   min-width: 0;
 }
 
-.stablePane > .actions {
+/* Сума притиснута до кнопок на всіх вкладках: на «Щомісяця» над нею плашка, на «Разово» — порожньо */
+.stablePane > [role="tabpanel"] {
   margin-top: auto;
 }
 
