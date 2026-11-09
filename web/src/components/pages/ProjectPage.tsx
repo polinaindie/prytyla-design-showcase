@@ -38,6 +38,10 @@ const THUMB_FALLBACK: Rect = { x: 17, y: 17, w: 74, h: 95 };
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
+function easeInOutCubic(x: number): number {
+  return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+}
+
 function smooth(value: number, start: number, end: number): number {
   const x = Math.min(1, Math.max(0, (value - start) / (end - start)));
   return x * x * (3 - 2 * x);
@@ -124,7 +128,7 @@ export function ProjectPage() {
   const morphProgress = Math.min(1, Math.max(0, offset / GENERAL_WIDGET_SCROLL_RANGE));
   /* Секвенція: контент зникає 0–0.3 → фото їде 0.2–0.8 → compact-контент з'являється 0.7–1. */
   const fullOut = smooth(morphProgress, 0, 0.3);
-  const photoP = smooth(morphProgress, 0.2, 0.8);
+  const photoP = smooth(morphProgress, 0.12, 0.88);
   const compactIn = smooth(morphProgress, 0.7, 1);
   const fullWidgetHeight = useRef<number | null>(null);
   const widgetSlotRef = useRef<HTMLDivElement>(null);
@@ -259,7 +263,13 @@ export function ProjectPage() {
             </div>
           ) : (
             <div ref={widgetSlotRef}>
-              {renderWidget(isTablet ? (morphProgress >= 1 ? GENERAL_WIDGET_SCROLL_RANGE : 0) : offset)}
+              {renderWidget(
+                isTablet
+                  ? morphProgress >= 1
+                    ? GENERAL_WIDGET_SCROLL_RANGE
+                    : 0
+                  : easeInOutCubic(morphProgress) * GENERAL_WIDGET_SCROLL_RANGE,
+              )}
             </div>
           )}
         </div>

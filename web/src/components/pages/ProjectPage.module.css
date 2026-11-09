@@ -63,7 +63,17 @@
   border-radius: var(--radius-large);
   /* Власна «картка» — лишається, коли контент шарів зник (немає миготіння) */
   background: var(--surface-default);
+}
+
+/* Сіра обводка — поверх фото й шарів, тож контур картки не рветься, поки фото їде */
+.widgetMorph::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  border-radius: inherit;
   box-shadow: inset 0 0 0 var(--border-width-small) var(--border-default);
+  pointer-events: none;
 }
 
 /* Фото рухає окремий елемент — у шарах воно сховане (місце лишається) */

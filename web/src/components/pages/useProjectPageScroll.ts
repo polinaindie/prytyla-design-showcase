@@ -5,13 +5,7 @@ import { GENERAL_WIDGET_SCROLL_RANGE } from "../../design-system/GeneralWidget/g
 const DIRECTION_THRESHOLD = 6;
 /** px — скрол від верху, після якого віджет один раз програє анімацію згортання. */
 const COLLAPSE_AT = 8;
-const MORPH_DURATION_MS = 800;
-
-function easeInOutCubic(progress: number): number {
-  return progress < 0.5
-    ? 4 * progress * progress * progress
-    : 1 - Math.pow(-2 * progress + 2, 3) / 2;
-}
+const MORPH_DURATION_MS = 900;
 
 type ProjectPageScroll = {
   /**
@@ -68,7 +62,8 @@ export function useProjectPageScroll(
       const start = performance.now();
       const step = (now: number) => {
         const progress = Math.min(1, (now - start) / MORPH_DURATION_MS);
-        const value = from + (target - from) * easeInOutCubic(progress);
+        /* Лінійний час: пом'якшення робить сторінка (кожна фаза — своя крива). */
+        const value = from + (target - from) * progress;
         offsetRef.current = value;
         setOffset(value);
         if (progress < 1) {
