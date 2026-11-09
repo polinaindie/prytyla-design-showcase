@@ -10,11 +10,16 @@ import {
   type KeyboardEvent,
   type MouseEvent,
   type ReactNode,
+  useLayoutEffect,
 } from "react";
 import type { GeneralWidgetScrollMetrics } from "./generalWidgetScroll";
 import { useGeneralWidgetPageScroll } from "./useGeneralWidgetPageScroll";
 import { useStableProgressSectionHeight } from "./useStableProgressSectionHeight";
-import { GENERAL_WIDGET_IMAGE_MAX_H } from "./generalWidgetScroll";
+import {
+  GENERAL_WIDGET_IMAGE_MAX_H,
+  GENERAL_WIDGET_SCROLL_RANGE,
+  getGeneralWidgetScrollMetrics,
+} from "./generalWidgetScroll";
 import { Button } from "../Button";
 import { publicAssetUrl } from "../../lib/publicAssetUrl";
 import { Checkbox } from "../Checkbox";
@@ -738,6 +743,7 @@ export function GeneralWidget({
   articleScrollContainerRef,
   articleScrollNaturalLayout = false,
   articleColumn,
+  articleHero = true,
 }: GeneralWidgetProps) {
   const isDone = paymentType === "done";
   const isWide = layout === "wide";
@@ -886,6 +892,19 @@ export function GeneralWidget({
     progressSectionHeight,
     articleScrollContainerRef,
   );
+
+  /* articleHero=false (mobile, Figma Page_1): форма згортається висотою, а не hero-морфом. */
+  const herolessFormRef = useRef<HTMLDivElement>(null);
+  const [herolessFormHeight, setHerolessFormHeight] = useState<number | null>(null);
+  useLayoutEffect(() => {
+    const node = herolessFormRef.current;
+    if (!node) return;
+    const sync = () => setHerolessFormHeight(node.offsetHeight);
+    sync();
+    const observer = new ResizeObserver(sync);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [layout, articleHero, paymentTab]);
 
   const articleHeightTransition = scrollAnimation.useHeightTransition
     ? "height 0.35s cubic-bezier(0.4, 0, 0.2, 1)"
@@ -1039,6 +1058,62 @@ export function GeneralWidget({
     ]
       .filter(Boolean)
       .join(" ");
+
+    if (!articleHero) {
+      const t = scrollAnimation.t;
+      const collapsed = t >= 1;
+      const compactMetrics = getGeneralWidgetScrollMetrics(
+        GENERAL_WIDGET_SCROLL_RANGE,
+        paymentTab,
+      );
+      const clickable = t > 0.5 && paymentTab !== "paymentInfo";
+      const formClipStyle: CSSProperties =
+        t <= 0 || herolessFormHeight == null
+          ? {}
+          : { height: Math.round(herolessFormHeight * (1 - t)), opacity: 1 - t };
+
+      return (
+        <article
+          ref={articleRef}
+          className={[
+            styles.root,
+            styles.rootArticle,
+            styles.rootArticleHeroless,
+            collapsed && styles.rootArticleVeryShortCollapsed,
+            className,
+          ]
+            .filter(Boolean)
+            .join(" ")}
+          style={{ ["--article-morph-t" as string]: t }}
+        >
+          <div
+            className={clickable ? styles.sidebarProgressToggle : undefined}
+            role={clickable ? "button" : undefined}
+            tabIndex={clickable ? 0 : undefined}
+            aria-label={clickable ? "Прокрутити до повного віджета донату" : undefined}
+            onClick={clickable ? handleArticleProgressClick : undefined}
+            onKeyDown={clickable ? handleArticleProgressKeyDown : undefined}
+          >
+            <ProgressBlock
+              progress={progress}
+              scrollThumbSrc={hero.src}
+              scrollThumbAlt={hero.alt}
+              scrollMetrics={compactMetrics}
+            />
+          </div>
+          <div
+            className={styles.herolessFormClip}
+            style={formClipStyle}
+            aria-hidden={collapsed || undefined}
+            inert={collapsed || undefined}
+          >
+            <div ref={herolessFormRef} className={styles.form}>
+              <DonateFormBody {...donateFormProps} />
+            </div>
+          </div>
+        </article>
+      );
+    }
 
     const lockedWidgetHeight = scrollAnimation.widgetHeight;
 

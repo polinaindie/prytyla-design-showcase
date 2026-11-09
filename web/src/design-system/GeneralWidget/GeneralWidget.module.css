@@ -507,6 +507,24 @@
   }
 }
 
+/* articleHero=false — Figma Page_1 2556:46402: compact progress + форма без hero */
+.rootArticleHeroless {
+  border: var(--border-width-small) solid var(--border-default);
+  border-radius: var(--radius-large);
+  background: var(--surface-default);
+}
+
+.herolessFormClip {
+  overflow: hidden;
+}
+
+.rootArticleHeroless .progressSectionCompact.progressSectionScroll {
+  padding-block: var(--space-2xlarge);
+  padding-inline: calc(var(--space-large) + var(--border-width-small));
+  border-width: 0 0 var(--border-width-small);
+  border-radius: 0;
+}
+
 /* Figma 1107:24593 — mobile article: VeryShort strip (state 3), лише mobile column */
 .rootArticleVeryShortCollapsed {
   border: var(--border-width-medium) solid var(--accent-secondary);
@@ -1056,4 +1074,18 @@
 
 .bankIcon {
   flex-shrink: 0;
+}
+
+.rootArticleHeroless.rootArticleVeryShortCollapsed {
+  border: var(--border-width-medium) solid var(--accent-secondary);
+  border-radius: var(--radius-medium);
+}
+
+.rootArticleHeroless.rootArticleVeryShortCollapsed .progressSectionCompact.progressSectionScroll {
+  padding: var(--space-large);
+  border-width: 0;
+}
+
+.rootArticleHeroless.rootArticleVeryShortCollapsed .herolessFormClip {
+  height: 0;
 }

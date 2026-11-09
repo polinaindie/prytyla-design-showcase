@@ -88,6 +88,12 @@ export type GeneralWidgetProps = {
    * mobile — morph t=1 → VeryShort (1107:24593); desktop — Short (287:15090).
    */
   articleColumn?: "desktop" | "tablet" | "mobile";
+  /**
+   * layout=article, mobile: false — без hero-зображення (Figma Project Page_1 2556:46402):
+   * зверху compact progress, нижче форма; scroll згортає форму до смуги (1107:24593).
+   * @default true
+   */
+  articleHero?: boolean;
   /** Прогрес зверху (Figma Progressbar=On) — лише layout=full */
   showProgress?: boolean;
   progress?: GeneralWidgetProgress;

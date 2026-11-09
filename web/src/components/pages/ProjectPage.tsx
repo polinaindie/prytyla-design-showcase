@@ -115,6 +115,8 @@ export function ProjectPage() {
             articleColumn={isTablet ? "tablet" : "mobile"}
             articleScrollOffset={offset}
             articleScrollNaturalLayout
+            articleHero={isTablet}
+            showSubscriptionTab={isTablet}
             onScrollToFull={scrollToTop}
             progress={PROGRESS}
             hero={{ src: HERO, alt: "Чисте небо" }}
