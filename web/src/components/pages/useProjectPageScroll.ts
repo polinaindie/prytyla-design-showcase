@@ -7,6 +7,23 @@ const DIRECTION_THRESHOLD = 6;
 const TOUCH_THRESHOLD = 12;
 const MORPH_DURATION_MS = 900;
 
+/**
+ * Чи може вкладений прокручуваний блок (напр. список реквізитів) прийняти цей жест.
+ * direction > 0 — прокрутка вниз, < 0 — вгору.
+ */
+function canScrollInside(target: EventTarget | null, direction: number): boolean {
+  let node = target instanceof Element ? target : null;
+  while (node && node !== document.documentElement && node !== document.body) {
+    const { overflowY } = getComputedStyle(node);
+    if ((overflowY === "auto" || overflowY === "scroll") && node.scrollHeight > node.clientHeight + 1) {
+      if (direction > 0 && node.scrollTop + node.clientHeight < node.scrollHeight - 1) return true;
+      if (direction < 0 && node.scrollTop > 0) return true;
+    }
+    node = node.parentElement;
+  }
+  return false;
+}
+
 type Phase = "expanded" | "collapsing" | "collapsed" | "expanding";
 
 type ProjectPageScroll = {
@@ -107,6 +124,7 @@ export function useProjectPageScroll(
         return;
       }
       if (window.scrollY > 0) return;
+      if (canScrollInside(event.target, event.deltaY)) return;
       if (phase === "expanded" && event.deltaY > 0) {
         event.preventDefault();
         collapse();
@@ -127,6 +145,7 @@ export function useProjectPageScroll(
       }
       if (window.scrollY > 0) return;
       const dy = (event.touches[0]?.clientY ?? touchStartY) - touchStartY;
+      if (canScrollInside(event.target, -dy)) return;
       if (phase === "expanded" && dy < -TOUCH_THRESHOLD) {
         event.preventDefault();
         collapse();
