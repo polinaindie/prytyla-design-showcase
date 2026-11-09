@@ -5,7 +5,7 @@ import { GENERAL_WIDGET_SCROLL_RANGE } from "../../design-system/GeneralWidget/g
 const DIRECTION_THRESHOLD = 6;
 /** px — скрол від верху, після якого віджет один раз програє анімацію згортання. */
 const COLLAPSE_AT = 8;
-const MORPH_DURATION_MS = 560;
+const MORPH_DURATION_MS = 800;
 
 function easeInOutCubic(progress: number): number {
   return progress < 0.5

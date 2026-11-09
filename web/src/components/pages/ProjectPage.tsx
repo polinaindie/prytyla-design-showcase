@@ -1,4 +1,11 @@
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type CSSProperties,
+} from "react";
 import { Breadcrumbs } from "../../design-system/Breadcrumbs";
 import { GeneralWidget } from "../../design-system/GeneralWidget";
 import type { GeneralWidgetPaymentTab } from "../../design-system/GeneralWidget";
@@ -23,6 +30,27 @@ const IMG_CAR = publicAssetUrl("/images/project-page/donation-car.png");
 const IMG_VIDEO = publicAssetUrl("/images/project-page/donation-video.png");
 const IMG_PROJECT_HERO = publicAssetUrl("/images/project-page/project-hero-image.png");
 const IMG_QUOTE_AUTHOR = publicAssetUrl("/images/project-page/quote-author.png");
+
+type Rect = { x: number; y: number; w: number; h: number };
+
+/** Compact-смуга (Figma 1107:26076): padding 16 + border 1, мініатюра 74×95. */
+const THUMB_FALLBACK: Rect = { x: 17, y: 17, w: 74, h: 95 };
+
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
+function smooth(value: number, start: number, end: number): number {
+  const x = Math.min(1, Math.max(0, (value - start) / (end - start)));
+  return x * x * (3 - 2 * x);
+}
+
+/** Фото віджета (hero / мініатюра) — перший видимий <img> з обкладинкою. */
+function findPhoto(root: HTMLElement): HTMLImageElement | null {
+  const images = root.querySelectorAll<HTMLImageElement>('img[src*="general-widget-chyste-nebo-thumb"]');
+  for (const img of images) {
+    if (img.getBoundingClientRect().width > 0) return img;
+  }
+  return null;
+}
 
 const BREADCRUMBS = [
   { label: "Головна", href: "/" },
@@ -94,21 +122,57 @@ export function ProjectPage() {
 
   const [currency, setCurrency] = useState("UAH");
   const morphProgress = Math.min(1, Math.max(0, offset / GENERAL_WIDGET_SCROLL_RANGE));
+  /* Секвенція: контент зникає 0–0.3 → фото їде 0.2–0.8 → compact-контент з'являється 0.7–1. */
+  const fullOut = smooth(morphProgress, 0, 0.3);
+  const photoP = smooth(morphProgress, 0.2, 0.8);
+  const compactIn = smooth(morphProgress, 0.7, 1);
   const fullWidgetHeight = useRef<number | null>(null);
   const widgetSlotRef = useRef<HTMLDivElement>(null);
+  const morphRef = useRef<HTMLDivElement>(null);
+  const compactLayerRef = useRef<HTMLDivElement>(null);
+  const heroRect = useRef<Rect | null>(null);
+  const thumbRect = useRef<Rect>(THUMB_FALLBACK);
 
-  /* Висота повного віджета (t=0) — база для плавної висоти crossfade. */
+  /* Висота та кадр hero повного віджета (t=0) — база для shared-element морфу фото. */
   useEffect(() => {
     const node = widgetSlotRef.current;
     if (!node || morphProgress !== 0) return;
     const sync = () => {
       fullWidgetHeight.current = node.offsetHeight;
+      const box = node.getBoundingClientRect();
+      const photo = findPhoto(node);
+      if (photo) {
+        const r = photo.getBoundingClientRect();
+        heroRect.current = { x: r.left - box.left, y: r.top - box.top, w: r.width, h: r.height };
+      }
     };
     sync();
     const observer = new ResizeObserver(sync);
     observer.observe(node);
     return () => observer.disconnect();
   }, [morphProgress, isTablet, paymentTab]);
+
+  /* Кадр мініатюри в compact-шарі — кінцева точка морфу фото. */
+  useLayoutEffect(() => {
+    const layer = compactLayerRef.current;
+    const wrap = morphRef.current;
+    if (!layer || !wrap) return;
+    const photo = findPhoto(layer);
+    if (!photo) return;
+    const box = wrap.getBoundingClientRect();
+    const r = photo.getBoundingClientRect();
+    thumbRect.current = { x: r.left - box.left, y: r.top - box.top, w: r.width, h: r.height };
+  });
+
+  const from = heroRect.current ?? { x: 0, y: 0, w: 0, h: 0 };
+  const to = thumbRect.current;
+  const photoStyle: CSSProperties = {
+    left: lerp(from.x, to.x, photoP),
+    top: lerp(from.y, to.y, photoP),
+    width: lerp(from.w, to.w, photoP),
+    height: lerp(from.h, to.h, photoP),
+    borderRadius: lerp(12, 6, photoP),
+  };
 
   const renderWidget = (scrollOffset: number) => (
     <GeneralWidget
@@ -155,24 +219,43 @@ export function ProjectPage() {
         <div className={styles.pinned}>
           <Breadcrumbs items={BREADCRUMBS} />
           {isTablet && morphProgress > 0 && morphProgress < 1 ? (
-            /* Tablet: crossfade full ↔ compact (без «блимання») + плавна висота. */
+            /*
+             * Subordinate motion: фото — єдиний головний об'єкт, що безперервно їде з hero
+             * в мініатюру. Решта контенту спершу зникає, а після «приземлення» фото — з'являється.
+             */
             <div
+              ref={morphRef}
               className={styles.widgetMorph}
               style={{
                 height: Math.round(
-                  (fullWidgetHeight.current ?? GENERAL_WIDGET_TABLET_COLLAPSED_H) *
-                    (1 - morphProgress) +
-                    GENERAL_WIDGET_TABLET_COLLAPSED_H * morphProgress,
+                  lerp(
+                    fullWidgetHeight.current ?? GENERAL_WIDGET_TABLET_COLLAPSED_H,
+                    GENERAL_WIDGET_TABLET_COLLAPSED_H,
+                    photoP,
+                  ),
                 ),
               }}
             >
-              <div className={styles.widgetLayer}>{renderWidget(GENERAL_WIDGET_SCROLL_RANGE)}</div>
               <div
-                className={`${styles.widgetLayer} ${styles.widgetLayerTop}`}
-                style={{ opacity: 1 - morphProgress }}
+                ref={compactLayerRef}
+                className={`${styles.widgetLayer} ${styles.widgetLayerHidePhoto}`}
+                style={{ opacity: compactIn }}
+              >
+                {renderWidget(GENERAL_WIDGET_SCROLL_RANGE)}
+              </div>
+              <div
+                className={`${styles.widgetLayer} ${styles.widgetLayerTop} ${styles.widgetLayerHidePhoto}`}
+                style={{ opacity: 1 - fullOut }}
               >
                 {renderWidget(0)}
               </div>
+              <img
+                className={styles.morphPhoto}
+                src={HERO}
+                alt=""
+                aria-hidden
+                style={photoStyle}
+              />
             </div>
           ) : (
             <div ref={widgetSlotRef}>
