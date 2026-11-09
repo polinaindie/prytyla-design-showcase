@@ -456,6 +456,7 @@
     width: 100%;
     /* morph-opacity (t=1 → 0) не має ховати реквізити: у цій вкладці форма — основний вміст */
     opacity: 1;
+    border-radius: var(--radius-large);
   }
 
   .rootArticleFullyCollapsed.rootArticlePaymentInfo .articleTabletCollapsedCta {
