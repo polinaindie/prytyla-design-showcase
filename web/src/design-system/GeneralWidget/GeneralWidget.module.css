@@ -1086,6 +1086,8 @@
 
 .bankIcon {
   flex-shrink: 0;
+  /* Бейдж mono лишається білим і на hover (кнопка тоді оранжева, а currentColor стає чорним) */
+  color: var(--text-inverse);
 }
 
 @keyframes articleShellCollapsedIn {
